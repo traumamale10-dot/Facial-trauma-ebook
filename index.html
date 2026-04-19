@@ -645,6 +645,81 @@ function imgSlot(key, label) {
 }
 
 // ─────────────────────────────────────────────
+// BONE EXPLORER DATA & FUNCTION (global scope)
+// ─────────────────────────────────────────────
+var _BD = {
+  frontal:{th:'กระดูกหน้าผาก',en:'Frontal Bone Fracture',
+    sym:'หน้าผากบุ๋ม บวม ปวดศีรษะ อาจมีน้ำใสไหลจากจมูก (CSF leak)',
+    tx:'รอยแตกเล็กน้อย: รักษาตามอาการ | รุนแรง: Frontal sinus obliteration หรือ Cranialization ร่วมกับศัลยแพทย์ระบบประสาท',
+    nur:'สังเกต CSF leak · ประเมิน GCS ทุก 1-2 ชม. · ยกศีรษะ 30° · งดเป่าจมูก · ติดตามการมองเห็น',
+    ref:'ATLS 10th Ed.; Fonseca OMS 2018'},
+  nasal:{th:'กระดูกจมูก',en:'Nasal Bone Fracture',
+    sym:'จมูกบวม เบี้ยว เจ็บ เลือดกำเดาออก หายใจทางจมูกลำบาก',
+    tx:'การจัดกระดูกให้เข้าที่ (Closed Reduction) ภายใต้การวางยาสลบ ใส่ Nasal packing และ Nasal splint',
+    nur:'ใส่เฝือกจมูกตามแพทย์สั่ง · เลี่ยงการกระทบกระเทือน · ห้ามแคะจมูก · ยกศีรษะสูง 30-45°',
+    ref:"Rosen's EM 9th Ed.; UpToDate 2024"},
+  orbital:{th:'กระดูกรอบเบ้าตา',en:'Orbital Floor/Wall Fracture',
+    sym:'ตาบวม มองภาพซ้อน (Diplopia) ลูกตาเคลื่อน ชาบริเวณแก้ม',
+    tx:'Orbital floor reconstruction ด้วย Titanium mesh | ผ่าตัดเมื่อ: ภาพซ้อนไม่ดีขึ้น หรือกระดูกแตกเกิน 50%',
+    nur:'ประเมินการมองเห็นทุก 1-2 ชม. · ห้ามเป่าจมูก · ประคบเย็น · สังเกต Enophthalmos',
+    ref:'AO Surgery Reference 2023; JOMS 2022'},
+  zygomatic:{th:'กระดูกโหนกแก้ม',en:'Zygomatic/ZMC Fracture',
+    sym:'แก้มแบนหรือบุ๋ม บวม ช้ำ อ้าปากลำบาก ชาบริเวณแก้มและริมฝีปากบน',
+    tx:'หากยุบตัว: ผ่าตัดยกกระดูกขึ้นและยึดด้วยแผ่นเพลท Titanium ขนาดเล็ก (ORIF)',
+    nur:'เลี่ยงนอนตะแคงทับด้านที่เจ็บ · ห้ามสั่งน้ำมูกแรงๆ · อาหารอ่อน 6 สัปดาห์',
+    ref:'Fonseca OMS 2018; Plastic Surgery 4th Ed.'},
+  maxilla:{th:'กระดูกขากรรไกรบน',en:'Maxillary Fracture (Le Fort I-III)',
+    sym:'สบฟันผิดปกติ ใบหน้าบวม ขยับขากรรไกรบนได้ผิดปกติ ปวด',
+    tx:'ผ่าตัดจัดตำแหน่งและยึดตรึงด้วยโลหะ (Plating) ร่วมกับ MMF ตามความรุนแรง',
+    nur:'ประคบเย็นลดบวม · ทานอาหารอ่อนหรือเหลว · พบทันตแพทย์สม่ำเสมอ · บ้วนปากน้ำเกลือ',
+    ref:"ATLS 10th Ed.; Peterson's OMS 4th Ed. 2022"},
+  mandible:{th:'กระดูกขากรรไกรล่าง',en:'Mandibular Fracture',
+    sym:'อ้าปากไม่ได้หรืออ้าได้น้อย เจ็บปวด สบฟันผิดปกติ บวมช้ำ ชาริมฝีปากล่าง',
+    tx:'ORIF ยึดด้วยโลหะ หรือมัดฟัน (MMF) 4-6 สัปดาห์ ตามตำแหน่งและความรุนแรง',
+    nur:'ทานอาหารเหลวเท่านั้น · รักษาความสะอาดช่องปาก · เตรียมกรรไกรตัดลวด MMF ไว้เสมอ',
+    ref:'Zide: Mandibular Fractures 2020; AO CMF Guidelines 2023'},
+  temporal:{th:'กระดูกขมับ',en:'Temporal Bone Fracture',
+    sym:"หูอื้อ สูญเสียการได้ยิน เวียนศีรษะ อัมพาตเส้นประสาทใบหน้า (CN VII) Battle's sign",
+    tx:"รักษาตามอาการ · CN VII palsy: Corticosteroid · CSF leak: ติดตามใกล้ชิด · รายรุนแรงอาจผ่าตัด",
+    nur:"ประเมิน CN VII (ขยิบตา/ยิ้ม/ยักคิ้ว) · สังเกต Battle's sign · ดูแลดวงตาหากปิดไม่สนิท",
+    ref:"Rosen's EM 2023; NEJM 2021"}
+};
+
+function bsel(k) {
+  // reset ALL buttons
+  document.querySelectorAll('.bbtn').forEach(function(b){ b.classList.remove('sel'); });
+  var bb = document.getElementById('bbt-'+k);
+  if (bb) bb.classList.add('sel');
+  // reset ALL dots to original small r=2.2
+  document.querySelectorAll('.bdot').forEach(function(g){
+    g.classList.remove('sel');
+    var circ = g.querySelector('circle');
+    if (circ) circ.setAttribute('r','2.2');
+  });
+  // enlarge ONLY dots matching key
+  document.querySelectorAll('.bdot').forEach(function(g){
+    var oc = g.getAttribute('onclick');
+    if (oc && oc.indexOf("'"+k+"'") > -1) {
+      g.classList.add('sel');
+      var circ = g.querySelector('circle');
+      if (circ) circ.setAttribute('r','4');
+    }
+  });
+  // render info panel
+  var d = _BD[k];
+  if (!d) return;
+  var panel = document.getElementById('bipanel');
+  if (!panel) return;
+  panel.innerHTML =
+    '<div class="bi-th">'+d.th+'</div>'+
+    '<div class="bi-en">'+d.en+'</div>'+
+    '<div class="bi-r"><b>🩺 อาการที่พบ</b>'+d.sym+'</div>'+
+    '<div class="bi-r"><b>🔧 การรักษา</b>'+d.tx+'</div>'+
+    '<div class="bi-r"><b>💊 การพยาบาล</b>'+d.nur+'</div>'+
+    '<div class="bi-ref">📚 อ้างอิง: '+d.ref+'</div>';
+}
+
+// ─────────────────────────────────────────────
 // PAGES DEFINITION
 // ─────────────────────────────────────────────
 function getPages() {
@@ -679,14 +754,15 @@ function getPages() {
         </div>
         <div class="toc-list">
           ${[
-            {n:'1',   name:'การบาดเจ็บใบหน้าคืออะไร',   desc:'คำนิยาม สาเหตุ ระดับความรุนแรง', pg:2},
-            {n:'1.1', name:'ตำแหน่งกระดูกที่พบบ่อย',    desc:'ตารางจำแนกตำแหน่ง อาการ', pg:3},
-            {n:'2',   name:'การผ่าตัดกระดูกใบหน้า',     desc:'CR Nasal · MMF · ORIF', pg:4},
-            {n:'3A',  name:'หลังผ่าตัด CR Nasal Bone',  desc:'Nasal Packing & Splint care', pg:5},
-            {n:'3B',  name:'หลังผ่าตัด MMF มัดฟัน',     desc:'Liquid diet · การดูแลลวด', pg:6},
-            {n:'3C',  name:'หลังผ่าตัด ORIF',           desc:'Plate & Screw fixation', pg:7},
-            {n:'4',   name:'การดูแลตนเองที่บ้าน (1)',    desc:'ยา · อาหาร · โภชนาการ', pg:8},
-            {n:'4.1', name:'การดูแลตนเองที่บ้าน (2)',    desc:'สิ่งที่ต้องหลีกเลี่ยง · อาการอันตราย', pg:9},
+            {n:'1',   name:'การบาดเจ็บใบหน้าคืออะไร',      desc:'คำนิยาม สาเหตุ ระดับความรุนแรง', pg:2},
+            {n:'1.1', name:'ตำแหน่งกระดูกที่พบบ่อย',       desc:'ตารางจำแนกตำแหน่ง อาการ', pg:3},
+            {n:'2',   name:'การผ่าตัดกระดูกใบหน้า',        desc:'CR Nasal · MMF · ORIF', pg:4},
+            {n:'3A',  name:'หลังผ่าตัด CR Nasal Bone',     desc:'Nasal Packing & Splint care', pg:5},
+            {n:'3B',  name:'หลังผ่าตัด MMF มัดฟัน',        desc:'Liquid diet · การดูแลลวด', pg:6},
+            {n:'3C',  name:'หลังผ่าตัด ORIF',              desc:'Plate & Screw fixation', pg:7},
+            {n:'4',   name:'การดูแลตนเองที่บ้าน (1)',       desc:'ยา · อาหาร · โภชนาการ', pg:8},
+            {n:'4.1', name:'การดูแลตนเองที่บ้าน (2)',       desc:'สิ่งที่ต้องหลีกเลี่ยง · อาการอันตราย', pg:9},
+            {n:'⭐',  name:'กระดูกใบหน้า Interactive 3D',   desc:'แตะกระดูกเพื่อดูข้อมูลการรักษา', pg:10},
           ].map(c=>`
             <div class="toc-item" onclick="jumpTo(${c.pg})">
               <div class="toc-num">${c.n}</div>
@@ -950,7 +1026,7 @@ function getPages() {
         <div class="sec-title">การดูแลตนเองเมื่อกลับบ้าน (2)</div>
         <div class="sec-big">4</div>
       </div>
-      ${imgSlot('img_contact','สิ่งที่ต้องหลีกเลี่ยง / อาการที่ต้องมาพบแพทย์ทันที')}
+      ${imgSlot('img_contact','QR Code / ข้อมูลติดต่อหน่วยงาน')}
       <div class="ch-sub">Things to Avoid &amp; Warning Signs</div>
       <div class="divider"></div>
       <p class="body-text" style="font-weight:600;color:var(--navy);">🚫 สิ่งที่ต้องหลีกเลี่ยง</p>
@@ -974,7 +1050,202 @@ function getPages() {
       <div class="page-num">8</div>
     </div>`,
 
-    // 10 — Back cover
+    // 10 — Interactive Facial Bone Explorer
+    () => `<div class="page-inner" style="padding:14px 16px 64px;" id="bep">
+      <div class="sec-band" style="margin:-14px -16px 10px;">
+        <div class="sec-badge">Interactive · กดที่กระดูกเพื่อดูข้อมูล</div>
+        <div class="sec-title">กระดูกใบหน้า 3D Explorer</div>
+        <div class="sec-big" style="font-size:30px;">★</div>
+      </div>
+
+      <style>
+        #bep .bwrap { position:relative; width:100%; max-width:340px; margin:0 auto; user-select:none; }
+        #bep .bwrap img { width:100%; border-radius:10px; display:block; box-shadow:0 4px 20px rgba(0,0,0,0.25); }
+        #bep .bsvg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
+
+        /* connector line */
+        #bep .bline { stroke:rgba(255,255,255,0.55); stroke-width:1.2; stroke-dasharray:3 2; }
+        #bep .bline.hi { stroke:white; stroke-width:1.8; stroke-dasharray:none; }
+
+        /* dot on bone */
+        #bep .bdot { pointer-events:all; cursor:pointer; }
+        #bep .bdot circle { transition:r 0.18s, filter 0.18s; }
+        #bep .bdot:hover circle { filter:brightness(1.3); }
+        #bep .bdot.sel circle { r:4; filter:drop-shadow(0 0 4px rgba(255,255,255,0.9)); }
+
+        /* label box */
+        #bep .blabel {
+          pointer-events:all; cursor:pointer;
+          transition:opacity 0.18s;
+        }
+        #bep .blabel rect { rx:4; ry:4; }
+        #bep .blabel.sel rect { stroke:#e8c44a !important; stroke-width:1.5; }
+        #bep .blabel text { font-family:'Sarabun',sans-serif; font-size:2.8px; font-weight:700; }
+
+        /* info panel */
+        #bep .bipanel {
+          background:linear-gradient(135deg,#f5f0e0,#ece7d4);
+          border-radius:10px; padding:11px 13px; margin-top:8px;
+          border-left:4px solid #2a7f7f; transition:border-color 0.2s;
+          min-height:60px;
+        }
+        #bep .bi-th { font-family:'Noto Serif Thai',serif; font-size:13px; font-weight:700; color:#1a2744; }
+        #bep .bi-en { font-size:9px; color:#2a7f7f; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:7px; }
+        #bep .bi-r  { font-size:10.5px; color:#3d4a6b; line-height:1.72; margin-bottom:4px; }
+        #bep .bi-r b { color:#1a2744; display:block; font-size:9.5px; }
+        #bep .bi-ref { font-size:8.5px; color:#7a8bb0; margin-top:4px; font-style:italic; }
+        #bep .bihint { text-align:center; color:#7a8bb0; font-size:9px; padding:5px 0; }
+        #bep .bbtns { display:flex; flex-wrap:wrap; gap:2px; justify-content:center; margin:4px 0; }
+        #bep .bbtn {
+          padding:1px 4px; border-radius:4px;
+          border:1px solid rgba(42,127,127,0.3);
+          background:white; font-family:'Sarabun',sans-serif;
+          font-size:5.5px; font-weight:600; color:#3d4a6b; cursor:pointer;
+          line-height:1.4;
+        }
+        #bep .bbtn.sel { background:#1a2744; color:#e8c44a; border-color:#1a2744; }
+      </style>
+
+      <!-- Skull image + SVG overlay -->
+      <div class="bwrap">
+        <img src="https://i.postimg.cc/vTSb7f8f/Gemini-Generated-Image-ngqyrvngqyrvngqy.png" alt="skull">
+
+        <!--
+          SVG overlay: viewBox matches image aspect ratio (square = 100x100)
+          bone dot positions (cx,cy) on image %, label positions with connector lines
+          Left side labels: right-aligned labels on left
+          Right side labels: left-aligned labels on right
+        -->
+        <svg class="bsvg" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <filter id="glow"><feGaussianBlur stdDeviation="0.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+
+          <!-- FRONTAL — top center, label above -->
+          <line class="bline" x1="50" y1="18" x2="50" y2="8"/>
+          <g class="blabel" onclick="bsel('frontal')">
+            <rect x="34" y="2" width="32" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(75,175,212,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="50" y="4.5" text-anchor="middle" fill="#6ecff6" font-size="2.0px" font-weight="700">หน้าผาก</text>
+          </g>
+          <g class="bdot" id="bd-frontal" onclick="bsel('frontal')">
+            <circle cx="50" cy="20" r="2.2" fill="#4bafd4" stroke="white" stroke-width="0.7"/>
+          </g>
+
+          <!-- TEMPORAL LEFT — label outside left -->
+          <line class="bline" x1="14" y1="32" x2="6" y2="26"/>
+          <g class="blabel" onclick="bsel('temporal')">
+            <rect x="0" y="21" width="18" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(156,107,181,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="9" y="24.5" text-anchor="middle" fill="#c49ee8" font-size="2.0px" font-weight="700">ขมับ</text>
+          </g>
+          <g class="bdot" id="bd-temporal" onclick="bsel('temporal')">
+            <circle cx="14" cy="33" r="2.2" fill="#9c6bb5" stroke="white" stroke-width="0.7"/>
+          </g>
+
+          <!-- TEMPORAL RIGHT -->
+          <line class="bline" x1="86" y1="32" x2="94" y2="26"/>
+          <g class="blabel" onclick="bsel('temporal')">
+            <rect x="82" y="21" width="18" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(156,107,181,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="91" y="24.5" text-anchor="middle" fill="#c49ee8" font-size="2.0px" font-weight="700">ขมับ</text>
+          </g>
+          <g class="bdot" onclick="bsel('temporal')">
+            <circle cx="86" cy="33" r="2.2" fill="#9c6bb5" stroke="white" stroke-width="0.7"/>
+          </g>
+
+          <!-- ORBITAL LEFT -->
+          <line class="bline" x1="29" y1="42" x2="6" y2="38"/>
+          <g class="blabel" onclick="bsel('orbital')">
+            <rect x="0" y="33" width="18" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(58,158,138,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="9" y="36.5" text-anchor="middle" fill="#5fd4c0" font-size="2.0px" font-weight="700">เบ้าตา</text>
+          </g>
+          <g class="bdot" id="bd-orbital" onclick="bsel('orbital')">
+            <circle cx="30" cy="43" r="2.2" fill="#3a9e8a" stroke="white" stroke-width="0.7"/>
+          </g>
+
+          <!-- ORBITAL RIGHT -->
+          <line class="bline" x1="71" y1="42" x2="94" y2="38"/>
+          <g class="blabel" onclick="bsel('orbital')">
+            <rect x="82" y="33" width="18" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(58,158,138,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="91" y="36.5" text-anchor="middle" fill="#5fd4c0" font-size="2.0px" font-weight="700">เบ้าตา</text>
+          </g>
+          <g class="bdot" onclick="bsel('orbital')">
+            <circle cx="70" cy="43" r="2.2" fill="#3a9e8a" stroke="white" stroke-width="0.7"/>
+          </g>
+
+          <!-- NASAL — center, label above -->
+          <line class="bline" x1="50" y1="50" x2="50" y2="43"/>
+          <g class="blabel" onclick="bsel('nasal')">
+            <rect x="36" y="37" width="28" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(224,112,64,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="50" y="40.5" text-anchor="middle" fill="#f0956a" font-size="2.0px" font-weight="700">กระดูกจมูก</text>
+          </g>
+          <g class="bdot" id="bd-nasal" onclick="bsel('nasal')">
+            <circle cx="50" cy="51" r="2.2" fill="#e07040" stroke="white" stroke-width="0.7"/>
+          </g>
+
+          <!-- ZYGOMATIC LEFT -->
+          <line class="bline" x1="18" y1="54" x2="6" y2="51"/>
+          <g class="blabel" onclick="bsel('zygomatic')">
+            <rect x="0" y="46" width="18" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(74,158,92,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="9" y="49.5" text-anchor="middle" fill="#7dd494" font-size="2.0px" font-weight="700">โหนกแก้ม</text>
+          </g>
+          <g class="bdot" id="bd-zygomatic" onclick="bsel('zygomatic')">
+            <circle cx="18" cy="55" r="2.2" fill="#4a9e5c" stroke="white" stroke-width="0.7"/>
+          </g>
+
+          <!-- ZYGOMATIC RIGHT -->
+          <line class="bline" x1="82" y1="54" x2="94" y2="51"/>
+          <g class="blabel" onclick="bsel('zygomatic')">
+            <rect x="82" y="46" width="18" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(74,158,92,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="91" y="49.5" text-anchor="middle" fill="#7dd494" font-size="2.0px" font-weight="700">โหนกแก้ม</text>
+          </g>
+          <g class="bdot" onclick="bsel('zygomatic')">
+            <circle cx="82" cy="55" r="2.2" fill="#4a9e5c" stroke="white" stroke-width="0.7"/>
+          </g>
+
+          <!-- MAXILLA — label left -->
+          <line class="bline" x1="48" y1="65" x2="6" y2="63"/>
+          <g class="blabel" onclick="bsel('maxilla')">
+            <rect x="0" y="58" width="18" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(212,96,138,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="9" y="61.5" text-anchor="middle" fill="#ee90bb" font-size="2.0px" font-weight="700">ขากรรไกรบน</text>
+          </g>
+          <g class="bdot" id="bd-maxilla" onclick="bsel('maxilla')">
+            <circle cx="49" cy="66" r="2.2" fill="#d4608a" stroke="white" stroke-width="0.7"/>
+            <text x="49" y="68" text-anchor="middle" fill="white" font-size="1.8px" font-weight="800">Mx</text>
+          </g>
+
+          <!-- MANDIBLE — label right -->
+          <line class="bline" x1="52" y1="82" x2="94" y2="79"/>
+          <g class="blabel" onclick="bsel('mandible')">
+            <rect x="82" y="74" width="18" height="4" fill="rgba(20,32,60,0.88)" stroke="rgba(200,160,48,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="91" y="77.5" text-anchor="middle" fill="#f0cc60" font-size="2.0px" font-weight="700">ขากรรไกรล่าง</text>
+          </g>
+          <g class="bdot" id="bd-mandible" onclick="bsel('mandible')">
+            <circle cx="51" cy="83" r="2.2" fill="#c8a030" stroke="white" stroke-width="0.7"/>
+            <text x="51" y="85" text-anchor="middle" fill="white" font-size="1.8px" font-weight="800">Md</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Quick Buttons -->
+      <div class="bbtns">
+        <button class="bbtn" id="bbt-frontal"   onclick="bsel('frontal')">🔵 หน้าผาก</button>
+        <button class="bbtn" id="bbt-nasal"     onclick="bsel('nasal')">🟠 จมูก</button>
+        <button class="bbtn" id="bbt-orbital"   onclick="bsel('orbital')">🩵 เบ้าตา</button>
+        <button class="bbtn" id="bbt-zygomatic" onclick="bsel('zygomatic')">🟢 แก้ม</button>
+        <button class="bbtn" id="bbt-maxilla"   onclick="bsel('maxilla')">🌸 ขากรรไกรบน</button>
+        <button class="bbtn" id="bbt-mandible"  onclick="bsel('mandible')">🟡 ขากรรไกรล่าง</button>
+        <button class="bbtn" id="bbt-temporal"  onclick="bsel('temporal')">🟣 ขมับ</button>
+      </div>
+
+      <!-- Info output -->
+      <div class="bipanel" id="bipanel">
+        <div class="bihint">👆 แตะจุดสีหรือเส้นโยงบนรูป เพื่อดูข้อมูลการรักษาและการพยาบาล</div>
+      </div>
+
+      <div class="page-num">★</div>
+
+    </div>`,
+
+        // 11 — Back cover
     () => `<div class="back-bg">
       <div style="position:relative;z-index:1;text-align:center;">
         <div style="font-size:44px;margin-bottom:16px;">🏥</div>
@@ -994,7 +1265,7 @@ let cur = 0;
 let busy = false;
 let pages;
 
-const LABELS = ['ปก','สารบัญ','1','2','3','4','5','6','7','8','ปิดท้าย'];
+const LABELS = ['ปก','สารบัญ','1','2','★','3','4','5','6','7','8','ปิดท้าย'];
 
 function renderPage(idx, el) {
   el.innerHTML = pages[idx]();
