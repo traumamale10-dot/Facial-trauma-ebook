@@ -573,9 +573,393 @@ body {
   .page-inner { padding: 22px 18px 64px 18px; }
   .sec-band { margin: -22px -18px 14px -18px; padding: 18px 16px 14px; }
 }
+
+/* ══════════════════════════════════════
+   LOGIN / PORTAL OVERLAY
+══════════════════════════════════════ */
+#portal-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: #1e1008;
+  background-image:
+    radial-gradient(ellipse at 15% 50%, #2d1a0a 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 20%, #120b04 0%, transparent 50%);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+#portal-overlay.hidden { display: none; }
+
+.po-card {
+  width: 100%; max-width: 420px;
+  background: var(--cream);
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: poFadeUp 0.4s ease;
+}
+@keyframes poFadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.po-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  padding: 24px 28px 20px;
+  position: relative; overflow: hidden;
+}
+.po-header::after {
+  content: ''; position: absolute; bottom:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg, var(--gold), var(--teal-light), transparent);
+}
+.po-header::before {
+  content: ''; position: absolute; inset:0;
+  background: radial-gradient(ellipse at 70% 40%, rgba(42,127,127,0.2) 0%, transparent 60%);
+}
+.po-logo { display:flex; align-items:center; gap:12px; position:relative; }
+.po-icon {
+  width:44px; height:44px;
+  background: rgba(201,162,39,0.15); border: 1.5px solid rgba(201,162,39,0.35);
+  border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:20px;
+}
+.po-logo h2 { font-family:'Noto Serif Thai',serif; font-size:15px; font-weight:700; color:var(--cream); line-height:1.3; }
+.po-logo p  { font-size:9.5px; color:rgba(253,246,227,0.5); margin-top:2px; }
+
+.po-tabs { display:flex; background:rgba(0,0,0,0.2); }
+.po-tab {
+  flex:1; padding:10px 8px; background:none; border:none;
+  color:rgba(253,246,227,0.45); font-family:'Sarabun',sans-serif;
+  font-size:11.5px; font-weight:600; cursor:pointer; transition:all 0.2s;
+}
+.po-tab.active { color:var(--gold-light); background:rgba(201,162,39,0.1); border-bottom:2.5px solid var(--gold); }
+
+.po-body { padding:24px 28px 28px; }
+
+.po-role-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:20px; }
+.po-role-btn {
+  padding:12px 8px; border-radius:10px;
+  border:2px solid var(--cream-dark); background:white;
+  text-align:center; cursor:pointer; transition:all 0.2s;
+}
+.po-role-btn:hover { border-color:var(--teal); transform:translateY(-2px); }
+.po-role-btn .ri { font-size:20px; margin-bottom:4px; }
+.po-role-btn .rn { font-size:11px; font-weight:700; color:var(--navy); }
+.po-role-btn .rd { font-size:9px; color:var(--text-light); margin-top:1px; }
+
+.po-label { display:block; font-size:10.5px; font-weight:600; color:var(--text-mid); margin-bottom:5px; letter-spacing:0.03em; }
+.po-label .req { color:var(--red); }
+.po-input, .po-select {
+  width:100%; font-family:'Sarabun',sans-serif; font-size:13px;
+  border:1.5px solid var(--cream-dark); border-radius:8px;
+  padding:9px 12px; outline:none; background:white; color:var(--text-dark);
+  transition:border-color 0.2s;
+}
+.po-input:focus, .po-select:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(42,127,127,0.1); }
+.po-row { margin-bottom:13px; }
+.po-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+.po-btn {
+  width:100%; padding:11px; border:none; border-radius:9px;
+  font-family:'Sarabun',sans-serif; font-size:13.5px; font-weight:700;
+  cursor:pointer; transition:all 0.2s; letter-spacing:0.03em;
+}
+.po-btn-navy { background:linear-gradient(135deg,var(--navy),var(--navy-light)); color:var(--gold-light); box-shadow:0 4px 14px rgba(26,39,68,0.3); }
+.po-btn-navy:hover { transform:translateY(-1px); }
+.po-btn-teal { background:linear-gradient(135deg,var(--teal),var(--teal-light)); color:white; }
+.po-btn-teal:hover { transform:translateY(-1px); }
+.po-btn-ghost { background:transparent; border:1.5px solid var(--cream-dark); color:var(--text-mid); margin-top:8px; }
+.po-btn-ghost:hover { border-color:var(--teal); color:var(--teal); }
+.po-btn-sm { width:auto; padding:4px 10px; font-size:10px; border-radius:6px; }
+
+.po-alert {
+  padding:9px 13px; border-radius:7px; font-size:11.5px; line-height:1.6;
+  margin-bottom:14px; display:none;
+}
+.po-alert.show { display:block; }
+.po-alert-err  { background:rgba(192,57,43,0.08); border-left:3px solid var(--red); color:#922b21; }
+.po-alert-ok   { background:rgba(39,174,96,0.09); border-left:3px solid #27ae60; color:#1a7a42; }
+.po-alert-info { background:rgba(42,127,127,0.08); border-left:3px solid var(--teal); color:#1a5f5f; }
+.po-alert-warn { background:rgba(201,162,39,0.1); border-left:3px solid var(--gold); color:#7a5a00; }
+
+.po-divider { display:flex; align-items:center; gap:10px; margin:14px 0; color:var(--text-light); font-size:10.5px; }
+.po-divider::before,.po-divider::after { content:''; flex:1; height:1px; background:var(--cream-dark); }
+
+.po-spinner {
+  display:none; text-align:center; padding:12px; color:var(--text-light); font-size:11px;
+}
+.po-spinner.show { display:block; }
+.po-spin {
+  width:20px; height:20px; border:2px solid var(--cream-dark);
+  border-top-color:var(--teal); border-radius:50%;
+  animation:spin 0.7s linear infinite; margin:0 auto 6px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ══════════════════════════════════════
+   MEMBER BAR (shown on top of ebook)
+══════════════════════════════════════ */
+#member-bar {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  background: rgba(15,20,40,0.96);
+  backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(201,162,39,0.2);
+  display:none;
+  align-items:center; justify-content:space-between;
+  padding:6px 16px; gap:10px;
+}
+#member-bar.show { display:flex; }
+.mb-info { display:flex; align-items:center; gap:8px; }
+.mb-badge {
+  font-size:9.5px; font-weight:700; letter-spacing:0.05em;
+  padding:2px 8px; border-radius:8px;
+}
+.mb-badge-member { background:rgba(42,127,127,0.2); color:var(--teal-light); }
+.mb-badge-admin  { background:rgba(201,162,39,0.2); color:var(--gold-light); }
+.mb-name { font-size:11px; color:rgba(253,246,227,0.75); }
+.mb-btns { display:flex; gap:6px; }
+.mb-btn {
+  padding:4px 10px; border-radius:6px; border:none;
+  font-family:'Sarabun',sans-serif; font-size:10px; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+}
+.mb-btn-record  { background:rgba(42,127,127,0.25); color:var(--teal-light); border:1px solid rgba(42,127,127,0.35); }
+.mb-btn-record:hover { background:rgba(42,127,127,0.4); }
+.mb-btn-admin   { background:rgba(201,162,39,0.2); color:var(--gold-light); border:1px solid rgba(201,162,39,0.3); }
+.mb-btn-admin:hover { background:rgba(201,162,39,0.35); }
+.mb-btn-logout  { background:rgba(255,255,255,0.06); color:rgba(253,246,227,0.5); border:1px solid rgba(255,255,255,0.1); }
+.mb-btn-logout:hover { color:var(--red); border-color:var(--red); }
+
+/* member bar compensation for book */
+body.has-member-bar .book-wrap { margin-top:38px; }
+body.has-member-bar .nav-bar   { bottom:16px; }
+
+/* ══════════════════════════════════════
+   RECORD MODAL
+══════════════════════════════════════ */
+#record-modal {
+  position:fixed; inset:0; z-index:1500;
+  background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+  display:none; align-items:center; justify-content:center; padding:16px;
+  overflow-y:auto;
+}
+#record-modal.show { display:flex; }
+.rm-card {
+  width:100%; max-width:500px; max-height:90vh;
+  background:var(--cream); border-radius:16px; overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  display:flex; flex-direction:column;
+  animation:poFadeUp 0.3s ease;
+}
+.rm-header {
+  background:linear-gradient(135deg,var(--navy),var(--navy-light));
+  padding:18px 22px; display:flex; justify-content:space-between; align-items:center;
+  flex-shrink:0;
+}
+.rm-header::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2.5px;
+  background:linear-gradient(90deg,var(--gold),var(--teal-light),transparent);
+}
+.rm-title { font-family:'Noto Serif Thai',serif; font-size:15px; font-weight:700; color:var(--cream); }
+.rm-close {
+  background:rgba(255,255,255,0.1); border:none; color:var(--cream);
+  width:28px; height:28px; border-radius:7px; font-size:16px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.rm-close:hover { background:rgba(192,57,43,0.3); }
+.rm-body { padding:20px 22px 24px; overflow-y:auto; flex:1; }
+.rm-body::-webkit-scrollbar { width:3px; }
+.rm-body::-webkit-scrollbar-thumb { background:rgba(201,162,39,0.3); border-radius:2px; }
+
+.rm-check-list { display:flex; flex-direction:column; gap:5px; }
+.rm-check-item {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 10px; border-radius:7px; border:1.5px solid var(--cream-dark);
+  background:white; cursor:pointer; transition:all 0.15s;
+}
+.rm-check-item:hover { border-color:var(--teal); }
+.rm-check-item input { accent-color:var(--teal); width:13px; height:13px; flex-shrink:0; }
+.rm-check-item span { font-size:11.5px; color:var(--text-mid); }
+
+/* ══════════════════════════════════════
+   ADMIN DATA MODAL
+══════════════════════════════════════ */
+#admin-modal {
+  position:fixed; inset:0; z-index:1500;
+  background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+  display:none; align-items:flex-start; justify-content:center; padding:16px;
+  overflow-y:auto;
+}
+#admin-modal.show { display:flex; }
+.am-card {
+  width:100%; max-width:900px; margin:auto;
+  background:var(--cream); border-radius:16px; overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  animation:poFadeUp 0.3s ease;
+}
+.am-header {
+  background:linear-gradient(135deg,var(--navy),var(--navy-light));
+  padding:18px 22px; display:flex; justify-content:space-between; align-items:center;
+}
+.am-title { font-family:'Noto Serif Thai',serif; font-size:15px; font-weight:700; color:var(--cream); }
+.am-close {
+  background:rgba(255,255,255,0.1); border:none; color:var(--cream);
+  width:28px; height:28px; border-radius:7px; font-size:16px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.am-tabs { display:flex; background:rgba(0,0,0,0.12); }
+.am-tab {
+  padding:9px 16px; background:none; border:none;
+  font-family:'Sarabun',sans-serif; font-size:11px; font-weight:600;
+  color:rgba(253,246,227,0.45); cursor:pointer; transition:all 0.2s;
+}
+.am-tab.active { color:var(--gold-light); border-bottom:2px solid var(--gold); }
+.am-body { padding:20px 22px; max-height:70vh; overflow-y:auto; }
+.am-body::-webkit-scrollbar { width:3px; }
+.am-body::-webkit-scrollbar-thumb { background:rgba(201,162,39,0.3); border-radius:2px; }
+.am-tab-content { display:none; }
+.am-tab-content.active { display:block; }
+
+.am-table { width:100%; border-collapse:collapse; font-size:11px; }
+.am-table th { background:var(--navy); color:var(--cream); padding:7px 9px; text-align:left; font-size:10px; font-weight:600; }
+.am-table td { padding:7px 9px; border-bottom:1px solid rgba(180,150,80,0.12); color:var(--text-mid); vertical-align:top; }
+.am-table tr:nth-child(even) td { background:rgba(42,127,127,0.04); }
+
+.badge-pending  { background:rgba(201,162,39,0.15); color:#8a6000; padding:2px 7px; border-radius:7px; font-size:9.5px; font-weight:700; }
+.badge-approved { background:rgba(39,174,96,0.12); color:#1a7a42; padding:2px 7px; border-radius:7px; font-size:9.5px; font-weight:700; }
+
+.cd-urgent { color:var(--red); font-weight:600; font-size:10px; }
+.cd-soon   { color:var(--gold); font-weight:600; font-size:10px; }
+.cd-ok     { color:#27ae60; font-weight:600; font-size:10px; }
+.cd-past   { color:var(--text-light); font-size:10px; text-decoration:line-through; }
 </style>
 </head>
 <body>
+
+<!-- ══════════════════════════════════════
+     PORTAL OVERLAY (Login / Register)
+══════════════════════════════════════ -->
+<div id="portal-overlay">
+  <div class="po-card" id="po-card-content">
+    <!-- injected by JS -->
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MEMBER BAR
+══════════════════════════════════════ -->
+<div id="member-bar">
+  <div class="mb-info">
+    <span class="mb-badge" id="mb-badge-el">สมาชิก</span>
+    <span class="mb-name" id="mb-name-el">—</span>
+  </div>
+  <div class="mb-btns" id="mb-btns-el">
+    <!-- injected by JS based on role -->
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     RECORD MODAL
+══════════════════════════════════════ -->
+<div id="record-modal">
+  <div class="rm-card">
+    <div class="rm-header">
+      <span class="rm-title">📋 บันทึกข้อมูลผู้ป่วย</span>
+      <button class="rm-close" onclick="closeRecordModal()">✕</button>
+    </div>
+    <div class="rm-body">
+      <div id="rm-alert" class="po-alert"></div>
+      <div class="po-grid2">
+        <div class="po-row">
+          <label class="po-label">HN <span class="req">*</span></label>
+          <input id="rm-hn" class="po-input" placeholder="เช่น HN12345">
+        </div>
+        <div class="po-row">
+          <label class="po-label">การบาดเจ็บ <span class="req">*</span></label>
+          <select id="rm-injury" class="po-select">
+            <option value="">-- เลือก --</option>
+            <option>กระดูกจมูกหัก (Nasal Bone)</option>
+            <option>กระดูกโหนกแก้มหัก (ZMC)</option>
+            <option>ขากรรไกรล่างหัก (Mandible)</option>
+            <option>ขากรรไกรบนหัก (Maxilla / Le Fort)</option>
+            <option>กระดูกรอบเบ้าตาหัก (Orbital)</option>
+            <option>กระดูกหน้าผากหัก (Frontal)</option>
+            <option>หลายตำแหน่ง (Multiple)</option>
+          </select>
+        </div>
+      </div>
+      <div class="po-row">
+        <label class="po-label">การผ่าตัด <span class="req">*</span></label>
+        <select id="rm-surgery" class="po-select">
+          <option value="">-- เลือก --</option>
+          <option>CR Nasal Bone + Nasal Packing</option>
+          <option>Maxillomandibular Fixation (MMF มัดฟัน)</option>
+          <option>ORIF with Plate &amp; Screw</option>
+          <option>Orbital Floor Reconstruction</option>
+          <option>Soft Tissue Repair</option>
+          <option>หลายวิธี (Combined)</option>
+          <option>ไม่ผ่าตัด (Conservative)</option>
+        </select>
+      </div>
+      <div class="po-grid2">
+        <div class="po-row">
+          <label class="po-label">📅 วันถอด Nasal Packing</label>
+          <input id="rm-nasal" class="po-input" type="date">
+        </div>
+        <div class="po-row">
+          <label class="po-label">✂️ วันตัดไหม</label>
+          <input id="rm-stitch" class="po-input" type="date">
+        </div>
+      </div>
+      <div class="po-row">
+        <label class="po-label">🗓️ วันนัดตรวจ <span class="req">*</span></label>
+        <input id="rm-appoint" class="po-input" type="date">
+      </div>
+      <div class="po-row">
+        <label class="po-label">⚠️ อาการผิดปกติ (เลือกทุกข้อที่เกี่ยวข้อง)</label>
+        <div class="rm-check-list">
+          <label class="rm-check-item"><input type="checkbox" value="ไข้สูงกว่า 38°C"><span>ไข้สูงกว่า 38°C</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="เลือดออกมากผิดปกติ"><span>เลือดออกมากผิดปกติ</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="แผลบวมแดง มีหนองซึม"><span>แผลบวมแดง มีหนองซึม</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ปวดมากขึ้นผิดปกติ"><span>ปวดมากขึ้นผิดปกติ</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="มองภาพซ้อน / ตาปิดไม่สนิท"><span>มองภาพซ้อน / ตาปิดไม่สนิท</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="หายใจลำบาก"><span>หายใจลำบาก</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="สบฟันเปลี่ยนไป"><span>สบฟันเปลี่ยนไป</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ชาหรืออ่อนแรงใบหน้า"><span>ชาหรืออ่อนแรงใบหน้า</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ไม่มีอาการผิดปกติ"><span>ไม่มีอาการผิดปกติ</span></label>
+        </div>
+      </div>
+      <div class="po-row">
+        <label class="po-label">บันทึกเพิ่มเติม</label>
+        <textarea id="rm-note" class="po-input" style="resize:vertical;min-height:60px;" placeholder="อาการ หรือคำถามสำหรับแพทย์..."></textarea>
+      </div>
+      <div id="rm-spinner" class="po-spinner"><div class="po-spin"></div>กำลังบันทึก...</div>
+      <button class="po-btn po-btn-navy" onclick="doSaveRecord()">💾 บันทึกข้อมูล</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ADMIN MODAL
+══════════════════════════════════════ -->
+<div id="admin-modal">
+  <div class="am-card">
+    <div class="am-header">
+      <span class="am-title">🔐 Admin · ข้อมูลผู้ป่วยและสมาชิก</span>
+      <button class="am-close" onclick="closeAdminModal()">✕</button>
+    </div>
+    <div class="am-tabs">
+      <button class="am-tab active" onclick="switchAmTab('patients')">🩺 ข้อมูลผู้ป่วย</button>
+      <button class="am-tab" onclick="switchAmTab('members')">👥 สมาชิก</button>
+    </div>
+    <div class="am-body">
+      <div id="am-patients" class="am-tab-content active">
+        <div id="am-pts-spinner" class="po-spinner show"><div class="po-spin"></div>กำลังโหลด...</div>
+        <div id="am-pts-data"></div>
+      </div>
+      <div id="am-members" class="am-tab-content">
+        <div id="am-mem-spinner" class="po-spinner"><div class="po-spin"></div>กำลังโหลด...</div>
+        <div id="am-mem-data"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="book-wrap">
   <!-- Spine -->
@@ -1366,6 +1750,349 @@ document.addEventListener('touchend',   e => {
   const dx = e.changedTouches[0].clientX - tx;
   if (Math.abs(dx) > 50) { dx < 0 ? nextPage() : prevPage(); }
 }, {passive:true});
+
+// ══════════════════════════════════════════════════════
+// PORTAL SYSTEM — Login / Register / Member / Admin
+// ══════════════════════════════════════════════════════
+const API_URL = 'https://script.google.com/macros/s/AKfycbx_XYekbmKnseZqwzbONQ2kK9T-nlpnMB2eZukAM2g30w3G3VWdHkpuZEGgXEZDj7WhcQ/exec';
+let portalUser = null;
+
+async function apiCall(data) {
+  try {
+    const r = await fetch(API_URL, { method:'POST', body:JSON.stringify(data), headers:{'Content-Type':'text/plain'} });
+    return await r.json();
+  } catch(e) { return { error:'ไม่สามารถเชื่อมต่อได้' }; }
+}
+
+function cdHTML(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr), now = new Date();
+  const diff = Math.floor((d - now) / 86400000);
+  const df = d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+  if (diff < 0) return `${df} <span class="cd-past">(ผ่านไป ${Math.abs(diff)} วัน)</span>`;
+  if (diff === 0) return `${df} <span class="cd-urgent">🔴 วันนี้!</span>`;
+  if (diff <= 3)  return `${df} <span class="cd-urgent">🔴 อีก ${diff} วัน</span>`;
+  if (diff <= 7)  return `${df} <span class="cd-soon">🟡 อีก ${diff} วัน</span>`;
+  return `${df} <span class="cd-ok">🟢 อีก ${diff} วัน</span>`;
+}
+
+// ── SHOW PORTAL ──
+function showPortal(view) {
+  const el = document.getElementById('po-card-content');
+  if (view === 'landing') renderPoLanding(el);
+  else if (view === 'login') renderPoLogin(el);
+  else if (view === 'admin-login') renderPoAdminLogin(el);
+  document.getElementById('portal-overlay').classList.remove('hidden');
+}
+
+function hidePortal() {
+  document.getElementById('portal-overlay').classList.add('hidden');
+}
+
+// ── LANDING ──
+function renderPoLanding(el) {
+  el.innerHTML = `
+    <div class="po-header">
+      <div class="po-logo">
+        <div class="po-icon">🏥</div>
+        <div><h2>การพยาบาลผู้ป่วย<br>บาดเจ็บใบหน้า</h2><p>Facial Trauma Nursing Care · Portal</p></div>
+      </div>
+    </div>
+    <div class="po-body">
+      <p style="font-size:11px;color:var(--text-mid);text-align:center;margin-bottom:16px;">เลือกประเภทการเข้าใช้งาน</p>
+      <div class="po-role-grid">
+        <div class="po-role-btn" onclick="enterAsGuest()">
+          <div class="ri">👁️</div><div class="rn">ทั่วไป</div><div class="rd">อ่าน E-book<br>ไม่ต้องสมัคร</div>
+        </div>
+        <div class="po-role-btn" onclick="showPortal('login')">
+          <div class="ri">👤</div><div class="rn">สมาชิก</div><div class="rd">E-book +<br>บันทึกข้อมูล</div>
+        </div>
+        <div class="po-role-btn" onclick="showPortal('admin-login')">
+          <div class="ri">🔐</div><div class="rn">Admin</div><div class="rd">ดูข้อมูล<br>ทั้งหมด</div>
+        </div>
+      </div>
+      <div class="po-alert po-alert-info show" style="font-size:10.5px;">
+        📖 E-book ครอบคลุม: การบาดเจ็บ · การผ่าตัด · การพยาบาล · การดูแลที่บ้าน · Interactive 3D กระดูกใบหน้า
+      </div>
+    </div>`;
+}
+
+function enterAsGuest() {
+  hidePortal();
+  showMemberBar('guest','ผู้ใช้ทั่วไป');
+}
+
+// ── MEMBER LOGIN / REGISTER ──
+function renderPoLogin(el) {
+  el.innerHTML = `
+    <div class="po-header">
+      <div class="po-logo">
+        <div class="po-icon">👤</div>
+        <div><h2>เข้าสู่ระบบสมาชิก</h2><p>Member Login</p></div>
+      </div>
+      <div class="po-tabs" style="margin-top:12px;">
+        <button class="po-tab active" id="ptab-login" onclick="switchPoTab('login')">เข้าสู่ระบบ</button>
+        <button class="po-tab" id="ptab-reg" onclick="switchPoTab('reg')">สมัครสมาชิก</button>
+      </div>
+    </div>
+    <div class="po-body">
+      <div id="po-alert" class="po-alert"></div>
+
+      <div id="pf-login">
+        <div class="po-row"><label class="po-label">Username</label><input id="pl-user" class="po-input" placeholder="Username"></div>
+        <div class="po-row"><label class="po-label">Password</label><input id="pl-pass" class="po-input" type="password" placeholder="Password"></div>
+        <div id="pl-spin" class="po-spinner"><div class="po-spin"></div>กำลังเข้าสู่ระบบ...</div>
+        <button class="po-btn po-btn-navy" onclick="doMemberLogin()">เข้าสู่ระบบ</button>
+      </div>
+
+      <div id="pf-reg" style="display:none">
+        <div class="po-grid2">
+          <div class="po-row"><label class="po-label">ชื่อ-นามสกุล <span class="req">*</span></label><input id="pr-name" class="po-input" placeholder="ชื่อ นามสกุล"></div>
+          <div class="po-row"><label class="po-label">เบอร์โทร</label><input id="pr-phone" class="po-input" type="tel" placeholder="08x-xxx-xxxx"></div>
+        </div>
+        <div class="po-row"><label class="po-label">Username <span class="req">*</span></label><input id="pr-user" class="po-input" placeholder="ตั้ง Username"></div>
+        <div class="po-grid2">
+          <div class="po-row"><label class="po-label">Password <span class="req">*</span></label><input id="pr-pass" class="po-input" type="password" placeholder="ตั้ง Password"></div>
+          <div class="po-row"><label class="po-label">ยืนยัน Password <span class="req">*</span></label><input id="pr-pass2" class="po-input" type="password" placeholder="ยืนยัน"></div>
+        </div>
+        <div class="po-alert po-alert-warn show" style="font-size:10.5px;margin-bottom:12px;">⚠️ หลังสมัครต้องรอ Admin อนุมัติก่อนเข้าใช้งาน</div>
+        <div id="pr-spin" class="po-spinner"><div class="po-spin"></div>กำลังสมัคร...</div>
+        <button class="po-btn po-btn-teal" onclick="doRegister()">สมัครสมาชิก</button>
+      </div>
+
+      <div class="po-divider">หรือ</div>
+      <button class="po-btn po-btn-ghost" onclick="showPortal('landing')">← กลับหน้าหลัก</button>
+    </div>`;
+}
+
+function switchPoTab(tab) {
+  // Use querySelector since elements are dynamically rendered inside overlay
+  var overlay = document.getElementById('portal-overlay');
+  var tLogin = overlay.querySelector('#ptab-login');
+  var tReg   = overlay.querySelector('#ptab-reg');
+  var fLogin = overlay.querySelector('#pf-login');
+  var fReg   = overlay.querySelector('#pf-reg');
+  if (tLogin) tLogin.classList.toggle('active', tab==='login');
+  if (tReg)   tReg.classList.toggle('active', tab==='reg');
+  if (fLogin) fLogin.style.display = tab==='login' ? 'block' : 'none';
+  if (fReg)   fReg.style.display   = tab==='reg'   ? 'block' : 'none';
+  var a = overlay.querySelector('#po-alert');
+  if (a) a.className = 'po-alert';
+}
+
+async function doMemberLogin() {
+  var ov = document.getElementById('portal-overlay');
+  var u = ov.querySelector('#pl-user').value.trim();
+  var p = ov.querySelector('#pl-pass').value.trim();
+  if (!u||!p) { poAlert('po-alert','กรุณากรอกข้อมูล','err'); return; }
+  var sp = ov.querySelector('#pl-spin'); if(sp) sp.classList.add('show');
+  const r = await apiCall({ action:'login', username:u, password:p });
+  if(sp) sp.classList.remove('show');
+  if (r.error) { poAlert('po-alert', r.error, 'err'); return; }
+  portalUser = r;
+  hidePortal();
+  if (r.role === 'admin') showMemberBar('admin', 'Administrator');
+  else showMemberBar('member', r.name + ' #' + r.id);
+}
+
+async function doRegister() {
+  var ov = document.getElementById('portal-overlay');
+  var name  = ov.querySelector('#pr-name').value.trim();
+  var user  = ov.querySelector('#pr-user').value.trim();
+  var pass  = ov.querySelector('#pr-pass').value.trim();
+  var pass2 = ov.querySelector('#pr-pass2').value.trim();
+  var phone = ov.querySelector('#pr-phone').value.trim();
+  if (!name||!user||!pass) { poAlert('po-alert','กรุณากรอกข้อมูลที่จำเป็น','err'); return; }
+  if (pass!==pass2) { poAlert('po-alert','Password ไม่ตรงกัน','err'); return; }
+  var sp = ov.querySelector('#pr-spin'); if(sp) sp.classList.add('show');
+  const r = await apiCall({ action:'register', username:user, password:pass, name, phone });
+  if(sp) sp.classList.remove('show');
+  if (r.error) { poAlert('po-alert', r.error, 'err'); return; }
+  poAlert('po-alert', '✅ สมัครสำเร็จ! รหัสสมาชิก: ' + r.id + ' — รอ Admin อนุมัติ', 'ok');
+}
+
+// ── ADMIN LOGIN ──
+function renderPoAdminLogin(el) {
+  el.innerHTML = `
+    <div class="po-header">
+      <div class="po-logo">
+        <div class="po-icon">🔐</div>
+        <div><h2>เข้าสู่ระบบ Admin</h2><p>Administrator Login</p></div>
+      </div>
+    </div>
+    <div class="po-body">
+      <div id="pa-alert" class="po-alert"></div>
+      <div class="po-row"><label class="po-label">Admin ID</label><input id="pa-user" class="po-input" placeholder="Admin ID"></div>
+      <div class="po-row"><label class="po-label">Password</label><input id="pa-pass" class="po-input" type="password" placeholder="Password"></div>
+      <div id="pa-spin" class="po-spinner"><div class="po-spin"></div>กำลังเข้าสู่ระบบ...</div>
+      <button class="po-btn po-btn-navy" onclick="doAdminLogin()">เข้าสู่ระบบ Admin</button>
+      <div class="po-divider">หรือ</div>
+      <button class="po-btn po-btn-ghost" onclick="showPortal('landing')">← กลับหน้าหลัก</button>
+    </div>`;
+}
+
+async function doAdminLogin() {
+  var ov = document.getElementById('portal-overlay');
+  var u = ov.querySelector('#pa-user').value.trim();
+  var p = ov.querySelector('#pa-pass').value.trim();
+  if (!u||!p) { poAlert('pa-alert','กรุณากรอกข้อมูล','err'); return; }
+  var sp = ov.querySelector('#pa-spin'); if(sp) sp.classList.add('show');
+  const r = await apiCall({ action:'login', username:u, password:p });
+  if(sp) sp.classList.remove('show');
+  if (r.error) { poAlert('pa-alert', r.error, 'err'); return; }
+  if (r.role!=='admin') { poAlert('pa-alert','ไม่มีสิทธิ์ Admin','err'); return; }
+  portalUser = r;
+  hidePortal();
+  showMemberBar('admin','Administrator');
+}
+
+// ── MEMBER BAR ──
+function showMemberBar(role, name) {
+  const bar = document.getElementById('member-bar');
+  const badge = document.getElementById('mb-badge-el');
+  const nameEl = document.getElementById('mb-name-el');
+  const btns = document.getElementById('mb-btns-el');
+
+  nameEl.textContent = name;
+  if (role === 'admin') {
+    badge.className = 'mb-badge mb-badge-admin';
+    badge.textContent = 'Admin';
+    btns.innerHTML = `
+      <button class="mb-btn mb-btn-admin" onclick="openAdminModal()">📊 ข้อมูลผู้ป่วย</button>
+      <button class="mb-btn mb-btn-logout" onclick="doLogout()">ออกจากระบบ</button>`;
+  } else if (role === 'member') {
+    badge.className = 'mb-badge mb-badge-member';
+    badge.textContent = 'สมาชิก';
+    btns.innerHTML = `
+      <button class="mb-btn mb-btn-record" onclick="openRecordModal()">📋 บันทึกข้อมูล</button>
+      <button class="mb-btn mb-btn-logout" onclick="doLogout()">ออกจากระบบ</button>`;
+  } else {
+    badge.className = 'mb-badge mb-badge-member';
+    badge.textContent = 'ทั่วไป';
+    btns.innerHTML = `<button class="mb-btn mb-btn-logout" onclick="doLogout()">เปลี่ยนประเภทผู้ใช้</button>`;
+  }
+  bar.classList.add('show');
+  document.body.classList.add('has-member-bar');
+}
+
+function doLogout() {
+  portalUser = null;
+  document.getElementById('member-bar').classList.remove('show');
+  document.body.classList.remove('has-member-bar');
+  showPortal('landing');
+}
+
+// ── RECORD MODAL ──
+function openRecordModal() {
+  document.getElementById('record-modal').classList.add('show');
+}
+function closeRecordModal() {
+  document.getElementById('record-modal').classList.remove('show');
+}
+
+async function doSaveRecord() {
+  const hn=document.getElementById('rm-hn').value.trim();
+  const injury=document.getElementById('rm-injury').value;
+  const surgery=document.getElementById('rm-surgery').value;
+  const appoint=document.getElementById('rm-appoint').value;
+  if (!hn||!injury||!surgery||!appoint) {
+    poAlert('rm-alert','กรุณากรอกข้อมูลที่จำเป็น (*)','err'); return;
+  }
+  const syms=[...document.querySelectorAll('#record-modal .rm-check-list input:checked')].map(c=>c.value).join(', ');
+  document.getElementById('rm-spinner').classList.add('show');
+  const r = await apiCall({
+    action:'savePatient',
+    memberId: portalUser ? portalUser.id : 'guest',
+    memberName: portalUser ? portalUser.name : 'Guest',
+    hn, injury, surgery,
+    nasalPackDate: document.getElementById('rm-nasal').value,
+    stitchDate: document.getElementById('rm-stitch').value,
+    appointDate: appoint,
+    symptoms: syms,
+    note: document.getElementById('rm-note').value
+  });
+  document.getElementById('rm-spinner').classList.remove('show');
+  if (r.error) { poAlert('rm-alert', r.error, 'err'); return; }
+  poAlert('rm-alert','✅ บันทึกข้อมูลสำเร็จ!','ok');
+  ['rm-hn','rm-nasal','rm-stitch','rm-appoint','rm-note'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['rm-injury','rm-surgery'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
+  document.querySelectorAll('#record-modal .rm-check-list input').forEach(c=>c.checked=false);
+}
+
+// ── ADMIN MODAL ──
+function openAdminModal() {
+  document.getElementById('admin-modal').classList.add('show');
+  loadAmPatients();
+}
+function closeAdminModal() {
+  document.getElementById('admin-modal').classList.remove('show');
+}
+
+function switchAmTab(tab) {
+  document.querySelectorAll('.am-tab').forEach((b,i)=>b.classList.toggle('active',['patients','members'][i]===tab));
+  ['am-patients','am-members'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle('active', id==='am-'+tab);
+  });
+  if (tab==='members') loadAmMembers();
+  if (tab==='patients') loadAmPatients();
+}
+
+async function loadAmPatients() {
+  const sp=document.getElementById('am-pts-spinner'); sp.classList.add('show');
+  const r = await apiCall({ action:'getPatients', adminPass:'1234' });
+  sp.classList.remove('show');
+  const el=document.getElementById('am-pts-data');
+  if (r.error||!r.data||r.data.length<=1) { el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลผู้ป่วย</div>'; return; }
+  const rows=r.data.slice(1);
+  el.innerHTML=`<div style="overflow-x:auto"><table class="am-table">
+    <thead><tr><th>ID</th><th>ชื่อ</th><th>HN</th><th>การบาดเจ็บ</th><th>การผ่าตัด</th><th>ถอด Packing</th><th>ตัดไหม</th><th>วันนัด</th><th>อาการ</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr>
+      <td>${r[0]||'—'}</td><td>${r[1]||'—'}</td><td><strong>${r[2]||'—'}</strong></td>
+      <td>${r[3]||'—'}</td><td>${r[4]||'—'}</td>
+      <td>${r[5]?cdHTML(r[5]):'—'}</td><td>${r[6]?cdHTML(r[6]):'—'}</td>
+      <td>${r[7]?cdHTML(r[7]):'—'}</td>
+      <td style="color:${r[8]?'var(--red)':'var(--text-light)'}">${r[8]||'ปกติ'}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+
+async function loadAmMembers() {
+  const sp=document.getElementById('am-mem-spinner'); sp.classList.add('show');
+  const r = await apiCall({ action:'getMembers', adminPass:'1234' });
+  sp.classList.remove('show');
+  const el=document.getElementById('am-mem-data');
+  if (r.error||!r.data||r.data.length<=1) { el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีสมาชิก</div>'; return; }
+  const rows=r.data.slice(1);
+  el.innerHTML=`<div style="overflow-x:auto"><table class="am-table">
+    <thead><tr><th>ID</th><th>วันสมัคร</th><th>Username</th><th>ชื่อ</th><th>เบอร์โทร</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr>
+      <td><strong>${r[0]}</strong></td>
+      <td>${r[1]?new Date(r[1]).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}):'—'}</td>
+      <td>${r[2]}</td><td>${r[4]}</td><td>${r[5]||'—'}</td>
+      <td><span class="${r[6]==='approved'?'badge-approved':'badge-pending'}">${r[6]==='approved'?'✅ อนุมัติ':'⏳ รออนุมัติ'}</span></td>
+      <td>${r[6]!=='approved'?`<button class="po-btn po-btn-navy po-btn-sm" onclick="doApprove('${r[0]}')">อนุมัติ</button>`:'—'}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+
+async function doApprove(userId) {
+  if (!confirm(`อนุมัติสมาชิก ID: ${userId}?`)) return;
+  const r = await apiCall({ action:'approve', adminPass:'1234', userId });
+  if (r.error) { alert('เกิดข้อผิดพลาด: '+r.error); return; }
+  alert('✅ อนุมัติสำเร็จ!');
+  loadAmMembers();
+}
+
+// ── ALERT HELPER ──
+function poAlert(id, msg, type) {
+  var ov = document.getElementById('portal-overlay');
+  var el = (ov && ov.querySelector('#'+id)) || document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'po-alert po-alert-' + type + ' show';
+}
+
+// ── INIT PORTAL ──
+showPortal('landing');
 
 // Init
 init();
