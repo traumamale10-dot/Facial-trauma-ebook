@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คู่มือการพยาบาลผู้ป่วยบาดเจ็บใบหน้า</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+Thai:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1a2744;
+  --navy-light: #243560;
+  --teal: #2a7f7f;
+  --teal-light: #3aa8a8;
+  --cream: #fdf6e3;
+  --cream-dark: #f0e6c8;
+  --gold: #c9a227;
+  --gold-light: #e8c44a;
+  --text-dark: #1a1a2e;
+  --text-mid: #3d4a6b;
+  --text-light: #7a8bb0;
+  --red: #c0392b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: #2c1810;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, #3d2415 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, #1a0f08 0%, transparent 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* ===== BOOK WRAPPER ===== */
+.book-wrap {
+  position: relative;
+  width: min(520px, 96vw);
+  height: min(700px, 92vh);
+}
+
+/* Drop shadow under book */
+.book-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 5%; right: 5%;
+  height: 30px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 50%;
+  filter: blur(18px);
+  z-index: -1;
+}
+
+/* ===== BOOK SPINE (left decorative strip) ===== */
+.book-spine {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 22px;
+  background: linear-gradient(180deg, #0e1c38 0%, #1a2744 40%, #0e1c38 100%);
+  border-radius: 4px 0 0 4px;
+  box-shadow: inset -3px 0 8px rgba(0,0,0,0.4), 2px 0 6px rgba(0,0,0,0.3);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spine-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(201,162,39,0.5);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Spine gold accent lines */
+.book-spine::before,
+.book-spine::after {
+  content: '';
+  position: absolute;
+  left: 3px; right: 3px;
+  height: 1px;
+  background: rgba(201,162,39,0.3);
+}
+.book-spine::before { top: 20px; }
+.book-spine::after  { bottom: 20px; }
+
+/* ===== PAGE STAGE ===== */
+.page-stage {
+  position: absolute;
+  left: 22px; right: 0; top: 0; bottom: 0;
+  perspective: 1800px;
+  border-radius: 0 6px 6px 0;
+  overflow: hidden;
+  box-shadow: 4px 0 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+}
+
+/* ===== PAGE ===== */
+.page {
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  overflow: hidden;
+  transform-origin: left center;
+  backface-visibility: hidden;
+}
+
+/* Paper texture lines */
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    transparent, transparent 28px,
+    rgba(180,150,80,0.055) 28px, rgba(180,150,80,0.055) 29px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Left gutter shadow (binding effect) */
+.page::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 28px; height: 100%;
+  background: linear-gradient(to right, rgba(0,0,0,0.10), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Incoming page hidden behind */
+.page.behind {
+  z-index: 1;
+}
+.page.front {
+  z-index: 2;
+}
+
+/* ===== FLIP ANIMATIONS ===== */
+
+/* Forward: current page flips right→left (away from reader) */
+@keyframes flipAway {
+  0%   { transform: perspective(1800px) rotateY(0deg);    opacity: 1; }
+  40%  { transform: perspective(1800px) rotateY(-50deg);  opacity: 0.85; box-shadow: -12px 0 30px rgba(0,0,0,0.25); }
+  100% { transform: perspective(1800px) rotateY(-110deg); opacity: 0; }
+}
+
+/* Forward: new page reveals from right */
+@keyframes revealIn {
+  0%   { transform: perspective(1800px) rotateY(15deg);  opacity: 0.4; }
+  100% { transform: perspective(1800px) rotateY(0deg);   opacity: 1; }
+}
+
+/* Backward: current page swings back */
+@keyframes flipBack {
+  0%   { transform: perspective(1800px) rotateY(0deg);    opacity: 1; }
+  100% { transform: perspective(1800px) rotateY(15deg);   opacity: 0; }
+}
+
+/* Backward: prev page returns from left */
+@keyframes returnIn {
+  0%   { transform: perspective(1800px) rotateY(-110deg); opacity: 0; }
+  60%  { transform: perspective(1800px) rotateY(-20deg);  opacity: 0.85; }
+  100% { transform: perspective(1800px) rotateY(0deg);    opacity: 1; }
+}
+
+.page.anim-away   { animation: flipAway  0.45s cubic-bezier(0.4,0,0.6,1) forwards; z-index: 5; }
+.page.anim-in     { animation: revealIn  0.45s cubic-bezier(0.4,0,0.6,1) forwards; z-index: 4; }
+.page.anim-back   { animation: flipBack  0.35s ease-in forwards; z-index: 5; }
+.page.anim-return { animation: returnIn  0.45s cubic-bezier(0.4,0,0.6,1) forwards; z-index: 4; }
+
+/* ===== PAGE CONTENT SCROLL ===== */
+.page-inner {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 32px 28px 72px 30px;
+  scroll-behavior: smooth;
+}
+.page-inner::-webkit-scrollbar { width: 3px; }
+.page-inner::-webkit-scrollbar-thumb { background: rgba(201,162,39,0.3); border-radius: 2px; }
+
+/* Page number */
+.page-num {
+  position: absolute;
+  bottom: 14px; right: 18px;
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 11px;
+  color: var(--text-light);
+  letter-spacing: 0.08em;
+  z-index: 3;
+}
+
+/* ===== COVER PAGE ===== */
+.cover-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(155deg, #1a2744 0%, #0e1c38 55%, #0a1628 100%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 28px;
+  text-align: center;
+}
+.cover-bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(42,127,127,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 70%, rgba(201,162,39,0.13) 0%, transparent 50%);
+}
+.cover-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 30px,rgba(201,162,39,0.035) 30px,rgba(201,162,39,0.035) 31px),
+    repeating-linear-gradient(90deg,transparent,transparent 30px,rgba(201,162,39,0.035) 30px,rgba(201,162,39,0.035) 31px);
+}
+.cover-emblem {
+  width: 68px; height: 68px;
+  background: rgba(201,162,39,0.13);
+  border: 2px solid rgba(201,162,39,0.35);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 32px rgba(201,162,39,0.18);
+  position: relative; z-index: 1;
+}
+.cover-label {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold-light); opacity: 0.72;
+  margin-bottom: 14px; position: relative; z-index: 1;
+}
+.cover-title {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: clamp(20px, 5vw, 30px);
+  font-weight: 900; color: var(--cream);
+  line-height: 1.35; margin-bottom: 10px;
+  position: relative; z-index: 1;
+}
+.cover-title span { color: var(--gold-light); }
+.cover-subtitle {
+  font-size: clamp(11px, 2.5vw, 13px);
+  color: rgba(253,246,227,0.58);
+  line-height: 1.75; max-width: 300px;
+  position: relative; z-index: 1; margin-bottom: 24px;
+}
+.cover-hr {
+  width: 56px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 20px; position: relative; z-index: 1;
+}
+.cover-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  justify-content: center; position: relative; z-index: 1;
+}
+.cover-tag {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.13);
+  color: rgba(253,246,227,0.68);
+  font-size: 10px; padding: 4px 10px; border-radius: 12px;
+}
+.cover-hint {
+  position: absolute; bottom: 18px;
+  font-size: 10px; color: rgba(253,246,227,0.28);
+  letter-spacing: 0.05em;
+  animation: pulse 2s infinite; z-index: 1;
+}
+@keyframes pulse { 0%,100%{opacity:0.28} 50%{opacity:0.6} }
+
+/* ===== SECTION BAND ===== */
+.sec-band {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  margin: -32px -28px 18px -30px;
+  padding: 22px 24px 18px 26px;
+  position: relative; overflow: hidden;
+}
+.sec-band::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--gold), var(--teal-light), transparent);
+}
+.sec-big {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 46px; font-weight: 900;
+  color: rgba(201,162,39,0.16);
+  position: absolute; top: 4px; right: 14px; line-height: 1;
+}
+.sec-badge {
+  display: inline-block;
+  background: rgba(201,162,39,0.14);
+  border: 1px solid rgba(201,162,39,0.28);
+  color: var(--gold-light);
+  font-size: 8.5px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 9px; margin-bottom: 6px;
+}
+.sec-title {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: clamp(15px, 3.5vw, 20px);
+  font-weight: 700; color: var(--cream); line-height: 1.35;
+}
+
+/* ===== TYPOGRAPHY ===== */
+.ch-sub {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 10px;
+}
+.divider {
+  width: 38px; height: 2.5px;
+  background: linear-gradient(90deg, var(--gold), var(--teal));
+  border-radius: 2px; margin: 8px 0 14px;
+}
+.body-text {
+  font-size: clamp(12px, 2.5vw, 14px);
+  color: var(--text-mid); line-height: 1.85; margin-bottom: 10px;
+}
+
+/* ===== BLOCKS ===== */
+.info-block {
+  background: rgba(42,127,127,0.08);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 7px 7px 0;
+  padding: 10px 14px; margin: 10px 0;
+  font-size: clamp(11px, 2.3vw, 13px);
+  color: var(--text-mid); line-height: 1.8;
+}
+.warn-block {
+  background: rgba(192,57,43,0.07);
+  border-left: 3px solid var(--red);
+  border-radius: 0 7px 7px 0;
+  padding: 10px 14px; margin: 10px 0;
+  font-size: clamp(11px, 2.3vw, 13px);
+  color: var(--text-mid); line-height: 1.8;
+}
+.gold-block {
+  background: rgba(201,162,39,0.09);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 7px 7px 0;
+  padding: 10px 14px; margin: 10px 0;
+  font-size: clamp(11px, 2.3vw, 13px);
+  color: var(--text-mid); line-height: 1.8;
+}
+.bullet-list { list-style: none; padding: 0; margin: 6px 0; }
+.bullet-list li {
+  font-size: clamp(12px, 2.4vw, 13.5px);
+  color: var(--text-mid);
+  padding: 3px 0 3px 16px; position: relative; line-height: 1.78;
+}
+.bullet-list li::before {
+  content: '▸'; position: absolute; left: 0;
+  color: var(--teal); font-size: 9px; top: 5px;
+}
+.step-row {
+  display: flex; gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(180,150,80,0.12);
+}
+.step-row:last-child { border-bottom: none; }
+.step-dot {
+  width: 22px; height: 22px;
+  background: var(--navy); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--gold-light);
+  flex-shrink: 0; margin-top: 1px;
+}
+.step-title { font-weight: 600; color: var(--navy); font-size: clamp(11.5px, 2.4vw, 13px); }
+.step-desc { font-size: clamp(11px, 2.2vw, 12.5px); color: var(--text-mid); line-height: 1.72; margin-top: 2px; }
+
+.mini-table {
+  width: 100%; border-collapse: collapse; margin: 10px 0;
+  font-size: clamp(10px, 2vw, 12px);
+}
+.mini-table th {
+  background: var(--navy); color: var(--cream);
+  padding: 7px 9px; text-align: left; font-weight: 600;
+}
+.mini-table td {
+  padding: 6px 9px;
+  border-bottom: 1px solid rgba(180,150,80,0.14);
+  color: var(--text-mid); line-height: 1.6;
+}
+.mini-table tr:nth-child(even) td { background: rgba(42,127,127,0.04); }
+.mini-table tr:last-child td { border-bottom: none; }
+.badge-sm {
+  display: inline-block; padding: 1px 7px;
+  border-radius: 8px; font-size: 9px; font-weight: 700;
+}
+.badge-sm.red  { background: rgba(192,57,43,0.12); color: var(--red); }
+.badge-sm.gold { background: rgba(201,162,39,0.15); color: #8a6500; }
+.badge-sm.teal { background: rgba(42,127,127,0.12); color: var(--teal); }
+
+.check-row {
+  display: flex; align-items: flex-start; gap: 9px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(180,150,80,0.1);
+  cursor: pointer;
+}
+.check-row:last-child { border-bottom: none; }
+.check-box {
+  width: 17px; height: 17px;
+  border: 1.5px solid var(--teal); border-radius: 4px;
+  flex-shrink: 0; margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: white; transition: background 0.2s;
+}
+.check-row.done .check-box { background: var(--teal); }
+.check-label { font-size: clamp(11px, 2.3vw, 12.5px); color: var(--text-mid); line-height: 1.72; }
+.check-label strong { color: var(--navy); }
+
+/* ===== IMAGE SLOT ===== */
+.img-slot {
+  background: linear-gradient(135deg, #ece7d6, #e2dbc8);
+  border: 1.5px dashed rgba(201,162,39,0.4);
+  border-radius: 9px;
+  margin: 14px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.img-slot-top {
+  padding: 16px 14px 10px;
+  text-align: center;
+}
+.img-slot-top .ph-icon { font-size: 26px; opacity: 0.4; display: block; margin-bottom: 4px; }
+.img-slot-top .ph-label { font-size: 11px; font-weight: 600; color: var(--text-mid); display: block; margin-bottom: 2px; }
+.img-slot-top .ph-hint  { font-size: 10px; color: var(--text-light); }
+
+/* Displayed image */
+.img-slot-preview {
+  display: none;
+  padding: 10px 10px 4px;
+  text-align: center;
+}
+.img-slot-preview img {
+  max-width: 100%; max-height: 160px;
+  border-radius: 7px; object-fit: contain;
+  display: block; margin: 0 auto;
+}
+.img-slot-preview .img-caption {
+  font-size: 10px; color: var(--text-light); margin-top: 4px;
+}
+
+/* URL input area */
+.img-slot-url {
+  padding: 8px 12px 12px;
+  border-top: 1px solid rgba(180,150,80,0.18);
+  background: rgba(255,255,255,0.45);
+}
+.url-row {
+  display: flex; gap: 6px; align-items: center;
+}
+.url-label {
+  font-size: 10px; color: var(--text-light);
+  white-space: nowrap; flex-shrink: 0;
+}
+.url-input {
+  flex: 1;
+  font-size: 10.5px;
+  font-family: 'Sarabun', sans-serif;
+  border: 1px solid rgba(180,150,80,0.35);
+  border-radius: 5px;
+  padding: 4px 7px;
+  background: white;
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.url-input:focus { border-color: var(--teal); }
+.url-input::placeholder { color: var(--text-light); font-size: 9.5px; }
+.url-btn {
+  padding: 4px 9px;
+  background: var(--navy);
+  color: var(--gold-light);
+  border: none; border-radius: 5px;
+  font-size: 10px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.2s;
+}
+.url-btn:hover { background: var(--navy-light); }
+
+/* ===== MENU PAGE ===== */
+.menu-wrap {
+  padding: 28px 24px;
+  height: 100%;
+  display: flex; flex-direction: column;
+}
+.menu-head {
+  text-align: center;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(180,150,80,0.22);
+}
+.menu-head .ico { font-size: 24px; margin-bottom: 5px; }
+.menu-head .ttl {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: clamp(14px, 3.5vw, 18px);
+  font-weight: 700; color: var(--navy);
+}
+.menu-head .sub {
+  font-size: 10px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--teal); margin-top: 2px;
+}
+.toc-list { flex: 1; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; }
+.toc-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 12px; border-radius: 8px; cursor: pointer;
+  transition: all 0.18s; border: 1px solid transparent;
+}
+.toc-item:hover {
+  background: rgba(42,127,127,0.07);
+  border-color: rgba(42,127,127,0.18);
+}
+.toc-num {
+  width: 30px; height: 30px;
+  background: var(--navy); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 11px; font-weight: 700; color: var(--gold-light);
+  flex-shrink: 0;
+}
+.toc-text { flex: 1; }
+.toc-name { font-weight: 600; font-size: clamp(11.5px, 2.5vw, 13px); color: var(--navy); line-height: 1.3; }
+.toc-desc { font-size: clamp(10px, 2vw, 11px); color: var(--text-light); margin-top: 1px; }
+
+/* ===== BACK COVER ===== */
+.back-bg {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(155deg, #1a2744 0%, #0a1420 100%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 36px 28px; text-align: center;
+}
+.back-bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgba(42,127,127,0.18) 0%, transparent 60%);
+}
+.back-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 18px,
+    rgba(201,162,39,0.03) 18px, rgba(201,162,39,0.03) 19px
+  );
+}
+
+/* ===== NAV BAR ===== */
+.nav-bar {
+  position: fixed;
+  bottom: 22px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(12,18,36,0.93);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(201,162,39,0.28);
+  border-radius: 50px;
+  padding: 7px 14px;
+  z-index: 1000;
+  box-shadow: 0 8px 36px rgba(0,0,0,0.55);
+}
+.nav-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1.5px solid rgba(201,162,39,0.3);
+  background: rgba(255,255,255,0.05);
+  color: var(--cream); font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.nav-btn:hover:not(:disabled) {
+  background: rgba(201,162,39,0.2);
+  border-color: var(--gold-light);
+  transform: scale(1.06);
+}
+.nav-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+.nav-btn.menu-btn {
+  background: rgba(201,162,39,0.14); border-color: var(--gold); font-size: 14px;
+}
+.nav-btn.menu-btn:hover { background: rgba(201,162,39,0.28); }
+.nav-info {
+  font-family: 'Noto Serif Thai', serif;
+  font-size: 11px; color: rgba(253,246,227,0.55);
+  min-width: 62px; text-align: center; letter-spacing: 0.04em;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 560px) {
+  .book-wrap { width: 99vw; height: 90vh; }
+  .book-spine { width: 14px; }
+  .spine-text { font-size: 7px; }
+  .page-stage { left: 14px; }
+  .page-inner { padding: 22px 18px 64px 18px; }
+  .sec-band { margin: -22px -18px 14px -18px; padding: 18px 16px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="book-wrap">
+  <!-- Spine -->
+  <div class="book-spine">
+    <span class="spine-text">Facial Trauma · Nursing Care</span>
+  </div>
+
+  <!-- Page stage -->
+  <div class="page-stage" id="stage">
+    <!-- Pages rendered by JS -->
+    <div class="page front" id="pageA"></div>
+    <div class="page behind" id="pageB"></div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button class="nav-btn" id="btnPrev" onclick="prevPage()" title="หน้าก่อนหน้า">&#8592;</button>
+  <button class="nav-btn menu-btn" onclick="goMenu()" title="สารบัญ">&#9776;</button>
+  <span class="nav-info" id="navInfo">ปก</span>
+  <button class="nav-btn" id="btnNext" onclick="nextPage()" title="หน้าถัดไป">&#8594;</button>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// IMAGE STORE  (key → URL string)
+// Shared state via localStorage so all users
+// who edit on the same device persist,
+// but the primary sharing mechanism is URL params.
+// ─────────────────────────────────────────────
+const IMG_KEYS = [
+  'img_cover','img_anatomy','img_ct','img_surgery',
+  'img_nasal','img_nasal2','img_mmf','img_orif','img_homecare','img_contact'
+];
+
+// Load from URL params first, then localStorage
+const imgStore = {};
+
+function loadImages() {
+  const params = new URLSearchParams(window.location.search);
+  IMG_KEYS.forEach(k => {
+    const fromParam = params.get(k);
+    if (fromParam) {
+      imgStore[k] = decodeURIComponent(fromParam);
+      localStorage.setItem(k, imgStore[k]);
+    } else {
+      imgStore[k] = localStorage.getItem(k) || '';
+    }
+  });
+}
+
+function saveImage(key, url) {
+  imgStore[key] = url;
+  localStorage.setItem(key, url);
+}
+
+function getShareURL() {
+  const params = new URLSearchParams();
+  IMG_KEYS.forEach(k => {
+    if (imgStore[k]) params.set(k, encodeURIComponent(imgStore[k]));
+  });
+  const str = params.toString();
+  return str ? (location.href.split('?')[0] + '?' + str) : location.href.split('?')[0];
+}
+
+// ─────────────────────────────────────────────
+// IMAGE SLOT HTML BUILDER
+// ─────────────────────────────────────────────
+function imgSlot(key, label) {
+  const url = imgStore[key] || '';
+  const hasImg = !!url;
+  return `
+<div class="img-slot" id="slot-${key}">
+  <div class="img-slot-preview" style="display:${hasImg?'block':'none'}">
+    <img src="${url}" alt="${label}" onerror="this.src='';this.closest('.img-slot-preview').style.display='none';this.closest('.img-slot').querySelector('.img-slot-top').style.display='block'">
+    <div class="img-caption">${label}</div>
+  </div>
+  <div class="img-slot-top" style="display:${hasImg?'none':'block'}">
+    <span class="ph-icon">🖼️</span>
+    <span class="ph-label">${label}</span>
+    <span class="ph-hint">ใส่ URL รูปภาพด้านล่าง</span>
+  </div>
+  <div class="img-slot-url">
+    <div class="url-row">
+      <span class="url-label">🔗 URL:</span>
+      <input class="url-input" type="text" placeholder="https://example.com/image.jpg"
+        value="${url}"
+        onchange="applyImgUrl('${key}', this.value)"
+        onkeydown="if(event.key==='Enter') applyImgUrl('${key}', this.value)"
+      >
+      <button class="url-btn" onclick="applyImgUrl('${key}', this.closest('.img-slot').querySelector('.url-input').value)">ใส่รูป</button>
+    </div>
+  </div>
+</div>`;
+}
+
+function applyImgUrl(key, url) {
+  url = url.trim();
+  saveImage(key, url);
+  const slot = document.getElementById('slot-' + key);
+  if (!slot) return;
+  const preview = slot.querySelector('.img-slot-preview');
+  const top = slot.querySelector('.img-slot-top');
+  const input = slot.querySelector('.url-input');
+  if (input) input.value = url;
+  if (url) {
+    if (preview) {
+      preview.style.display = 'block';
+      const img = preview.querySelector('img');
+      if (img) { img.src = url; }
+    }
+    if (top) top.style.display = 'none';
+  } else {
+    if (preview) preview.style.display = 'none';
+    if (top) top.style.display = 'block';
+  }
+}
+
+// ─────────────────────────────────────────────
+// PAGES DEFINITION
+// ─────────────────────────────────────────────
+function getPages() {
+  return [
+
+    // 0 — Cover
+    () => `<div class="cover-bg">
+      <div class="cover-emblem">🏥</div>
+      <div class="cover-label">E-Book · คู่มือสำหรับผู้ป่วย</div>
+      <div class="cover-title">การพยาบาลผู้ป่วย<br><span>บาดเจ็บใบหน้า</span></div>
+      <div class="cover-subtitle">ข้อมูลสำหรับผู้ป่วยและครอบครัว<br>เพื่อความปลอดภัยในการฟื้นฟูร่างกายหลังการบาดเจ็บและการผ่าตัด</div>
+      <div class="cover-hr"></div>
+      <div class="cover-tags">
+        <span class="cover-tag">👃 Nasal Fracture</span>
+        <span class="cover-tag">🦷 MMF</span>
+        <span class="cover-tag">🔩 ORIF</span>
+        <span class="cover-tag">🏠 Home Care</span>
+      </div>
+      <div class="cover-hint">กด → หรือ swipe เพื่อเปิดหนังสือ</div>
+    </div>`,
+
+    // 1 — สารบัญ
+    () => `<div class="page-inner">
+      <div class="menu-wrap" style="padding:0;height:auto;">
+        <div class="menu-head">
+          <div class="ico">📖</div>
+          <div class="ttl">สารบัญ</div>
+          <div class="sub">Table of Contents</div>
+        </div>
+        <div class="toc-list">
+          ${[
+            {n:'1',   name:'การบาดเจ็บใบหน้าคืออะไร',   desc:'คำนิยาม สาเหตุ ระดับความรุนแรง', pg:2},
+            {n:'1.1', name:'ตำแหน่งกระดูกที่พบบ่อย',    desc:'ตารางจำแนกตำแหน่ง อาการ', pg:3},
+            {n:'2',   name:'การผ่าตัดกระดูกใบหน้า',     desc:'CR Nasal · MMF · ORIF', pg:4},
+            {n:'3A',  name:'หลังผ่าตัด CR Nasal Bone',  desc:'Nasal Packing & Splint care', pg:5},
+            {n:'3B',  name:'หลังผ่าตัด MMF มัดฟัน',     desc:'Liquid diet · การดูแลลวด', pg:6},
+            {n:'3C',  name:'หลังผ่าตัด ORIF',           desc:'Plate & Screw fixation', pg:7},
+            {n:'4',   name:'การดูแลตนเองที่บ้าน (1)',    desc:'ยา · อาหาร · โภชนาการ', pg:8},
+            {n:'4.1', name:'การดูแลตนเองที่บ้าน (2)',    desc:'สิ่งที่ต้องหลีกเลี่ยง · อาการอันตราย', pg:9},
+          ].map(c=>`
+            <div class="toc-item" onclick="jumpTo(${c.pg})">
+              <div class="toc-num">${c.n}</div>
+              <div class="toc-text">
+                <div class="toc-name">${c.name}</div>
+                <div class="toc-desc">${c.desc}</div>
+              </div>
+              <span style="font-size:10px;color:var(--text-light);">▶</span>
+            </div>
+          `).join('')}
+        </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(180,150,80,0.18);text-align:center;">
+          <button onclick="copyShare()" style="background:var(--navy);color:var(--gold-light);border:none;border-radius:8px;padding:8px 16px;font-family:'Sarabun',sans-serif;font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            🔗 คัดลอกลิงก์แชร์รูปภาพ
+          </button>
+          <p style="font-size:9.5px;color:var(--text-light);margin-top:6px;line-height:1.6;">ลิงก์นี้จะรวม URL รูปภาพทั้งหมดที่ใส่ไว้<br>ส่งให้ผู้อื่นเปิดได้เห็นรูปเหมือนกัน</p>
+        </div>
+      </div>
+      <div class="page-num">สารบัญ</div>
+    </div>`,
+
+    // 2 — Chapter 1: ความหมาย
+    () => `<div class="page-inner">
+      <div class="sec-band">
+        <div class="sec-badge">บทที่ 1 · Chapter One</div>
+        <div class="sec-title">การบาดเจ็บใบหน้าคืออะไร</div>
+        <div class="sec-big">1</div>
+      </div>
+      ${imgSlot('img_anatomy','ภาพประกอบ: โครงสร้างกระดูกใบหน้า')}
+      <div class="ch-sub">Facial Trauma / Maxillofacial Injury</div>
+      <div class="divider"></div>
+      <p class="body-text">การบาดเจ็บใบหน้า <em>(Facial Trauma / Maxillofacial Injury)</em> หมายถึง การบาดเจ็บที่เกิดขึ้นกับโครงสร้างของใบหน้า รวมถึง กระดูกใบหน้า ผิวหนัง กล้ามเนื้อ เส้นประสาท หลอดเลือด ตา และฟัน อันเป็นผลมาจากแรงกระทำภายนอก</p>
+      <div class="info-block">
+        🔍 <strong>สาเหตุที่พบบ่อย:</strong><br>
+        อุบัติเหตุทางจราจร · การล้มหกล้ม · ถูกทำร้ายร่างกาย · อุบัติเหตุจากการทำงานและกีฬา
+      </div>
+      <p class="body-text"><strong>ระดับความรุนแรง:</strong></p>
+      <ul class="bullet-list">
+        <li>บาดแผลฉีกขาดที่ผิวหนัง (Laceration)</li>
+        <li>กระดูกแตกร้าวโดยไม่มีการโยกเคลื่อน</li>
+        <li>กระดูกหักแบบโยกเคลื่อน (Displaced fracture)</li>
+        <li>กระดูกแตกละเอียดหลายชิ้น (Comminuted fracture)</li>
+        <li>บาดเจ็บร่วมกับเนื้อเยื่อรอบข้าง</li>
+      </ul>
+      <div class="warn-block">
+        ⚠️ <strong>สำคัญ:</strong> มักเกิดร่วมกับการบาดเจ็บที่ศีรษะ คอ หรืออวัยวะอื่น ต้องประเมินตามหลัก ATLS ก่อนวางแผนการรักษา
+      </div>
+      <div class="page-num">1</div>
+    </div>`,
+
+    // 3 — Chapter 1.1: ตารางกระดูก
+    () => `<div class="page-inner">
+      <div class="sec-band">
+        <div class="sec-badge">บทที่ 1.1 · Bone Anatomy</div>
+        <div class="sec-title">ตำแหน่งกระดูกใบหน้าที่พบบ่อย</div>
+        <div class="sec-big">1</div>
+      </div>
+      ${imgSlot('img_ct','ภาพประกอบ: CT / X-ray กระดูกใบหน้า')}
+      <div class="divider"></div>
+      <table class="mini-table">
+        <thead><tr><th>ตำแหน่ง</th><th>ชื่อเรียก</th><th>อาการ</th><th>พบบ่อย</th></tr></thead>
+        <tbody>
+          <tr><td>กระดูกจมูก</td><td>Nasal bone Fx</td><td>บวม เบี้ยว เลือดกำเดา</td><td><span class="badge-sm red">มาก</span></td></tr>
+          <tr><td>กระดูกแก้ม/ตา</td><td>ZMC fracture</td><td>แก้มแบน ตาบวม ภาพซ้อน</td><td><span class="badge-sm red">มาก</span></td></tr>
+          <tr><td>ขากรรไกรบน</td><td>Le Fort I–III</td><td>สบฟันผิดปกติ ใบหน้าบวม</td><td><span class="badge-sm gold">ปานกลาง</span></td></tr>
+          <tr><td>ขากรรไกรล่าง</td><td>Mandible Fx</td><td>อ้าปากไม่ได้ ปวด</td><td><span class="badge-sm red">มาก</span></td></tr>
+          <tr><td>รอบเบ้าตา</td><td>Orbital floor</td><td>ภาพซ้อน ตาบวม</td><td><span class="badge-sm gold">ปานกลาง</span></td></tr>
+          <tr><td>กระดูกหน้าผาก</td><td>Frontal sinus</td><td>หน้าผากบุ๋ม ปวดศีรษะ</td><td><span class="badge-sm teal">น้อย</span></td></tr>
+        </tbody>
+      </table>
+      <div class="gold-block">
+        💡 กระดูกจมูกเป็นกระดูกใบหน้าที่หักบ่อยที่สุด เพราะยื่นออกมาและรับแรงกระแทกได้ง่าย
+      </div>
+      <div class="page-num">2</div>
+    </div>`,
+
+    // 4 — Chapter 2: ประเภทการผ่าตัด
+    () => `<div class="page-inner">
+      <div class="sec-band">
+        <div class="sec-badge">บทที่ 2 · Chapter Two</div>
+        <div class="sec-title">การผ่าตัดกระดูกใบหน้า</div>
+        <div class="sec-big">2</div>
+      </div>
+      ${imgSlot('img_surgery','ภาพประกอบ: ภาพรวมประเภทการผ่าตัด')}
+      <div class="ch-sub">Facial Fracture Surgery</div>
+      <div class="divider"></div>
+      <p class="body-text">การรักษาแบ่งออกเป็นการรักษาโดยไม่ผ่าตัด (Conservative) และการรักษาด้วยการผ่าตัด (Surgical) โดยแพทย์พิจารณาจากตำแหน่ง ความรุนแรง และสภาพผู้ป่วย</p>
+      <div class="step-row"><div class="step-dot">1</div><div>
+        <div class="step-title">👃 Closed Reduction (CR) Nasal Bone</div>
+        <div class="step-desc">ดึงกระดูกจมูกกลับโดยไม่เปิดผิวหนัง ทำภายใน 7–10 วัน ก่อนกระดูกเริ่มติด ต้องใส่ Nasal packing และ Nasal splint หลังผ่าตัด</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">2</div><div>
+        <div class="step-title">🦷 Maxillomandibular Fixation (MMF)</div>
+        <div class="step-desc">การมัดฟัน/ตรึงขากรรไกรด้วยสลักโลหะและลวด อาจทำเป็นการรักษาเดียว หรือร่วมกับ ORIF ระยะเวลา 4–8 สัปดาห์</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">3</div><div>
+        <div class="step-title">🔩 ORIF with Plate &amp; Screw</div>
+        <div class="step-desc">ผ่าตัดเปิดจัดกระดูกและยึดด้วย Titanium plate และ screw มาตรฐานสำหรับกระดูกซับซ้อนหรือเคลื่อน</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">4</div><div>
+        <div class="step-title">🔧 การผ่าตัดอื่น ๆ</div>
+        <div class="step-desc">Orbital floor reconstruction · Frontal sinus obliteration · Soft tissue repair ตามตำแหน่งและความซับซ้อน</div>
+      </div></div>
+      <table class="mini-table" style="margin-top:14px;">
+        <thead><tr><th>การผ่าตัด</th><th>เหมาะกับ</th><th>ระยะฟื้น</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CR Nasal</strong></td><td>จมูกหักไม่ซับซ้อน</td><td>1–2 สัปดาห์</td></tr>
+          <tr><td><strong>MMF</strong></td><td>ขากรรไกรหักไม่รุนแรง</td><td>4–8 สัปดาห์</td></tr>
+          <tr><td><strong>ORIF</strong></td><td>กระดูกเคลื่อน/ซับซ้อน</td><td>6–12 สัปดาห์</td></tr>
+        </tbody>
+      </table>
+      <div class="page-num">3</div>
+    </div>`,
+
+    // 5 — CR Nasal post-op
+    () => `<div class="page-inner">
+      <div class="sec-band">
+        <div class="sec-badge">บทที่ 3A · Post-operative Care</div>
+        <div class="sec-title">หลังผ่าตัด CR Nasal + Nasal Packing</div>
+        <div class="sec-big">3</div>
+      </div>
+      ${imgSlot('img_nasal','ภาพประกอบ: Nasal Packing / Nasal Splint')}
+      <div class="ch-sub">Closed Reduction Nasal Bone — Nursing Care</div>
+      <div class="divider"></div>
+      <div class="step-row"><div class="step-dot">1</div><div>
+        <div class="step-title">การดูแล Nasal Packing</div>
+        <div class="step-desc">ผ้าก๊อซ/ฟองน้ำในโพรงจมูกช่วยห้ามเลือดและพยุงกระดูก <strong>ห้ามดึงออกเอง</strong> แพทย์จะถอดหลัง 24–72 ชั่วโมง</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">2</div><div>
+        <div class="step-title">การหายใจทางปาก</div>
+        <div class="step-desc">เนื่องจากจมูกอุดตัน ให้หายใจทางปาก ดื่มน้ำบ่อย ๆ ป้องกันปากแห้ง ใช้สำลีชุบน้ำเช็ดริมฝีปากได้</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">3</div><div>
+        <div class="step-title">Nasal Splint / เฝือกจมูก</div>
+        <div class="step-desc">ใส่ทับด้านนอกเพื่อพยุงรูปทรงจมูก ห้ามกระแทก เปียกน้ำ หรือดึงปรับตำแหน่งเอง</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">4</div><div>
+        <div class="step-title">ท่านอน</div>
+        <div class="step-desc">ยกศีรษะสูง 30–45 องศา ช่วยลดบวม ห้ามนอนคว่ำ หลีกเลี่ยงการสั่งน้ำมูกหรือเป่าจมูกแรง ๆ</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">5</div><div>
+        <div class="step-title">สังเกตเลือดออก</div>
+        <div class="step-desc">มีเลือดซึมเล็กน้อยเป็นปกติ หากเลือดออกมากจนเปียกหลายชั้น หรือกลืนเลือดลงคอ ให้แจ้งพยาบาลทันที</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">6</div><div>
+        <div class="step-title">อาหารและของเหลว</div>
+        <div class="step-desc">รับประทานอาหารอ่อน ดื่มน้ำมาก หลีกเลี่ยงอาหารร้อนจัด 48 ชั่วโมงแรก</div>
+      </div></div>
+      <div class="warn-block">
+        🚨 <strong>รีบแจ้งทันทีหาก:</strong> เลือดออกมาก · หายใจลำบาก · มีไข้สูง · ปวดมากขึ้น · Splint หลุด
+      </div>
+      <div class="page-num">4</div>
+    </div>`,
+
+    // 6 — MMF
+    () => `<div class="page-inner">
+      <div class="sec-band">
+        <div class="sec-badge">บทที่ 3B · Post-operative Care</div>
+        <div class="sec-title">หลังผ่าตัด MMF มัดฟัน / ตรึงขากรรไกร</div>
+        <div class="sec-big">3</div>
+      </div>
+      ${imgSlot('img_mmf','ภาพประกอบ: MMF / ลวดมัดฟัน')}
+      <div class="ch-sub">Maxillomandibular Fixation — Nursing Care</div>
+      <div class="divider"></div>
+      <div class="warn-block" style="margin-bottom:12px;">
+        ✂️ <strong>เตรียมกรรไกรตัดลวดไว้เสมอ!</strong> ต้องมีกรรไกรตัดลวดติดตัวตลอดเวลา ใช้ตัดในกรณีฉุกเฉิน เช่น อาเจียน หรือทางเดินหายใจอุดกั้น
+      </div>
+      <div class="step-row"><div class="step-dot">1</div><div>
+        <div class="step-title">สุขอนามัยช่องปาก</div>
+        <div class="step-desc">บ้วนปากด้วยน้ำเกลือทุก 2–4 ชั่วโมง ใช้ไม้พันสำลีหรือแปรงขนอ่อนทำความสะอาดอย่างนุ่มนวล</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">2</div><div>
+        <div class="step-title">อาหาร — Liquid Diet เท่านั้น</div>
+        <div class="step-desc">น้ำผลไม้ · นม · โปรตีนเชค · ซุปกรองละเอียด ดื่มผ่านหลอดเล็ก เป้าหมาย ≥ 1,800–2,200 kcal/วัน</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">3</div><div>
+        <div class="step-title">ดูแลลวดมัดฟัน</div>
+        <div class="step-desc">ตรวจลวดทุกวันว่าไม่หลวมหรือแหลมทิ่ม หากหลุดหรือเจ็บมากให้รีบพบแพทย์ ห้ามปรับลวดเอง</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">4</div><div>
+        <div class="step-title">ป้องกันการสำลัก</div>
+        <div class="step-desc">ยกศีรษะสูงตลอดเวลา โดยเฉพาะขณะและหลังรับประทานอาหาร 30 นาที</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">5</div><div>
+        <div class="step-title">ระยะเวลาและการติดตาม</div>
+        <div class="step-desc">MMF ใช้เวลา 4–8 สัปดาห์ แพทย์จะนัดตรวจ X-ray และปรับลวดตามความเหมาะสม</div>
+      </div></div>
+      <div class="warn-block">
+        🚨 <strong>กรณีฉุกเฉิน:</strong> อาเจียนหรือหายใจไม่ออก → <u>ตัดลวดออกก่อน</u> แล้วจึงแจ้งทีมพยาบาล/แพทย์ทันที
+      </div>
+      <div class="page-num">5</div>
+    </div>`,
+
+    // 7 — ORIF
+    () => `<div class="page-inner">
+      <div class="sec-band">
+        <div class="sec-badge">บทที่ 3C · Post-operative Care</div>
+        <div class="sec-title">หลังผ่าตัด ORIF with Plate &amp; Screw</div>
+        <div class="sec-big">3</div>
+      </div>
+      ${imgSlot('img_orif','ภาพประกอบ: Titanium plate / X-ray หลังผ่าตัด')}
+      <div class="ch-sub">Open Reduction Internal Fixation — Nursing Care</div>
+      <div class="divider"></div>
+      <div class="step-row"><div class="step-dot">1</div><div>
+        <div class="step-title">การดูแลแผลผ่าตัด</div>
+        <div class="step-desc">ตรวจแผลทุกวัน สังเกตอาการบวม แดง ร้อน หนองซึม ทำแผลตามคำสั่ง ห้ามแกะสะเก็ดหรือเกาแผล</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">2</div><div>
+        <div class="step-title">การลดบวมและปวด</div>
+        <div class="step-desc">ประคบเย็น 20 นาที ทุก 1–2 ชั่วโมงใน 48 ชั่วโมงแรก ยกศีรษะสูงตลอดเวลา รับประทานยาแก้ปวดสม่ำเสมอ</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">3</div><div>
+        <div class="step-title">ข้อจำกัดการเคลื่อนไหว</div>
+        <div class="step-desc">ห้ามกดหรือนวดบริเวณผ่าตัด 6–8 สัปดาห์ หลีกเลี่ยงกิจกรรมกระทบกระแทก ห้ามนอนคว่ำ</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">4</div><div>
+        <div class="step-title">อาหารและการเคี้ยว</div>
+        <div class="step-desc">อาหารอ่อน/เหลวในช่วงแรก ค่อย ๆ เพิ่มความแข็งตามที่แพทย์อนุญาต หลีกเลี่ยงอาหารแข็ง กรอบ เหนียวอย่างน้อย 6 สัปดาห์</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">5</div><div>
+        <div class="step-title">การดูแลแผลในช่องปาก</div>
+        <div class="step-desc">บ้วนปากด้วยน้ำเกลือหลังทุกมื้อ แปรงฟันอย่างนุ่มนวล หลีกเลี่ยงแปรงสัมผัสแผลโดยตรง</div>
+      </div></div>
+      <div class="step-row"><div class="step-dot">6</div><div>
+        <div class="step-title">ประสาทสัมผัส</div>
+        <div class="step-desc">ชาใบหน้าบริเวณผ่าตัดเป็นปกติในระยะแรก ส่วนใหญ่ดีขึ้นใน 3–6 เดือน หากชาเพิ่มหรืออ่อนแรงให้รีบพบแพทย์</div>
+      </div></div>
+      <div class="warn-block">
+        🚨 <strong>รีบพบแพทย์หาก:</strong> ไข้ &gt;38.5°C · แผลบวมแดงมาก · หนองซึม · ปวดรุนแรงขึ้น · มองภาพซ้อน · สบฟันเปลี่ยน
+      </div>
+      <div class="gold-block">
+        💡 Titanium plate ปลอดภัย ไม่ก่อปฏิกิริยากับร่างกาย ส่วนใหญ่ไม่ต้องนำออก และผ่าน MRI ได้
+      </div>
+      <div class="page-num">6</div>
+    </div>`,
+
+    // 8 — Home care part 1
+    () => `<div class="page-inner">
+      <div class="sec-band">
+        <div class="sec-badge">บทที่ 4 · Home Care</div>
+        <div class="sec-title">การดูแลตนเองเมื่อกลับบ้าน (1)</div>
+        <div class="sec-big">4</div>
+      </div>
+      ${imgSlot('img_homecare','ภาพประกอบ: การดูแลตนเองที่บ้าน')}
+      <div class="ch-sub">Home Care Instructions — Medications &amp; Nutrition</div>
+      <div class="divider"></div>
+      <p class="body-text">การฟื้นฟูที่บ้านมีความสำคัญเท่าเทียมกับการรักษาในโรงพยาบาล ปฏิบัติตามคำแนะนำอย่างเคร่งครัดเพื่อให้กระดูกหายดีและลดโอกาสเกิดภาวะแทรกซ้อน</p>
+      <p class="body-text" style="font-weight:600;color:var(--navy);margin-top:4px;">💊 การรับประทานยา</p>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>รับประทานยาตรงเวลาทุกมื้อ</strong> ยาปฏิชีวนะ ยาแก้ปวด และยาลดบวม ห้ามหยุดยาเองโดยไม่ปรึกษาแพทย์</div></div>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>ห้ามรับประทาน Aspirin / NSAIDs</strong> ที่ไม่ได้รับการสั่งจากแพทย์ อาจทำให้เลือดออกง่ายขึ้น</div></div>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>หากลืมรับประทานยา</strong> ให้รับประทานทันทีที่นึกได้ หากใกล้เวลามื้อถัดไปแล้ว ให้ข้ามมื้อนั้น ห้ามรับประทานสองเท่า</div></div>
+      <p class="body-text" style="font-weight:600;color:var(--navy);margin-top:10px;">🍽️ อาหารและโภชนาการ</p>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>อาหารอ่อน/เหลว</strong> ตามคำแนะนำ โปรตีนช่วยสร้างกระดูก: ไข่ นม เต้าหู้ ปลา</div></div>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>หลีกเลี่ยงอาหารแข็ง กรอบ เหนียว</strong> เช่น ลูกอม กระดูก ขนมกรอบ อย่างน้อย 6–8 สัปดาห์</div></div>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>ดื่มน้ำอย่างน้อย 8 แก้วต่อวัน</strong> เพื่อป้องกันปากแห้งและช่วยระบบภูมิคุ้มกัน</div></div>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>งดแอลกอฮอล์โดยเด็ดขาด</strong> ตลอดช่วงการรักษา รบกวนการออกฤทธิ์ของยาและชะลอการสมานกระดูก</div></div>
+      <div class="page-num">7</div>
+    </div>`,
+
+    // 9 — Home care part 2
+    () => `<div class="page-inner">
+      <div class="sec-band">
+        <div class="sec-badge">บทที่ 4.1 · Home Care</div>
+        <div class="sec-title">การดูแลตนเองเมื่อกลับบ้าน (2)</div>
+        <div class="sec-big">4</div>
+      </div>
+      ${imgSlot('img_contact','QR Code / ข้อมูลติดต่อหน่วยงาน')}
+      <div class="ch-sub">Things to Avoid &amp; Warning Signs</div>
+      <div class="divider"></div>
+      <p class="body-text" style="font-weight:600;color:var(--navy);">🚫 สิ่งที่ต้องหลีกเลี่ยง</p>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>งดสูบบุหรี่อย่างน้อย 3 เดือน</strong> นิโคตินลดการไหลเวียนเลือดและชะลอการสมานกระดูกและแผล</div></div>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>หลีกเลี่ยงการกระทบกระแทกใบหน้า</strong> กีฬาสัมผัส กีฬาต่อสู้ อย่างน้อย 3 เดือน</div></div>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>หลีกเลี่ยงแสงแดดโดนแผลโดยตรง</strong> ทาครีมกันแดดหรือสวมหมวก ป้องกันแผลเป็นดำ</div></div>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>ห้ามยกของหนักหรือออกกำลังกายหนัก</strong> จนกว่าแพทย์จะอนุญาต อย่างน้อย 4–6 สัปดาห์</div></div>
+      <p class="body-text" style="font-weight:600;color:var(--red);margin-top:12px;">🚨 อาการที่ต้องมาพบแพทย์ทันที</p>
+      <ul class="bullet-list">
+        <li>หายใจลำบากหรือหายใจไม่ออก</li>
+        <li>เลือดออกมากผิดปกติหยุดไม่ได้</li>
+        <li>มีไข้สูงกว่า 38°C</li>
+        <li>แผลบวมแดง มีหนองซึมออกมา</li>
+        <li>มองเห็นภาพซ้อนหรือตาปิดไม่สนิท</li>
+        <li>สบฟันเปลี่ยนไปจากเดิม</li>
+        <li>ชาหรืออ่อนแรงใบหน้าเพิ่มขึ้น</li>
+      </ul>
+      <p class="body-text" style="font-weight:600;color:var(--navy);margin-top:10px;">🗓️ การนัดติดตาม</p>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>มาตรงตามนัดทุกครั้ง</strong> ช่วยให้แพทย์ประเมินการสมานกระดูกและปรับแผนการรักษา</div></div>
+      <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>แจ้งยาที่รับประทานทุกชนิด</strong> รวมถึงยาสมุนไพร วิตามิน หรืออาหารเสริม</div></div>
+      <div class="page-num">8</div>
+    </div>`,
+
+    // 10 — Back cover
+    () => `<div class="back-bg">
+      <div style="position:relative;z-index:1;text-align:center;">
+        <div style="font-size:44px;margin-bottom:16px;">🏥</div>
+        <p style="font-family:'Noto Serif Thai',serif;font-size:16px;font-weight:700;color:var(--cream);margin-bottom:8px;">หากมีข้อสงสัย</p>
+        <p style="font-size:12px;color:rgba(253,246,227,0.6);line-height:1.85;max-width:240px;margin:0 auto 20px;">กรุณาติดต่อทีมพยาบาลผู้ดูแล<br>หรือโทรศัพท์มายังหน่วยงานที่รับผิดชอบการรักษาของท่าน</p>
+        <p style="margin-top:8px;font-size:10px;color:rgba(201,162,39,0.55);letter-spacing:0.1em;text-transform:uppercase;">Facial Trauma Nursing Care<br>E-Book for Patients &amp; Families</p>
+      </div>
+    </div>`,
+
+  ];
+}
+
+// ─────────────────────────────────────────────
+// BOOK ENGINE
+// ─────────────────────────────────────────────
+let cur = 0;
+let busy = false;
+let pages;
+
+const LABELS = ['ปก','สารบัญ','1','2','3','4','5','6','7','8','ปิดท้าย'];
+
+function renderPage(idx, el) {
+  el.innerHTML = pages[idx]();
+  // Re-attach check toggle (inline onclick already handles it)
+}
+
+function updateNav() {
+  document.getElementById('btnPrev').disabled = cur === 0;
+  document.getElementById('btnNext').disabled = cur === pages.length - 1;
+  const lbl = LABELS[cur] !== undefined ? LABELS[cur] : `${cur}`;
+  document.getElementById('navInfo').textContent =
+    cur === 0 ? 'ปก' : cur === pages.length - 1 ? 'ปิดท้าย' : `หน้า ${lbl}`;
+}
+
+const A = document.getElementById('pageA');
+const B = document.getElementById('pageB');
+let front = A, behind = B;
+
+function init() {
+  loadImages();
+  pages = getPages();
+  renderPage(0, front);
+  front.className = 'page front';
+  behind.className = 'page behind';
+  updateNav();
+}
+
+function turnForward() {
+  if (busy || cur >= pages.length - 1) return;
+  busy = true;
+  cur++;
+  // Render new content on behind page
+  renderPage(cur, behind);
+  behind.className = 'page anim-in';
+  front.className  = 'page anim-away';
+  setTimeout(() => {
+    front.className  = 'page behind';
+    behind.className = 'page front';
+    // swap references
+    const tmp = front; front = behind; behind = tmp;
+    updateNav();
+    busy = false;
+  }, 460);
+}
+
+function turnBackward() {
+  if (busy || cur <= 0) return;
+  busy = true;
+  cur--;
+  renderPage(cur, behind);
+  behind.className = 'page anim-return';
+  front.className  = 'page anim-back';
+  setTimeout(() => {
+    front.className  = 'page behind';
+    behind.className = 'page front';
+    const tmp = front; front = behind; behind = tmp;
+    updateNav();
+    busy = false;
+  }, 460);
+}
+
+function nextPage() { turnForward(); }
+function prevPage() { turnBackward(); }
+
+function jumpTo(pg) {
+  if (pg === cur || busy) return;
+  const dir = pg > cur ? 1 : -1;
+  cur = pg;
+  renderPage(cur, behind);
+  if (dir > 0) {
+    behind.className = 'page anim-in';
+    front.className  = 'page anim-away';
+  } else {
+    behind.className = 'page anim-return';
+    front.className  = 'page anim-back';
+  }
+  busy = true;
+  setTimeout(() => {
+    front.className  = 'page behind';
+    behind.className = 'page front';
+    const tmp = front; front = behind; behind = tmp;
+    updateNav();
+    busy = false;
+  }, 460);
+}
+
+function goMenu() { jumpTo(1); }
+
+function copyShare() {
+  const url = getShareURL();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => alert('✅ คัดลอกลิงก์แล้ว!\n\nส่งลิงก์นี้ให้ผู้อื่นเพื่อให้เห็นรูปภาพเหมือนกัน'));
+  } else {
+    prompt('คัดลอกลิงก์ด้านล่าง:', url);
+  }
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextPage();
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevPage();
+});
+
+// Touch swipe
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+document.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) { dx < 0 ? nextPage() : prevPage(); }
+}, {passive:true});
+
+// Init
+init();
+</script>
+</body>
+</html>
