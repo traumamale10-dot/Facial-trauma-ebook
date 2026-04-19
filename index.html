@@ -459,44 +459,6 @@ body {
   font-size: 10px; color: var(--text-light); margin-top: 4px;
 }
 
-/* URL input area */
-.img-slot-url {
-  padding: 8px 12px 12px;
-  border-top: 1px solid rgba(180,150,80,0.18);
-  background: rgba(255,255,255,0.45);
-}
-.url-row {
-  display: flex; gap: 6px; align-items: center;
-}
-.url-label {
-  font-size: 10px; color: var(--text-light);
-  white-space: nowrap; flex-shrink: 0;
-}
-.url-input {
-  flex: 1;
-  font-size: 10.5px;
-  font-family: 'Sarabun', sans-serif;
-  border: 1px solid rgba(180,150,80,0.35);
-  border-radius: 5px;
-  padding: 4px 7px;
-  background: white;
-  color: var(--text-dark);
-  outline: none;
-  transition: border-color 0.2s;
-}
-.url-input:focus { border-color: var(--teal); }
-.url-input::placeholder { color: var(--text-light); font-size: 9.5px; }
-.url-btn {
-  padding: 4px 9px;
-  background: var(--navy);
-  color: var(--gold-light);
-  border: none; border-radius: 5px;
-  font-size: 10px; font-weight: 600;
-  cursor: pointer; white-space: nowrap;
-  transition: background 0.2s;
-}
-.url-btn:hover { background: var(--navy-light); }
-
 /* ===== MENU PAGE ===== */
 .menu-wrap {
   padding: 28px 24px;
@@ -638,97 +600,47 @@ body {
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-// IMAGE STORE  (key → URL string)
-// Shared state via localStorage so all users
-// who edit on the same device persist,
-// but the primary sharing mechanism is URL params.
-// ─────────────────────────────────────────────
-const IMG_KEYS = [
-  'img_cover','img_anatomy','img_ct','img_surgery',
-  'img_nasal','img_nasal2','img_mmf','img_orif','img_homecare','img_contact'
-];
-
-// Load from URL params first, then localStorage
-const imgStore = {};
-
-function loadImages() {
-  const params = new URLSearchParams(window.location.search);
-  IMG_KEYS.forEach(k => {
-    const fromParam = params.get(k);
-    if (fromParam) {
-      imgStore[k] = decodeURIComponent(fromParam);
-      localStorage.setItem(k, imgStore[k]);
-    } else {
-      imgStore[k] = localStorage.getItem(k) || '';
-    }
-  });
-}
-
-function saveImage(key, url) {
-  imgStore[key] = url;
-  localStorage.setItem(key, url);
-}
-
-function getShareURL() {
-  const params = new URLSearchParams();
-  IMG_KEYS.forEach(k => {
-    if (imgStore[k]) params.set(k, encodeURIComponent(imgStore[k]));
-  });
-  const str = params.toString();
-  return str ? (location.href.split('?')[0] + '?' + str) : location.href.split('?')[0];
-}
+// ══════════════════════════════════════════════════════
+//  ใส่ URL รูปภาพของแต่ละหน้าที่นี่
+//  วางลิงก์รูปตรงๆ แล้ว Save → อัปโหลดขึ้น GitHub ใหม่
+//  ทุกคนที่เปิดไฟล์นี้จะเห็นรูปเหมือนกันทันที
+// ══════════════════════════════════════════════════════
+const IMAGE_URLS = {
+  img_anatomy  : 'https://i.postimg.cc/BnFcF8rk/Gemini-Generated-Image-66ag5966ag5966ag.png',  // หน้า 1  — โครงสร้างกระดูกใบหน้า
+  img_ct       : 'https://i.postimg.cc/JngdzvD2/Gemini-Generated-Image-bp9643bp9643bp96.png',  // หน้า 2  — CT / X-ray กระดูกใบหน้า
+  img_surgery  : 'https://i.postimg.cc/ZK6DJfTd/Gemini-Generated-Image-k7caxqk7caxqk7ca.png',  // หน้า 3  — ภาพรวมประเภทการผ่าตัด
+  img_nasal    : 'https://i.postimg.cc/Hx79Bxn2/Gemini-Generated-Image-85w33285w33285w3.png',  // หน้า 4  — Nasal Packing / Nasal Splint
+  img_mmf      : 'https://i.postimg.cc/NftkkQcB/Gemini-Generated-Image-yjryxqyjryxqyjry.png',  // หน้า 5  — MMF ลวดมัดฟัน
+  img_orif     : 'https://i.postimg.cc/jSd6BvCs/Gemini-Generated-Image-bmj2cubmj2cubmj2.png',  // หน้า 6  — ORIF Titanium Plate & Screw
+  img_homecare : 'https://i.postimg.cc/zBWTTc2w/Gemini-Generated-Image-wgjrrcwgjrrcwgjr.png',  // หน้า 7  — การดูแลตนเองที่บ้าน
+  img_contact  : 'https://i.postimg.cc/8kRh5x6s/Gemini-Generated-Image-bt5aihbt5aihbt5a.png',  // หน้า 8  — QR Code / ข้อมูลติดต่อ
+};
+// ══════════════════════════════════════════════════════
 
 // ─────────────────────────────────────────────
-// IMAGE SLOT HTML BUILDER
+// IMAGE SLOT — แสดงรูปอย่างเดียว ไม่มีช่องอัปโหลด
 // ─────────────────────────────────────────────
 function imgSlot(key, label) {
-  const url = imgStore[key] || '';
-  const hasImg = !!url;
-  return `
+  const url = IMAGE_URLS[key] || '';
+  if (url) {
+    // มีรูป → แสดงรูปเลย
+    return `
+<div class="img-slot" id="slot-${key}" style="background:transparent;border:none;padding:8px 0;">
+  <img src="${url}" alt="${label}"
+    style="max-width:100%;max-height:220px;border-radius:9px;object-fit:contain;display:block;margin:0 auto;box-shadow:0 4px 16px rgba(0,0,0,0.12);"
+    onerror="this.closest('.img-slot').style.display='none'">
+  <div style="text-align:center;font-size:10px;color:var(--text-light);margin-top:5px;">${label}</div>
+</div>`;
+  } else {
+    // ยังไม่มีรูป → แสดงกล่องว่างสวยงาม
+    return `
 <div class="img-slot" id="slot-${key}">
-  <div class="img-slot-preview" style="display:${hasImg?'block':'none'}">
-    <img src="${url}" alt="${label}" onerror="this.src='';this.closest('.img-slot-preview').style.display='none';this.closest('.img-slot').querySelector('.img-slot-top').style.display='block'">
-    <div class="img-caption">${label}</div>
-  </div>
-  <div class="img-slot-top" style="display:${hasImg?'none':'block'}">
+  <div class="img-slot-top">
     <span class="ph-icon">🖼️</span>
     <span class="ph-label">${label}</span>
-    <span class="ph-hint">ใส่ URL รูปภาพด้านล่าง</span>
-  </div>
-  <div class="img-slot-url">
-    <div class="url-row">
-      <span class="url-label">🔗 URL:</span>
-      <input class="url-input" type="text" placeholder="https://example.com/image.jpg"
-        value="${url}"
-        onchange="applyImgUrl('${key}', this.value)"
-        onkeydown="if(event.key==='Enter') applyImgUrl('${key}', this.value)"
-      >
-      <button class="url-btn" onclick="applyImgUrl('${key}', this.closest('.img-slot').querySelector('.url-input').value)">ใส่รูป</button>
-    </div>
+    <span class="ph-hint">ยังไม่ได้ใส่รูป — เปิดไฟล์ HTML แล้วใส่ URL ในส่วน IMAGE_URLS</span>
   </div>
 </div>`;
-}
-
-function applyImgUrl(key, url) {
-  url = url.trim();
-  saveImage(key, url);
-  const slot = document.getElementById('slot-' + key);
-  if (!slot) return;
-  const preview = slot.querySelector('.img-slot-preview');
-  const top = slot.querySelector('.img-slot-top');
-  const input = slot.querySelector('.url-input');
-  if (input) input.value = url;
-  if (url) {
-    if (preview) {
-      preview.style.display = 'block';
-      const img = preview.querySelector('img');
-      if (img) { img.src = url; }
-    }
-    if (top) top.style.display = 'none';
-  } else {
-    if (preview) preview.style.display = 'none';
-    if (top) top.style.display = 'block';
   }
 }
 
@@ -784,10 +696,7 @@ function getPages() {
           `).join('')}
         </div>
         <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(180,150,80,0.18);text-align:center;">
-          <button onclick="copyShare()" style="background:var(--navy);color:var(--gold-light);border:none;border-radius:8px;padding:8px 16px;font-family:'Sarabun',sans-serif;font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
-            🔗 คัดลอกลิงก์แชร์รูปภาพ
-          </button>
-          <p style="font-size:9.5px;color:var(--text-light);margin-top:6px;line-height:1.6;">ลิงก์นี้จะรวม URL รูปภาพทั้งหมดที่ใส่ไว้<br>ส่งให้ผู้อื่นเปิดได้เห็นรูปเหมือนกัน</p>
+          <p style="font-size:10px;color:var(--text-light);line-height:1.7;">รูปภาพทั้งหมดฝังอยู่ในไฟล์ HTML<br>ทุกคนที่เปิดไฟล์นี้จะเห็นรูปเหมือนกัน</p>
         </div>
       </div>
       <div class="page-num">สารบัญ</div>
@@ -1102,7 +1011,6 @@ const B = document.getElementById('pageB');
 let front = A, behind = B;
 
 function init() {
-  loadImages();
   pages = getPages();
   renderPage(0, front);
   front.className = 'page front';
@@ -1170,15 +1078,6 @@ function jumpTo(pg) {
 }
 
 function goMenu() { jumpTo(1); }
-
-function copyShare() {
-  const url = getShareURL();
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(() => alert('✅ คัดลอกลิงก์แล้ว!\n\nส่งลิงก์นี้ให้ผู้อื่นเพื่อให้เห็นรูปภาพเหมือนกัน'));
-  } else {
-    prompt('คัดลอกลิงก์ด้านล่าง:', url);
-  }
-}
 
 // Keyboard
 document.addEventListener('keydown', e => {
