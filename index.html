@@ -24,6 +24,8 @@
 
 - { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 100%; height: 100%; overflow: hidden; }
+  .book-wrap, .nav-bar { visibility: hidden; }
+  body.ebook-ready .book-wrap, body.ebook-ready .nav-bar { visibility: visible; }
 
 body {
 font-family: ‘Sarabun’, sans-serif;
@@ -579,23 +581,25 @@ min-width: 62px; text-align: center; letter-spacing: 0.04em;
 LOGIN / PORTAL OVERLAY
 ══════════════════════════════════════ */
 #portal-overlay {
-position: fixed; inset: 0; z-index: 2000;
+position: fixed; inset: 0; z-index: 9999;
 background: #1e1008;
 background-image:
 radial-gradient(ellipse at 15% 50%, #2d1a0a 0%, transparent 55%),
 radial-gradient(ellipse at 85% 20%, #120b04 0%, transparent 50%);
 display: flex; align-items: center; justify-content: center;
-padding: 20px;
-overflow-y: auto;
+padding: 20px; overflow-y: auto;
+min-height: 100vh; min-height: 100dvh;
 }
-#portal-overlay.hidden { display: none; }
+#portal-overlay.hidden { display: none !important; }
 
 .po-card {
 width: 100%; max-width: 420px;
 background: var(–cream);
 border-radius: 20px; overflow: hidden;
-box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 animation: poFadeUp 0.4s ease;
+margin: auto;
+position: relative;
 }
 @keyframes poFadeUp {
 from { opacity:0; transform:translateY(24px); }
@@ -1798,6 +1802,7 @@ function showPortal(view) {
 
 function hidePortal() {
   document.getElementById('portal-overlay').classList.add('hidden');
+  document.body.classList.add('ebook-ready');
 }
 
 // ── LANDING ──
@@ -1829,7 +1834,8 @@ function renderPoLanding(el) {
 }
 
 function enterAsGuest() {
-  hidePortal();
+  document.getElementById('portal-overlay').classList.add('hidden');
+  document.body.classList.add('ebook-ready');
   showMemberBar('guest','ผู้ใช้ทั่วไป');
 }
 
@@ -1990,6 +1996,7 @@ function doLogout() {
   portalUser = null;
   document.getElementById('member-bar').classList.remove('show');
   document.body.classList.remove('has-member-bar');
+  document.body.classList.remove('ebook-ready');
   showPortal('landing');
 }
 
