@@ -1499,160 +1499,158 @@ function getPages() {
           line-height:1.4;
         }
         #bep .bbtn.sel { background:#1a2744; color:#e8c44a; border-color:#1a2744; }
-      </style>
+      <\/style>
 
-```
-  <!-- Skull image + SVG overlay -->
-  <div class="bwrap">
-    <img src="https://i.postimg.cc/vTSb7f8f/Gemini-Generated-Image-ngqyrvngqyrvngqy.png" alt="skull">
+      <!-- Skull image + SVG overlay -->
+      <div class="bwrap">
+        <img src="https://i.postimg.cc/vTSb7f8f/Gemini-Generated-Image-ngqyrvngqyrvngqy.png" alt="skull">
 
-    <!--
-      SVG overlay: viewBox matches image aspect ratio (square = 100x100)
-      bone dot positions (cx,cy) on image %, label positions with connector lines
-      Left side labels: right-aligned labels on left
-      Right side labels: left-aligned labels on right
-    -->
-    <svg class="bsvg" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <defs>
-        <filter id="glow"><feGaussianBlur stdDeviation="0.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      </defs>
+        <!--
+          SVG overlay: viewBox matches image aspect ratio (square = 100x100)
+          bone dot positions (cx,cy) on image %, label positions with connector lines
+          Left side labels: right-aligned labels on left
+          Right side labels: left-aligned labels on right
+        -->
+        <svg class="bsvg" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <filter id="glow"><feGaussianBlur stdDeviation="0.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
 
-      <!-- FRONTAL — top center, label above -->
-      <line class="bline" x1="50" y1="18" x2="50" y2="8"/>
-      <g class="blabel" onclick="bsel('frontal')">
-        <rect x="34" y="2" width="32" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(75,175,212,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="50" y="4.5" text-anchor="middle" fill="#6ecff6" font-size="2.0px" font-weight="700">หน้าผาก</text>
-      </g>
-      <g class="bdot" id="bd-frontal" onclick="bsel('frontal')">
-        <circle cx="50" cy="20" r="1.4" fill="#4bafd4" stroke="white" stroke-width="0.5"/>
-      </g>
+          <!-- FRONTAL — top center, label above -->
+          <line class="bline" x1="50" y1="18" x2="50" y2="8"/>
+          <g class="blabel" onclick="bsel('frontal')">
+            <rect x="34" y="2" width="32" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(75,175,212,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="50" y="4.5" text-anchor="middle" fill="#6ecff6" font-size="2.0px" font-weight="700">หน้าผาก</text>
+          </g>
+          <g class="bdot" id="bd-frontal" onclick="bsel('frontal')">
+            <circle cx="50" cy="20" r="1.4" fill="#4bafd4" stroke="white" stroke-width="0.5"/>
+          </g>
 
-      <!-- TEMPORAL LEFT — label outside left -->
-      <line class="bline" x1="14" y1="32" x2="6" y2="26"/>
-      <g class="blabel" onclick="bsel('temporal')">
-        <rect x="0" y="21" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(156,107,181,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="9" y="24.5" text-anchor="middle" fill="#c49ee8" font-size="2.0px" font-weight="700">ขมับ</text>
-      </g>
-      <g class="bdot" id="bd-temporal" onclick="bsel('temporal')">
-        <circle cx="14" cy="33" r="1.4" fill="#9c6bb5" stroke="white" stroke-width="0.5"/>
-      </g>
+          <!-- TEMPORAL LEFT — label outside left -->
+          <line class="bline" x1="14" y1="32" x2="6" y2="26"/>
+          <g class="blabel" onclick="bsel('temporal')">
+            <rect x="0" y="21" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(156,107,181,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="9" y="24.5" text-anchor="middle" fill="#c49ee8" font-size="2.0px" font-weight="700">ขมับ</text>
+          </g>
+          <g class="bdot" id="bd-temporal" onclick="bsel('temporal')">
+            <circle cx="14" cy="33" r="1.4" fill="#9c6bb5" stroke="white" stroke-width="0.5"/>
+          </g>
 
-      <!-- TEMPORAL RIGHT -->
-      <line class="bline" x1="86" y1="32" x2="94" y2="26"/>
-      <g class="blabel" onclick="bsel('temporal')">
-        <rect x="82" y="21" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(156,107,181,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="91" y="24.5" text-anchor="middle" fill="#c49ee8" font-size="2.0px" font-weight="700">ขมับ</text>
-      </g>
-      <g class="bdot" onclick="bsel('temporal')">
-        <circle cx="86" cy="33" r="1.4" fill="#9c6bb5" stroke="white" stroke-width="0.5"/>
-      </g>
+          <!-- TEMPORAL RIGHT -->
+          <line class="bline" x1="86" y1="32" x2="94" y2="26"/>
+          <g class="blabel" onclick="bsel('temporal')">
+            <rect x="82" y="21" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(156,107,181,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="91" y="24.5" text-anchor="middle" fill="#c49ee8" font-size="2.0px" font-weight="700">ขมับ</text>
+          </g>
+          <g class="bdot" onclick="bsel('temporal')">
+            <circle cx="86" cy="33" r="1.4" fill="#9c6bb5" stroke="white" stroke-width="0.5"/>
+          </g>
 
-      <!-- ORBITAL LEFT -->
-      <line class="bline" x1="29" y1="42" x2="6" y2="38"/>
-      <g class="blabel" onclick="bsel('orbital')">
-        <rect x="0" y="33" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(58,158,138,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="9" y="36.5" text-anchor="middle" fill="#5fd4c0" font-size="2.0px" font-weight="700">เบ้าตา</text>
-      </g>
-      <g class="bdot" id="bd-orbital" onclick="bsel('orbital')">
-        <circle cx="30" cy="43" r="1.4" fill="#3a9e8a" stroke="white" stroke-width="0.5"/>
-      </g>
+          <!-- ORBITAL LEFT -->
+          <line class="bline" x1="29" y1="42" x2="6" y2="38"/>
+          <g class="blabel" onclick="bsel('orbital')">
+            <rect x="0" y="33" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(58,158,138,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="9" y="36.5" text-anchor="middle" fill="#5fd4c0" font-size="2.0px" font-weight="700">เบ้าตา</text>
+          </g>
+          <g class="bdot" id="bd-orbital" onclick="bsel('orbital')">
+            <circle cx="30" cy="43" r="1.4" fill="#3a9e8a" stroke="white" stroke-width="0.5"/>
+          </g>
 
-      <!-- ORBITAL RIGHT -->
-      <line class="bline" x1="71" y1="42" x2="94" y2="38"/>
-      <g class="blabel" onclick="bsel('orbital')">
-        <rect x="82" y="33" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(58,158,138,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="91" y="36.5" text-anchor="middle" fill="#5fd4c0" font-size="2.0px" font-weight="700">เบ้าตา</text>
-      </g>
-      <g class="bdot" onclick="bsel('orbital')">
-        <circle cx="70" cy="43" r="1.4" fill="#3a9e8a" stroke="white" stroke-width="0.5"/>
-      </g>
+          <!-- ORBITAL RIGHT -->
+          <line class="bline" x1="71" y1="42" x2="94" y2="38"/>
+          <g class="blabel" onclick="bsel('orbital')">
+            <rect x="82" y="33" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(58,158,138,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="91" y="36.5" text-anchor="middle" fill="#5fd4c0" font-size="2.0px" font-weight="700">เบ้าตา</text>
+          </g>
+          <g class="bdot" onclick="bsel('orbital')">
+            <circle cx="70" cy="43" r="1.4" fill="#3a9e8a" stroke="white" stroke-width="0.5"/>
+          </g>
 
-      <!-- NASAL — center, label above -->
-      <line class="bline" x1="50" y1="50" x2="50" y2="43"/>
-      <g class="blabel" onclick="bsel('nasal')">
-        <rect x="36" y="37" width="28" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(224,112,64,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="50" y="40.5" text-anchor="middle" fill="#f0956a" font-size="2.0px" font-weight="700">กระดูกจมูก</text>
-      </g>
-      <g class="bdot" id="bd-nasal" onclick="bsel('nasal')">
-        <circle cx="50" cy="51" r="1.4" fill="#e07040" stroke="white" stroke-width="0.5"/>
-      </g>
+          <!-- NASAL — center, label above -->
+          <line class="bline" x1="50" y1="50" x2="50" y2="43"/>
+          <g class="blabel" onclick="bsel('nasal')">
+            <rect x="36" y="37" width="28" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(224,112,64,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="50" y="40.5" text-anchor="middle" fill="#f0956a" font-size="2.0px" font-weight="700">กระดูกจมูก</text>
+          </g>
+          <g class="bdot" id="bd-nasal" onclick="bsel('nasal')">
+            <circle cx="50" cy="51" r="1.4" fill="#e07040" stroke="white" stroke-width="0.5"/>
+          </g>
 
-      <!-- ZYGOMATIC LEFT -->
-      <line class="bline" x1="18" y1="54" x2="6" y2="51"/>
-      <g class="blabel" onclick="bsel('zygomatic')">
-        <rect x="0" y="46" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(74,158,92,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="9" y="49.5" text-anchor="middle" fill="#7dd494" font-size="2.0px" font-weight="700">โหนกแก้ม</text>
-      </g>
-      <g class="bdot" id="bd-zygomatic" onclick="bsel('zygomatic')">
-        <circle cx="18" cy="55" r="1.4" fill="#4a9e5c" stroke="white" stroke-width="0.5"/>
-      </g>
+          <!-- ZYGOMATIC LEFT -->
+          <line class="bline" x1="18" y1="54" x2="6" y2="51"/>
+          <g class="blabel" onclick="bsel('zygomatic')">
+            <rect x="0" y="46" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(74,158,92,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="9" y="49.5" text-anchor="middle" fill="#7dd494" font-size="2.0px" font-weight="700">โหนกแก้ม</text>
+          </g>
+          <g class="bdot" id="bd-zygomatic" onclick="bsel('zygomatic')">
+            <circle cx="18" cy="55" r="1.4" fill="#4a9e5c" stroke="white" stroke-width="0.5"/>
+          </g>
 
-      <!-- ZYGOMATIC RIGHT -->
-      <line class="bline" x1="82" y1="54" x2="94" y2="51"/>
-      <g class="blabel" onclick="bsel('zygomatic')">
-        <rect x="82" y="46" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(74,158,92,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="91" y="49.5" text-anchor="middle" fill="#7dd494" font-size="2.0px" font-weight="700">โหนกแก้ม</text>
-      </g>
-      <g class="bdot" onclick="bsel('zygomatic')">
-        <circle cx="82" cy="55" r="1.4" fill="#4a9e5c" stroke="white" stroke-width="0.5"/>
-      </g>
+          <!-- ZYGOMATIC RIGHT -->
+          <line class="bline" x1="82" y1="54" x2="94" y2="51"/>
+          <g class="blabel" onclick="bsel('zygomatic')">
+            <rect x="82" y="46" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(74,158,92,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="91" y="49.5" text-anchor="middle" fill="#7dd494" font-size="2.0px" font-weight="700">โหนกแก้ม</text>
+          </g>
+          <g class="bdot" onclick="bsel('zygomatic')">
+            <circle cx="82" cy="55" r="1.4" fill="#4a9e5c" stroke="white" stroke-width="0.5"/>
+          </g>
 
-      <!-- MAXILLA — label left -->
-      <line class="bline" x1="48" y1="65" x2="6" y2="63"/>
-      <g class="blabel" onclick="bsel('maxilla')">
-        <rect x="0" y="58" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(212,96,138,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="9" y="61.5" text-anchor="middle" fill="#ee90bb" font-size="2.0px" font-weight="700">ขากรรไกรบน</text>
-      </g>
-      <g class="bdot" id="bd-maxilla" onclick="bsel('maxilla')">
-        <circle cx="49" cy="66" r="1.4" fill="#d4608a" stroke="white" stroke-width="0.5"/>
-        <text x="49" y="68" text-anchor="middle" fill="white" font-size="1.8px" font-weight="800">Mx</text>
-      </g>
+          <!-- MAXILLA — label left -->
+          <line class="bline" x1="48" y1="65" x2="6" y2="63"/>
+          <g class="blabel" onclick="bsel('maxilla')">
+            <rect x="0" y="58" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(212,96,138,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="9" y="61.5" text-anchor="middle" fill="#ee90bb" font-size="2.0px" font-weight="700">ขากรรไกรบน</text>
+          </g>
+          <g class="bdot" id="bd-maxilla" onclick="bsel('maxilla')">
+            <circle cx="49" cy="66" r="1.4" fill="#d4608a" stroke="white" stroke-width="0.5"/>
+            <text x="49" y="68" text-anchor="middle" fill="white" font-size="1.8px" font-weight="800">Mx</text>
+          </g>
 
-      <!-- MANDIBLE — label right -->
-      <line class="bline" x1="52" y1="82" x2="94" y2="79"/>
-      <g class="blabel" onclick="bsel('mandible')">
-        <rect x="82" y="74" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(200,160,48,0.6)" stroke-width="0.6" rx="2"/>
-        <text x="91" y="77.5" text-anchor="middle" fill="#f0cc60" font-size="2.0px" font-weight="700">ขากรรไกรล่าง</text>
-      </g>
-      <g class="bdot" id="bd-mandible" onclick="bsel('mandible')">
-        <circle cx="51" cy="83" r="1.4" fill="#c8a030" stroke="white" stroke-width="0.5"/>
-        <text x="51" y="85" text-anchor="middle" fill="white" font-size="1.8px" font-weight="800">Md</text>
-      </g>
-    </svg>
-  </div>
+          <!-- MANDIBLE — label right -->
+          <line class="bline" x1="52" y1="82" x2="94" y2="79"/>
+          <g class="blabel" onclick="bsel('mandible')">
+            <rect x="82" y="74" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(200,160,48,0.6)" stroke-width="0.6" rx="2"/>
+            <text x="91" y="77.5" text-anchor="middle" fill="#f0cc60" font-size="2.0px" font-weight="700">ขากรรไกรล่าง</text>
+          </g>
+          <g class="bdot" id="bd-mandible" onclick="bsel('mandible')">
+            <circle cx="51" cy="83" r="1.4" fill="#c8a030" stroke="white" stroke-width="0.5"/>
+            <text x="51" y="85" text-anchor="middle" fill="white" font-size="1.8px" font-weight="800">Md</text>
+          </g>
+        </svg>
+      </div>
 
-  <!-- Quick Buttons -->
-  <div class="bbtns">
-    <button class="bbtn" id="bbt-frontal"   onclick="bsel('frontal')">🔵 หน้าผาก</button>
-    <button class="bbtn" id="bbt-nasal"     onclick="bsel('nasal')">🟠 จมูก</button>
-    <button class="bbtn" id="bbt-orbital"   onclick="bsel('orbital')">🩵 เบ้าตา</button>
-    <button class="bbtn" id="bbt-zygomatic" onclick="bsel('zygomatic')">🟢 แก้ม</button>
-    <button class="bbtn" id="bbt-maxilla"   onclick="bsel('maxilla')">🌸 ขากรรไกรบน</button>
-    <button class="bbtn" id="bbt-mandible"  onclick="bsel('mandible')">🟡 ขากรรไกรล่าง</button>
-    <button class="bbtn" id="bbt-temporal"  onclick="bsel('temporal')">🟣 ขมับ</button>
-  </div>
+      <!-- Quick Buttons -->
+      <div class="bbtns">
+        <button class="bbtn" id="bbt-frontal"   onclick="bsel('frontal')">🔵 หน้าผาก</button>
+        <button class="bbtn" id="bbt-nasal"     onclick="bsel('nasal')">🟠 จมูก</button>
+        <button class="bbtn" id="bbt-orbital"   onclick="bsel('orbital')">🩵 เบ้าตา</button>
+        <button class="bbtn" id="bbt-zygomatic" onclick="bsel('zygomatic')">🟢 แก้ม</button>
+        <button class="bbtn" id="bbt-maxilla"   onclick="bsel('maxilla')">🌸 ขากรรไกรบน</button>
+        <button class="bbtn" id="bbt-mandible"  onclick="bsel('mandible')">🟡 ขากรรไกรล่าง</button>
+        <button class="bbtn" id="bbt-temporal"  onclick="bsel('temporal')">🟣 ขมับ</button>
+      </div>
 
-  <!-- Info output -->
-  <div class="bipanel" id="bipanel">
-    <div class="bihint">👆 แตะจุดสีหรือเส้นโยงบนรูป เพื่อดูข้อมูลการรักษาและการพยาบาล</div>
-  </div>
+      <!-- Info output -->
+      <div class="bipanel" id="bipanel">
+        <div class="bihint">👆 แตะจุดสีหรือเส้นโยงบนรูป เพื่อดูข้อมูลการรักษาและการพยาบาล</div>
+      </div>
 
-  <div class="page-num">★</div>
+      <div class="page-num">★</div>
 
-</div>`,
+    </div>`,
 
-    // 11 — Back cover
-() => `<div class="back-bg">
-  <div style="position:relative;z-index:1;text-align:center;">
-    <div style="font-size:44px;margin-bottom:16px;">🏥</div>
-    <p style="font-family:'Noto Serif Thai',serif;font-size:16px;font-weight:700;color:var(--cream);margin-bottom:8px;">หากมีข้อสงสัย</p>
-    <p style="font-size:12px;color:rgba(253,246,227,0.6);line-height:1.85;max-width:240px;margin:0 auto 20px;">กรุณาติดต่อทีมพยาบาลผู้ดูแล<br>หรือโทรศัพท์มายังหน่วยงานที่รับผิดชอบการรักษาของท่าน</p>
-    <p style="margin-top:8px;font-size:10px;color:rgba(201,162,39,0.55);letter-spacing:0.1em;text-transform:uppercase;">Facial Trauma Nursing Care<br>E-Book for Patients &amp; Families</p>
-  </div>
-</div>`,
-```
+        // 11 — Back cover
+    () => `<div class="back-bg">
+      <div style="position:relative;z-index:1;text-align:center;">
+        <div style="font-size:44px;margin-bottom:16px;">🏥</div>
+        <p style="font-family:'Noto Serif Thai',serif;font-size:16px;font-weight:700;color:var(--cream);margin-bottom:8px;">หากมีข้อสงสัย</p>
+        <p style="font-size:12px;color:rgba(253,246,227,0.6);line-height:1.85;max-width:240px;margin:0 auto 20px;">กรุณาติดต่อทีมพยาบาลผู้ดูแล<br>หรือโทรศัพท์มายังหน่วยงานที่รับผิดชอบการรักษาของท่าน</p>
+        <p style="margin-top:8px;font-size:10px;color:rgba(201,162,39,0.55);letter-spacing:0.1em;text-transform:uppercase;">Facial Trauma Nursing Care<br>E-Book for Patients &amp; Families</p>
+      </div>
+    </div>`,
 
-];
+  ];
 }
 
 // ─────────────────────────────────────────────
@@ -1662,407 +1660,450 @@ let cur = 0;
 let busy = false;
 let pages;
 
-const LABELS = [‘ปก’,‘สารบัญ’,‘1’,‘2’,‘★’,‘3’,‘4’,‘5’,‘6’,‘7’,‘8’,‘ปิดท้าย’];
+const LABELS = ['ปก','สารบัญ','1','2','★','3','4','5','6','7','8','ปิดท้าย'];
 
 function renderPage(idx, el) {
-el.innerHTML = pages[idx]();
-// Re-attach check toggle (inline onclick already handles it)
+  el.innerHTML = pages[idx]();
+  // Re-attach check toggle (inline onclick already handles it)
 }
 
 function updateNav() {
-document.getElementById(‘btnPrev’).disabled = cur === 0;
-document.getElementById(‘btnNext’).disabled = cur === pages.length - 1;
-const lbl = LABELS[cur] !== undefined ? LABELS[cur] : `${cur}`;
-document.getElementById(‘navInfo’).textContent =
-cur === 0 ? ‘ปก’ : cur === pages.length - 1 ? ‘ปิดท้าย’ : `หน้า ${lbl}`;
+  document.getElementById('btnPrev').disabled = cur === 0;
+  document.getElementById('btnNext').disabled = cur === pages.length - 1;
+  const lbl = LABELS[cur] !== undefined ? LABELS[cur] : `${cur}`;
+  document.getElementById('navInfo').textContent =
+    cur === 0 ? 'ปก' : cur === pages.length - 1 ? 'ปิดท้าย' : `หน้า ${lbl}`;
 }
 
-const A = document.getElementById(‘pageA’);
-const B = document.getElementById(‘pageB’);
+const A = document.getElementById('pageA');
+const B = document.getElementById('pageB');
 let front = A, behind = B;
 
 function init() {
-pages = getPages();
-renderPage(0, front);
-front.className = ‘page front’;
-behind.className = ‘page behind’;
-updateNav();
+  pages = getPages();
+  renderPage(0, front);
+  front.className = 'page front';
+  behind.className = 'page behind';
+  updateNav();
 }
 
 function turnForward() {
-if (busy || cur >= pages.length - 1) return;
-busy = true;
-cur++;
-// Render new content on behind page
-renderPage(cur, behind);
-behind.className = ‘page anim-in’;
-front.className  = ‘page anim-away’;
-setTimeout(() => {
-front.className  = ‘page behind’;
-behind.className = ‘page front’;
-// swap references
-const tmp = front; front = behind; behind = tmp;
-updateNav();
-busy = false;
-}, 460);
+  if (busy || cur >= pages.length - 1) return;
+  busy = true;
+  cur++;
+  // Render new content on behind page
+  renderPage(cur, behind);
+  behind.className = 'page anim-in';
+  front.className  = 'page anim-away';
+  setTimeout(() => {
+    front.className  = 'page behind';
+    behind.className = 'page front';
+    // swap references
+    const tmp = front; front = behind; behind = tmp;
+    updateNav();
+    busy = false;
+  }, 460);
 }
 
 function turnBackward() {
-if (busy || cur <= 0) return;
-busy = true;
-cur–;
-renderPage(cur, behind);
-behind.className = ‘page anim-return’;
-front.className  = ‘page anim-back’;
-setTimeout(() => {
-front.className  = ‘page behind’;
-behind.className = ‘page front’;
-const tmp = front; front = behind; behind = tmp;
-updateNav();
-busy = false;
-}, 460);
+  if (busy || cur <= 0) return;
+  busy = true;
+  cur--;
+  renderPage(cur, behind);
+  behind.className = 'page anim-return';
+  front.className  = 'page anim-back';
+  setTimeout(() => {
+    front.className  = 'page behind';
+    behind.className = 'page front';
+    const tmp = front; front = behind; behind = tmp;
+    updateNav();
+    busy = false;
+  }, 460);
 }
 
 function nextPage() { turnForward(); }
 function prevPage() { turnBackward(); }
 
 function jumpTo(pg) {
-if (pg === cur || busy) return;
-const dir = pg > cur ? 1 : -1;
-cur = pg;
-renderPage(cur, behind);
-if (dir > 0) {
-behind.className = ‘page anim-in’;
-front.className  = ‘page anim-away’;
-} else {
-behind.className = ‘page anim-return’;
-front.className  = ‘page anim-back’;
-}
-busy = true;
-setTimeout(() => {
-front.className  = ‘page behind’;
-behind.className = ‘page front’;
-const tmp = front; front = behind; behind = tmp;
-updateNav();
-busy = false;
-}, 460);
+  if (pg === cur || busy) return;
+  const dir = pg > cur ? 1 : -1;
+  cur = pg;
+  renderPage(cur, behind);
+  if (dir > 0) {
+    behind.className = 'page anim-in';
+    front.className  = 'page anim-away';
+  } else {
+    behind.className = 'page anim-return';
+    front.className  = 'page anim-back';
+  }
+  busy = true;
+  setTimeout(() => {
+    front.className  = 'page behind';
+    behind.className = 'page front';
+    const tmp = front; front = behind; behind = tmp;
+    updateNav();
+    busy = false;
+  }, 460);
 }
 
 function goMenu() { jumpTo(1); }
 
 // Keyboard
-document.addEventListener(‘keydown’, e => {
-if (e.key === ‘ArrowRight’ || e.key === ‘ArrowDown’) nextPage();
-if (e.key === ‘ArrowLeft’  || e.key === ‘ArrowUp’)   prevPage();
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextPage();
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevPage();
 });
 
 // Touch swipe
 let tx = 0;
-document.addEventListener(‘touchstart’, e => { tx = e.touches[0].clientX; }, {passive:true});
-document.addEventListener(‘touchend’,   e => {
-const dx = e.changedTouches[0].clientX - tx;
-if (Math.abs(dx) > 50) { dx < 0 ? nextPage() : prevPage(); }
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+document.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) { dx < 0 ? nextPage() : prevPage(); }
 }, {passive:true});
 
 // ══════════════════════════════════════════════════════
 // PORTAL SYSTEM — Login / Register / Member / Admin
 // ══════════════════════════════════════════════════════
-const API_URL = ‘https://script.google.com/macros/s/AKfycbx_XYekbmKnseZqwzbONQ2kK9T-nlpnMB2eZukAM2g30w3G3VWdHkpuZEGgXEZDj7WhcQ/exec’;
+const API_URL = 'https://script.google.com/macros/s/AKfycbx_XYekbmKnseZqwzbONQ2kK9T-nlpnMB2eZukAM2g30w3G3VWdHkpuZEGgXEZDj7WhcQ/exec';
 let portalUser = null;
 
 async function apiCall(data) {
-try {
-const r = await fetch(API_URL, { method:‘POST’, body:JSON.stringify(data), headers:{‘Content-Type’:‘text/plain’} });
-return await r.json();
-} catch(e) { return { error:‘ไม่สามารถเชื่อมต่อได้’ }; }
+  try {
+    const r = await fetch(API_URL, { method:'POST', body:JSON.stringify(data), headers:{'Content-Type':'text/plain'} });
+    return await r.json();
+  } catch(e) { return { error:'ไม่สามารถเชื่อมต่อได้' }; }
 }
 
 function cdHTML(dateStr) {
-if (!dateStr) return ‘—’;
-const d = new Date(dateStr), now = new Date();
-const diff = Math.floor((d - now) / 86400000);
-const df = d.toLocaleDateString(‘th-TH’,{day:‘numeric’,month:‘short’,year:‘numeric’});
-if (diff < 0) return `${df} <span class="cd-past">(ผ่านไป ${Math.abs(diff)} วัน)</span>`;
-if (diff === 0) return `${df} <span class="cd-urgent">🔴 วันนี้!</span>`;
-if (diff <= 3)  return `${df} <span class="cd-urgent">🔴 อีก ${diff} วัน</span>`;
-if (diff <= 7)  return `${df} <span class="cd-soon">🟡 อีก ${diff} วัน</span>`;
-return `${df} <span class="cd-ok">🟢 อีก ${diff} วัน</span>`;
+  if (!dateStr) return '—';
+  const d = new Date(dateStr), now = new Date();
+  const diff = Math.floor((d - now) / 86400000);
+  const df = d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+  if (diff < 0) return `${df} <span class="cd-past">(ผ่านไป ${Math.abs(diff)} วัน)</span>`;
+  if (diff === 0) return `${df} <span class="cd-urgent">🔴 วันนี้!</span>`;
+  if (diff <= 3)  return `${df} <span class="cd-urgent">🔴 อีก ${diff} วัน</span>`;
+  if (diff <= 7)  return `${df} <span class="cd-soon">🟡 อีก ${diff} วัน</span>`;
+  return `${df} <span class="cd-ok">🟢 อีก ${diff} วัน</span>`;
 }
 
 // ── SHOW PORTAL ──
 function showPortal(view) {
-const el = document.getElementById(‘po-card-content’);
-if (view === ‘landing’) renderPoLanding(el);
-else if (view === ‘login’) renderPoLogin(el);
-else if (view === ‘admin-login’) renderPoAdminLogin(el);
-document.getElementById(‘portal-overlay’).classList.remove(‘hidden’);
+  const el = document.getElementById('po-card-content');
+  if (view === 'landing') renderPoLanding(el);
+  else if (view === 'login') renderPoLogin(el);
+  else if (view === 'admin-login') renderPoAdminLogin(el);
+  document.getElementById('portal-overlay').classList.remove('hidden');
 }
 
 function hidePortal() {
-document.getElementById(‘portal-overlay’).classList.add(‘hidden’);
+  document.getElementById('portal-overlay').classList.add('hidden');
 }
 
 // ── LANDING ──
 function renderPoLanding(el) {
-el.innerHTML = ` <div class="po-header"> <div class="po-logo"> <div class="po-icon">🏥</div> <div><h2>การพยาบาลผู้ป่วย<br>บาดเจ็บใบหน้า</h2><p>Facial Trauma Nursing Care · Portal</p></div> </div> </div> <div class="po-body"> <p style="font-size:11px;color:var(--text-mid);text-align:center;margin-bottom:16px;">เลือกประเภทการเข้าใช้งาน</p> <div class="po-role-grid"> <div class="po-role-btn" onclick="enterAsGuest()"> <div class="ri">👁️</div><div class="rn">ทั่วไป</div><div class="rd">อ่าน E-book<br>ไม่ต้องสมัคร</div> </div> <div class="po-role-btn" onclick="showPortal('login')"> <div class="ri">👤</div><div class="rn">สมาชิก</div><div class="rd">E-book +<br>บันทึกข้อมูล</div> </div> <div class="po-role-btn" onclick="showPortal('admin-login')"> <div class="ri">🔐</div><div class="rn">Admin</div><div class="rd">ดูข้อมูล<br>ทั้งหมด</div> </div> </div> <div class="po-alert po-alert-info show" style="font-size:10.5px;"> 📖 E-book ครอบคลุม: การบาดเจ็บ · การผ่าตัด · การพยาบาล · การดูแลที่บ้าน · Interactive 3D กระดูกใบหน้า </div> </div>`;
+  el.innerHTML = `
+    <div class="po-header">
+      <div class="po-logo">
+        <div class="po-icon">🏥</div>
+        <div><h2>การพยาบาลผู้ป่วย<br>บาดเจ็บใบหน้า</h2><p>Facial Trauma Nursing Care · Portal</p></div>
+      </div>
+    </div>
+    <div class="po-body">
+      <p style="font-size:11px;color:var(--text-mid);text-align:center;margin-bottom:16px;">เลือกประเภทการเข้าใช้งาน</p>
+      <div class="po-role-grid">
+        <div class="po-role-btn" onclick="enterAsGuest()">
+          <div class="ri">👁️</div><div class="rn">ทั่วไป</div><div class="rd">อ่าน E-book<br>ไม่ต้องสมัคร</div>
+        </div>
+        <div class="po-role-btn" onclick="showPortal('login')">
+          <div class="ri">👤</div><div class="rn">สมาชิก</div><div class="rd">E-book +<br>บันทึกข้อมูล</div>
+        </div>
+        <div class="po-role-btn" onclick="showPortal('admin-login')">
+          <div class="ri">🔐</div><div class="rn">Admin</div><div class="rd">ดูข้อมูล<br>ทั้งหมด</div>
+        </div>
+      </div>
+      <div class="po-alert po-alert-info show" style="font-size:10.5px;">
+        📖 E-book ครอบคลุม: การบาดเจ็บ · การผ่าตัด · การพยาบาล · การดูแลที่บ้าน · Interactive 3D กระดูกใบหน้า
+      </div>
+    </div>`;
 }
 
 function enterAsGuest() {
-hidePortal();
-showMemberBar(‘guest’,‘ผู้ใช้ทั่วไป’);
+  hidePortal();
+  showMemberBar('guest','ผู้ใช้ทั่วไป');
 }
 
 // ── MEMBER LOGIN / REGISTER ──
 function renderPoLogin(el) {
-el.innerHTML = `
-<div class="po-header">
-<div class="po-logo">
-<div class="po-icon">👤</div>
-<div><h2>เข้าสู่ระบบสมาชิก</h2><p>Member Login</p></div>
-</div>
-</div>
-<div class="po-tabs">
-<button class="po-tab active" id="ptab-login" onclick="switchPoTab('login')">เข้าสู่ระบบ</button>
-<button class="po-tab" id="ptab-reg" onclick="switchPoTab('reg')">สมัครสมาชิก</button>
-</div>
-<div class="po-body">
-<div id="po-alert" class="po-alert"></div>
-
-```
-  <div id="pf-login">
-    <div class="po-row"><label class="po-label">Username</label><input id="pl-user" class="po-input" placeholder="Username"></div>
-    <div class="po-row"><label class="po-label">Password</label><input id="pl-pass" class="po-input" type="password" placeholder="Password"></div>
-    <div id="pl-spin" class="po-spinner"><div class="po-spin"></div>กำลังเข้าสู่ระบบ...</div>
-    <button class="po-btn po-btn-navy" onclick="doMemberLogin()">เข้าสู่ระบบ</button>
-  </div>
-
-  <div id="pf-reg" style="display:none">
-    <div class="po-grid2">
-      <div class="po-row"><label class="po-label">ชื่อ-นามสกุล <span class="req">*</span></label><input id="pr-name" class="po-input" placeholder="ชื่อ นามสกุล"></div>
-      <div class="po-row"><label class="po-label">เบอร์โทร</label><input id="pr-phone" class="po-input" type="tel" placeholder="08x-xxx-xxxx"></div>
+  el.innerHTML = `
+    <div class="po-header">
+      <div class="po-logo">
+        <div class="po-icon">👤</div>
+        <div><h2>เข้าสู่ระบบสมาชิก</h2><p>Member Login</p></div>
+      </div>
     </div>
-    <div class="po-row"><label class="po-label">Username <span class="req">*</span></label><input id="pr-user" class="po-input" placeholder="ตั้ง Username"></div>
-    <div class="po-grid2">
-      <div class="po-row"><label class="po-label">Password <span class="req">*</span></label><input id="pr-pass" class="po-input" type="password" placeholder="ตั้ง Password"></div>
-      <div class="po-row"><label class="po-label">ยืนยัน Password <span class="req">*</span></label><input id="pr-pass2" class="po-input" type="password" placeholder="ยืนยัน"></div>
+    <div class="po-tabs">
+      <button class="po-tab active" id="ptab-login" onclick="switchPoTab('login')">เข้าสู่ระบบ</button>
+      <button class="po-tab" id="ptab-reg" onclick="switchPoTab('reg')">สมัครสมาชิก</button>
     </div>
-    <div class="po-alert po-alert-warn show" style="font-size:10.5px;margin-bottom:12px;">⚠️ หลังสมัครต้องรอ Admin อนุมัติก่อนเข้าใช้งาน</div>
-    <div id="pr-spin" class="po-spinner"><div class="po-spin"></div>กำลังสมัคร...</div>
-    <button class="po-btn po-btn-teal" onclick="doRegister()">สมัครสมาชิก</button>
-  </div>
+    <div class="po-body">
+      <div id="po-alert" class="po-alert"></div>
 
-  <div class="po-divider">หรือ</div>
-  <button class="po-btn po-btn-ghost" onclick="showPortal('landing')">← กลับหน้าหลัก</button>
-</div>`;
-```
+      <div id="pf-login">
+        <div class="po-row"><label class="po-label">Username</label><input id="pl-user" class="po-input" placeholder="Username"></div>
+        <div class="po-row"><label class="po-label">Password</label><input id="pl-pass" class="po-input" type="password" placeholder="Password"></div>
+        <div id="pl-spin" class="po-spinner"><div class="po-spin"></div>กำลังเข้าสู่ระบบ...</div>
+        <button class="po-btn po-btn-navy" onclick="doMemberLogin()">เข้าสู่ระบบ</button>
+      </div>
 
+      <div id="pf-reg" style="display:none">
+        <div class="po-grid2">
+          <div class="po-row"><label class="po-label">ชื่อ-นามสกุล <span class="req">*</span></label><input id="pr-name" class="po-input" placeholder="ชื่อ นามสกุล"></div>
+          <div class="po-row"><label class="po-label">เบอร์โทร</label><input id="pr-phone" class="po-input" type="tel" placeholder="08x-xxx-xxxx"></div>
+        </div>
+        <div class="po-row"><label class="po-label">Username <span class="req">*</span></label><input id="pr-user" class="po-input" placeholder="ตั้ง Username"></div>
+        <div class="po-grid2">
+          <div class="po-row"><label class="po-label">Password <span class="req">*</span></label><input id="pr-pass" class="po-input" type="password" placeholder="ตั้ง Password"></div>
+          <div class="po-row"><label class="po-label">ยืนยัน Password <span class="req">*</span></label><input id="pr-pass2" class="po-input" type="password" placeholder="ยืนยัน"></div>
+        </div>
+        <div class="po-alert po-alert-warn show" style="font-size:10.5px;margin-bottom:12px;">⚠️ หลังสมัครต้องรอ Admin อนุมัติก่อนเข้าใช้งาน</div>
+        <div id="pr-spin" class="po-spinner"><div class="po-spin"></div>กำลังสมัคร...</div>
+        <button class="po-btn po-btn-teal" onclick="doRegister()">สมัครสมาชิก</button>
+      </div>
+
+      <div class="po-divider">หรือ</div>
+      <button class="po-btn po-btn-ghost" onclick="showPortal('landing')">← กลับหน้าหลัก</button>
+    </div>`;
 }
 
 function switchPoTab(tab) {
-// Use querySelector since elements are dynamically rendered inside overlay
-var overlay = document.getElementById(‘portal-overlay’);
-var tLogin = overlay.querySelector(’#ptab-login’);
-var tReg   = overlay.querySelector(’#ptab-reg’);
-var fLogin = overlay.querySelector(’#pf-login’);
-var fReg   = overlay.querySelector(’#pf-reg’);
-if (tLogin) tLogin.classList.toggle(‘active’, tab===‘login’);
-if (tReg)   tReg.classList.toggle(‘active’, tab===‘reg’);
-if (fLogin) fLogin.style.display = tab===‘login’ ? ‘block’ : ‘none’;
-if (fReg)   fReg.style.display   = tab===‘reg’   ? ‘block’ : ‘none’;
-var a = overlay.querySelector(’#po-alert’);
-if (a) a.className = ‘po-alert’;
+  // Use querySelector since elements are dynamically rendered inside overlay
+  var overlay = document.getElementById('portal-overlay');
+  var tLogin = overlay.querySelector('#ptab-login');
+  var tReg   = overlay.querySelector('#ptab-reg');
+  var fLogin = overlay.querySelector('#pf-login');
+  var fReg   = overlay.querySelector('#pf-reg');
+  if (tLogin) tLogin.classList.toggle('active', tab==='login');
+  if (tReg)   tReg.classList.toggle('active', tab==='reg');
+  if (fLogin) fLogin.style.display = tab==='login' ? 'block' : 'none';
+  if (fReg)   fReg.style.display   = tab==='reg'   ? 'block' : 'none';
+  var a = overlay.querySelector('#po-alert');
+  if (a) a.className = 'po-alert';
 }
 
 async function doMemberLogin() {
-var ov = document.getElementById(‘portal-overlay’);
-var u = ov.querySelector(’#pl-user’).value.trim();
-var p = ov.querySelector(’#pl-pass’).value.trim();
-if (!u||!p) { poAlert(‘po-alert’,‘กรุณากรอกข้อมูล’,‘err’); return; }
-var sp = ov.querySelector(’#pl-spin’); if(sp) sp.classList.add(‘show’);
-const r = await apiCall({ action:‘login’, username:u, password:p });
-if(sp) sp.classList.remove(‘show’);
-if (r.error) { poAlert(‘po-alert’, r.error, ‘err’); return; }
-portalUser = r;
-hidePortal();
-if (r.role === ‘admin’) showMemberBar(‘admin’, ‘Administrator’);
-else showMemberBar(‘member’, r.name + ’ #’ + r.id);
+  var ov = document.getElementById('portal-overlay');
+  var u = ov.querySelector('#pl-user').value.trim();
+  var p = ov.querySelector('#pl-pass').value.trim();
+  if (!u||!p) { poAlert('po-alert','กรุณากรอกข้อมูล','err'); return; }
+  var sp = ov.querySelector('#pl-spin'); if(sp) sp.classList.add('show');
+  const r = await apiCall({ action:'login', username:u, password:p });
+  if(sp) sp.classList.remove('show');
+  if (r.error) { poAlert('po-alert', r.error, 'err'); return; }
+  portalUser = r;
+  hidePortal();
+  if (r.role === 'admin') showMemberBar('admin', 'Administrator');
+  else showMemberBar('member', r.name + ' #' + r.id);
 }
 
 async function doRegister() {
-var ov = document.getElementById(‘portal-overlay’);
-var name  = ov.querySelector(’#pr-name’).value.trim();
-var user  = ov.querySelector(’#pr-user’).value.trim();
-var pass  = ov.querySelector(’#pr-pass’).value.trim();
-var pass2 = ov.querySelector(’#pr-pass2’).value.trim();
-var phone = ov.querySelector(’#pr-phone’).value.trim();
-if (!name||!user||!pass) { poAlert(‘po-alert’,‘กรุณากรอกข้อมูลที่จำเป็น’,‘err’); return; }
-if (pass!==pass2) { poAlert(‘po-alert’,‘Password ไม่ตรงกัน’,‘err’); return; }
-var sp = ov.querySelector(’#pr-spin’); if(sp) sp.classList.add(‘show’);
-const r = await apiCall({ action:‘register’, username:user, password:pass, name, phone });
-if(sp) sp.classList.remove(‘show’);
-if (r.error) { poAlert(‘po-alert’, r.error, ‘err’); return; }
-poAlert(‘po-alert’, ‘✅ สมัครสำเร็จ! รหัสสมาชิก: ’ + r.id + ’ — รอ Admin อนุมัติ’, ‘ok’);
+  var ov = document.getElementById('portal-overlay');
+  var name  = ov.querySelector('#pr-name').value.trim();
+  var user  = ov.querySelector('#pr-user').value.trim();
+  var pass  = ov.querySelector('#pr-pass').value.trim();
+  var pass2 = ov.querySelector('#pr-pass2').value.trim();
+  var phone = ov.querySelector('#pr-phone').value.trim();
+  if (!name||!user||!pass) { poAlert('po-alert','กรุณากรอกข้อมูลที่จำเป็น','err'); return; }
+  if (pass!==pass2) { poAlert('po-alert','Password ไม่ตรงกัน','err'); return; }
+  var sp = ov.querySelector('#pr-spin'); if(sp) sp.classList.add('show');
+  const r = await apiCall({ action:'register', username:user, password:pass, name, phone });
+  if(sp) sp.classList.remove('show');
+  if (r.error) { poAlert('po-alert', r.error, 'err'); return; }
+  poAlert('po-alert', '✅ สมัครสำเร็จ! รหัสสมาชิก: ' + r.id + ' — รอ Admin อนุมัติ', 'ok');
 }
 
 // ── ADMIN LOGIN ──
 function renderPoAdminLogin(el) {
-el.innerHTML = ` <div class="po-header"> <div class="po-logo"> <div class="po-icon">🔐</div> <div><h2>เข้าสู่ระบบ Admin</h2><p>Administrator Login</p></div> </div> </div> <div class="po-body"> <div id="pa-alert" class="po-alert"></div> <div class="po-row"><label class="po-label">Admin ID</label><input id="pa-user" class="po-input" placeholder="Admin ID"></div> <div class="po-row"><label class="po-label">Password</label><input id="pa-pass" class="po-input" type="password" placeholder="Password"></div> <div id="pa-spin" class="po-spinner"><div class="po-spin"></div>กำลังเข้าสู่ระบบ...</div> <button class="po-btn po-btn-navy" onclick="doAdminLogin()">เข้าสู่ระบบ Admin</button> <div class="po-divider">หรือ</div> <button class="po-btn po-btn-ghost" onclick="showPortal('landing')">← กลับหน้าหลัก</button> </div>`;
+  el.innerHTML = `
+    <div class="po-header">
+      <div class="po-logo">
+        <div class="po-icon">🔐</div>
+        <div><h2>เข้าสู่ระบบ Admin</h2><p>Administrator Login</p></div>
+      </div>
+    </div>
+    <div class="po-body">
+      <div id="pa-alert" class="po-alert"></div>
+      <div class="po-row"><label class="po-label">Admin ID</label><input id="pa-user" class="po-input" placeholder="Admin ID"></div>
+      <div class="po-row"><label class="po-label">Password</label><input id="pa-pass" class="po-input" type="password" placeholder="Password"></div>
+      <div id="pa-spin" class="po-spinner"><div class="po-spin"></div>กำลังเข้าสู่ระบบ...</div>
+      <button class="po-btn po-btn-navy" onclick="doAdminLogin()">เข้าสู่ระบบ Admin</button>
+      <div class="po-divider">หรือ</div>
+      <button class="po-btn po-btn-ghost" onclick="showPortal('landing')">← กลับหน้าหลัก</button>
+    </div>`;
 }
 
 async function doAdminLogin() {
-var ov = document.getElementById(‘portal-overlay’);
-var u = ov.querySelector(’#pa-user’).value.trim();
-var p = ov.querySelector(’#pa-pass’).value.trim();
-if (!u||!p) { poAlert(‘pa-alert’,‘กรุณากรอกข้อมูล’,‘err’); return; }
-var sp = ov.querySelector(’#pa-spin’); if(sp) sp.classList.add(‘show’);
-const r = await apiCall({ action:‘login’, username:u, password:p });
-if(sp) sp.classList.remove(‘show’);
-if (r.error) { poAlert(‘pa-alert’, r.error, ‘err’); return; }
-if (r.role!==‘admin’) { poAlert(‘pa-alert’,‘ไม่มีสิทธิ์ Admin’,‘err’); return; }
-portalUser = r;
-hidePortal();
-showMemberBar(‘admin’,‘Administrator’);
+  var ov = document.getElementById('portal-overlay');
+  var u = ov.querySelector('#pa-user').value.trim();
+  var p = ov.querySelector('#pa-pass').value.trim();
+  if (!u||!p) { poAlert('pa-alert','กรุณากรอกข้อมูล','err'); return; }
+  var sp = ov.querySelector('#pa-spin'); if(sp) sp.classList.add('show');
+  const r = await apiCall({ action:'login', username:u, password:p });
+  if(sp) sp.classList.remove('show');
+  if (r.error) { poAlert('pa-alert', r.error, 'err'); return; }
+  if (r.role!=='admin') { poAlert('pa-alert','ไม่มีสิทธิ์ Admin','err'); return; }
+  portalUser = r;
+  hidePortal();
+  showMemberBar('admin','Administrator');
 }
 
 // ── MEMBER BAR ──
 function showMemberBar(role, name) {
-const bar = document.getElementById(‘member-bar’);
-const badge = document.getElementById(‘mb-badge-el’);
-const nameEl = document.getElementById(‘mb-name-el’);
-const btns = document.getElementById(‘mb-btns-el’);
+  const bar = document.getElementById('member-bar');
+  const badge = document.getElementById('mb-badge-el');
+  const nameEl = document.getElementById('mb-name-el');
+  const btns = document.getElementById('mb-btns-el');
 
-nameEl.textContent = name;
-if (role === ‘admin’) {
-badge.className = ‘mb-badge mb-badge-admin’;
-badge.textContent = ‘Admin’;
-btns.innerHTML = ` <button class="mb-btn mb-btn-admin" onclick="openAdminModal()">📊 ข้อมูลผู้ป่วย</button> <button class="mb-btn mb-btn-logout" onclick="doLogout()">ออกจากระบบ</button>`;
-} else if (role === ‘member’) {
-badge.className = ‘mb-badge mb-badge-member’;
-badge.textContent = ‘สมาชิก’;
-btns.innerHTML = ` <button class="mb-btn mb-btn-record" onclick="openRecordModal()">📋 บันทึกข้อมูล</button> <button class="mb-btn mb-btn-logout" onclick="doLogout()">ออกจากระบบ</button>`;
-} else {
-badge.className = ‘mb-badge mb-badge-member’;
-badge.textContent = ‘ทั่วไป’;
-btns.innerHTML = `<button class="mb-btn mb-btn-logout" onclick="doLogout()">เปลี่ยนประเภทผู้ใช้</button>`;
-}
-bar.classList.add(‘show’);
-document.body.classList.add(‘has-member-bar’);
+  nameEl.textContent = name;
+  if (role === 'admin') {
+    badge.className = 'mb-badge mb-badge-admin';
+    badge.textContent = 'Admin';
+    btns.innerHTML = `
+      <button class="mb-btn mb-btn-admin" onclick="openAdminModal()">📊 ข้อมูลผู้ป่วย</button>
+      <button class="mb-btn mb-btn-logout" onclick="doLogout()">ออกจากระบบ</button>`;
+  } else if (role === 'member') {
+    badge.className = 'mb-badge mb-badge-member';
+    badge.textContent = 'สมาชิก';
+    btns.innerHTML = `
+      <button class="mb-btn mb-btn-record" onclick="openRecordModal()">📋 บันทึกข้อมูล</button>
+      <button class="mb-btn mb-btn-logout" onclick="doLogout()">ออกจากระบบ</button>`;
+  } else {
+    badge.className = 'mb-badge mb-badge-member';
+    badge.textContent = 'ทั่วไป';
+    btns.innerHTML = `<button class="mb-btn mb-btn-logout" onclick="doLogout()">เปลี่ยนประเภทผู้ใช้</button>`;
+  }
+  bar.classList.add('show');
+  document.body.classList.add('has-member-bar');
 }
 
 function doLogout() {
-portalUser = null;
-document.getElementById(‘member-bar’).classList.remove(‘show’);
-document.body.classList.remove(‘has-member-bar’);
-showPortal(‘landing’);
+  portalUser = null;
+  document.getElementById('member-bar').classList.remove('show');
+  document.body.classList.remove('has-member-bar');
+  showPortal('landing');
 }
 
 // ── RECORD MODAL ──
 function openRecordModal() {
-document.getElementById(‘record-modal’).classList.add(‘show’);
+  document.getElementById('record-modal').classList.add('show');
 }
 function closeRecordModal() {
-document.getElementById(‘record-modal’).classList.remove(‘show’);
+  document.getElementById('record-modal').classList.remove('show');
 }
 
 async function doSaveRecord() {
-const hn=document.getElementById(‘rm-hn’).value.trim();
-const injury=document.getElementById(‘rm-injury’).value;
-const surgery=document.getElementById(‘rm-surgery’).value;
-const appoint=document.getElementById(‘rm-appoint’).value;
-if (!hn||!injury||!surgery||!appoint) {
-poAlert(‘rm-alert’,‘กรุณากรอกข้อมูลที่จำเป็น (*)’,‘err’); return;
-}
-const syms=[…document.querySelectorAll(’#record-modal .rm-check-list input:checked’)].map(c=>c.value).join(’, ‘);
-document.getElementById(‘rm-spinner’).classList.add(‘show’);
-const r = await apiCall({
-action:‘savePatient’,
-memberId: portalUser ? portalUser.id : ‘guest’,
-memberName: portalUser ? portalUser.name : ‘Guest’,
-hn, injury, surgery,
-nasalPackDate: document.getElementById(‘rm-nasal’).value,
-stitchDate: document.getElementById(‘rm-stitch’).value,
-appointDate: appoint,
-symptoms: syms,
-note: document.getElementById(‘rm-note’).value
-});
-document.getElementById(‘rm-spinner’).classList.remove(‘show’);
-if (r.error) { poAlert(‘rm-alert’, r.error, ‘err’); return; }
-poAlert(‘rm-alert’,‘✅ บันทึกข้อมูลสำเร็จ!’,‘ok’);
-[‘rm-hn’,‘rm-nasal’,‘rm-stitch’,‘rm-appoint’,‘rm-note’].forEach(id=>{const e=document.getElementById(id);if(e)e.value=’’;});
-[‘rm-injury’,‘rm-surgery’].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
-document.querySelectorAll(’#record-modal .rm-check-list input’).forEach(c=>c.checked=false);
+  const hn=document.getElementById('rm-hn').value.trim();
+  const injury=document.getElementById('rm-injury').value;
+  const surgery=document.getElementById('rm-surgery').value;
+  const appoint=document.getElementById('rm-appoint').value;
+  if (!hn||!injury||!surgery||!appoint) {
+    poAlert('rm-alert','กรุณากรอกข้อมูลที่จำเป็น (*)','err'); return;
+  }
+  const syms=[...document.querySelectorAll('#record-modal .rm-check-list input:checked')].map(c=>c.value).join(', ');
+  document.getElementById('rm-spinner').classList.add('show');
+  const r = await apiCall({
+    action:'savePatient',
+    memberId: portalUser ? portalUser.id : 'guest',
+    memberName: portalUser ? portalUser.name : 'Guest',
+    hn, injury, surgery,
+    nasalPackDate: document.getElementById('rm-nasal').value,
+    stitchDate: document.getElementById('rm-stitch').value,
+    appointDate: appoint,
+    symptoms: syms,
+    note: document.getElementById('rm-note').value
+  });
+  document.getElementById('rm-spinner').classList.remove('show');
+  if (r.error) { poAlert('rm-alert', r.error, 'err'); return; }
+  poAlert('rm-alert','✅ บันทึกข้อมูลสำเร็จ!','ok');
+  ['rm-hn','rm-nasal','rm-stitch','rm-appoint','rm-note'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['rm-injury','rm-surgery'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
+  document.querySelectorAll('#record-modal .rm-check-list input').forEach(c=>c.checked=false);
 }
 
 // ── ADMIN MODAL ──
 function openAdminModal() {
-document.getElementById(‘admin-modal’).classList.add(‘show’);
-loadAmPatients();
+  document.getElementById('admin-modal').classList.add('show');
+  loadAmPatients();
 }
 function closeAdminModal() {
-document.getElementById(‘admin-modal’).classList.remove(‘show’);
+  document.getElementById('admin-modal').classList.remove('show');
 }
 
 function switchAmTab(tab) {
-document.querySelectorAll(’.am-tab’).forEach((b,i)=>b.classList.toggle(‘active’,[‘patients’,‘members’][i]===tab));
-[‘am-patients’,‘am-members’].forEach(id=>{
-const el=document.getElementById(id);
-if(el) el.classList.toggle(‘active’, id===‘am-’+tab);
-});
-if (tab===‘members’) loadAmMembers();
-if (tab===‘patients’) loadAmPatients();
+  document.querySelectorAll('.am-tab').forEach((b,i)=>b.classList.toggle('active',['patients','members'][i]===tab));
+  ['am-patients','am-members'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle('active', id==='am-'+tab);
+  });
+  if (tab==='members') loadAmMembers();
+  if (tab==='patients') loadAmPatients();
 }
 
 async function loadAmPatients() {
-const sp=document.getElementById(‘am-pts-spinner’); sp.classList.add(‘show’);
-const r = await apiCall({ action:‘getPatients’, adminPass:‘1234’ });
-sp.classList.remove(‘show’);
-const el=document.getElementById(‘am-pts-data’);
-if (r.error||!r.data||r.data.length<=1) { el.innerHTML=’<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลผู้ป่วย</div>’; return; }
-const rows=r.data.slice(1);
-el.innerHTML=`<div style="overflow-x:auto"><table class="am-table"> <thead><tr><th>ID</th><th>ชื่อ</th><th>HN</th><th>การบาดเจ็บ</th><th>การผ่าตัด</th><th>ถอด Packing</th><th>ตัดไหม</th><th>วันนัด</th><th>อาการ</th></tr></thead> <tbody>${rows.map(r=>`<tr>
-<td>${r[0]||’—’}</td><td>${r[1]||’—’}</td><td><strong>${r[2]||’—’}</strong></td>
-<td>${r[3]||’—’}</td><td>${r[4]||’—’}</td>
-<td>${r[5]?cdHTML(r[5]):’—’}</td><td>${r[6]?cdHTML(r[6]):’—’}</td>
-<td>${r[7]?cdHTML(r[7]):’—’}</td>
-<td style="color:${r[8]?'var(--red)':'var(--text-light)'}">${r[8]||‘ปกติ’}</td>
-</tr>`).join('')}</tbody></table></div>`;
+  const sp=document.getElementById('am-pts-spinner'); sp.classList.add('show');
+  const r = await apiCall({ action:'getPatients', adminPass:'1234' });
+  sp.classList.remove('show');
+  const el=document.getElementById('am-pts-data');
+  if (r.error||!r.data||r.data.length<=1) { el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลผู้ป่วย</div>'; return; }
+  const rows=r.data.slice(1);
+  el.innerHTML=`<div style="overflow-x:auto"><table class="am-table">
+    <thead><tr><th>ID</th><th>ชื่อ</th><th>HN</th><th>การบาดเจ็บ</th><th>การผ่าตัด</th><th>ถอด Packing</th><th>ตัดไหม</th><th>วันนัด</th><th>อาการ</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr>
+      <td>${r[0]||'—'}</td><td>${r[1]||'—'}</td><td><strong>${r[2]||'—'}</strong></td>
+      <td>${r[3]||'—'}</td><td>${r[4]||'—'}</td>
+      <td>${r[5]?cdHTML(r[5]):'—'}</td><td>${r[6]?cdHTML(r[6]):'—'}</td>
+      <td>${r[7]?cdHTML(r[7]):'—'}</td>
+      <td style="color:${r[8]?'var(--red)':'var(--text-light)'}">${r[8]||'ปกติ'}</td>
+    </tr>`).join('')}</tbody></table></div>`;
 }
 
 async function loadAmMembers() {
-const sp=document.getElementById(‘am-mem-spinner’); sp.classList.add(‘show’);
-const r = await apiCall({ action:‘getMembers’, adminPass:‘1234’ });
-sp.classList.remove(‘show’);
-const el=document.getElementById(‘am-mem-data’);
-if (r.error||!r.data||r.data.length<=1) { el.innerHTML=’<div class="po-alert po-alert-info show">ยังไม่มีสมาชิก</div>’; return; }
-const rows=r.data.slice(1);
-el.innerHTML=`<div style="overflow-x:auto"><table class="am-table"> <thead><tr><th>ID</th><th>วันสมัคร</th><th>Username</th><th>ชื่อ</th><th>เบอร์โทร</th><th>สถานะ</th><th>จัดการ</th></tr></thead> <tbody>${rows.map(r=>`<tr>
-<td><strong>${r[0]}</strong></td>
-<td>${r[1]?new Date(r[1]).toLocaleDateString(‘th-TH’,{day:‘numeric’,month:‘short’,year:‘numeric’}):’—’}</td>
-<td>${r[2]}</td><td>${r[4]}</td><td>${r[5]||’—’}</td>
-<td><span class="${r[6]==='approved'?'badge-approved':'badge-pending'}">${r[6]===‘approved’?‘✅ อนุมัติ’:‘⏳ รออนุมัติ’}</span></td>
-<td>${r[6]!==‘approved’?`<button class="po-btn po-btn-navy po-btn-sm" onclick="doApprove('${r[0]}')">อนุมัติ</button>`:’—’}</td>
-</tr>`).join('')}</tbody></table></div>`;
+  const sp=document.getElementById('am-mem-spinner'); sp.classList.add('show');
+  const r = await apiCall({ action:'getMembers', adminPass:'1234' });
+  sp.classList.remove('show');
+  const el=document.getElementById('am-mem-data');
+  if (r.error||!r.data||r.data.length<=1) { el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีสมาชิก</div>'; return; }
+  const rows=r.data.slice(1);
+  el.innerHTML=`<div style="overflow-x:auto"><table class="am-table">
+    <thead><tr><th>ID</th><th>วันสมัคร</th><th>Username</th><th>ชื่อ</th><th>เบอร์โทร</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr>
+      <td><strong>${r[0]}</strong></td>
+      <td>${r[1]?new Date(r[1]).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}):'—'}</td>
+      <td>${r[2]}</td><td>${r[4]}</td><td>${r[5]||'—'}</td>
+      <td><span class="${r[6]==='approved'?'badge-approved':'badge-pending'}">${r[6]==='approved'?'✅ อนุมัติ':'⏳ รออนุมัติ'}</span></td>
+      <td>${r[6]!=='approved'?`<button class="po-btn po-btn-navy po-btn-sm" onclick="doApprove('${r[0]}')">อนุมัติ</button>`:'—'}</td>
+    </tr>`).join('')}</tbody></table></div>`;
 }
 
 async function doApprove(userId) {
-if (!confirm(`อนุมัติสมาชิก ID: ${userId}?`)) return;
-const r = await apiCall({ action:‘approve’, adminPass:‘1234’, userId });
-if (r.error) { alert(’เกิดข้อผิดพลาด: ’+r.error); return; }
-alert(‘✅ อนุมัติสำเร็จ!’);
-loadAmMembers();
+  if (!confirm(`อนุมัติสมาชิก ID: ${userId}?`)) return;
+  const r = await apiCall({ action:'approve', adminPass:'1234', userId });
+  if (r.error) { alert('เกิดข้อผิดพลาด: '+r.error); return; }
+  alert('✅ อนุมัติสำเร็จ!');
+  loadAmMembers();
 }
 
 // ── ALERT HELPER ──
 function poAlert(id, msg, type) {
-var ov = document.getElementById(‘portal-overlay’);
-var el = (ov && ov.querySelector(’#’+id)) || document.getElementById(id);
-if (!el) return;
-el.textContent = msg;
-el.className = ‘po-alert po-alert-’ + type + ’ show’;
+  var ov = document.getElementById('portal-overlay');
+  var el = (ov && ov.querySelector('#'+id)) || document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'po-alert po-alert-' + type + ' show';
 }
 
 // ── INIT PORTAL ──
-showPortal(‘landing’);
+showPortal('landing');
 
 // Init
 init();
