@@ -1914,27 +1914,92 @@ function hidePortal() {
 // ── LANDING ──
 function renderPoLanding(el) {
   el.innerHTML = `
-    <div class="po-header">
-      <div class="po-logo">
-        <div class="po-icon">🏥</div>
-        <div><h2>การพยาบาลผู้ป่วย<br>บาดเจ็บใบหน้า</h2><p>Facial Trauma Nursing Care · Portal</p></div>
+    <div style="position:relative;overflow:hidden;">
+      <!-- Cover-style header — dark navy like ebook cover -->
+      <div style="
+        background:linear-gradient(155deg,#1a2744 0%,#0e1c38 55%,#0a1628 100%);
+        padding:32px 26px 28px; position:relative; overflow:hidden; min-height:240px;
+        display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+      ">
+        <!-- Background effects -->
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 30%,rgba(42,127,127,0.2) 0%,transparent 55%),radial-gradient(ellipse at 75% 70%,rgba(201,162,39,0.12) 0%,transparent 50%);pointer-events:none;"></div>
+        <div style="position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 30px,rgba(201,162,39,0.03) 30px,rgba(201,162,39,0.03) 31px),repeating-linear-gradient(90deg,transparent,transparent 30px,rgba(201,162,39,0.03) 30px,rgba(201,162,39,0.03) 31px);pointer-events:none;"></div>
+        <!-- Bottom gold line -->
+        <div style="position:absolute;bottom:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,var(--gold),var(--teal-light),transparent);pointer-events:none;"></div>
+
+        <!-- Emblem image -->
+        <div style="position:relative;z-index:1;width:120px;height:72px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(201,162,39,0.35);box-shadow:0 0 24px rgba(201,162,39,0.15);margin-bottom:16px;">
+          <img src="https://i.postimg.cc/zf8q5d44/Gemini-Generated-Image-q9895xq9895xq989.png"
+            style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+        </div>
+
+        <!-- Label -->
+        <div style="position:relative;z-index:1;font-size:8.5px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(232,196,74,0.7);margin-bottom:10px;">
+          E-BOOK · คู่มือสำหรับผู้ป่วย
+        </div>
+        <!-- Title -->
+        <h1 style="position:relative;z-index:1;font-family:'Noto Serif Thai',serif;font-size:20px;font-weight:900;color:var(--cream);line-height:1.3;margin-bottom:6px;">
+          การพยาบาลผู้ป่วย<br><span style="color:var(--gold-light);">บาดเจ็บใบหน้า</span>
+        </h1>
+        <p style="position:relative;z-index:1;font-size:10px;color:rgba(253,246,227,0.5);line-height:1.7;">
+          ข้อมูลสำหรับผู้ป่วยและครอบครัว<br>เพื่อความปลอดภัยในการฟื้นฟูร่างกาย
+        </p>
+        <!-- Gold divider -->
+        <div style="position:relative;z-index:1;width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto 0;"></div>
       </div>
-    </div>
-    <div class="po-body">
-      <p style="font-size:11px;color:var(--text-mid);text-align:center;margin-bottom:16px;">เลือกประเภทการเข้าใช้งาน</p>
-      <div class="po-role-grid">
-        <div class="po-role-btn" onclick="enterAsGuest()">
-          <div class="ri">👁️</div><div class="rn">ทั่วไป</div><div class="rd">อ่าน E-book<br>ไม่ต้องสมัคร</div>
+
+      <!-- Role selection -->
+      <div class="po-body" style="padding:20px 22px 24px;">
+        <p style="font-size:10.5px;color:var(--text-light);text-align:center;margin-bottom:14px;letter-spacing:0.03em;">เลือกประเภทการเข้าใช้งาน</p>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
+
+          <!-- ทั่วไป -->
+          <div onclick="enterAsGuest()" style="
+            padding:18px 8px; border-radius:14px; text-align:center; cursor:pointer;
+            background:white; border:2px solid var(--cream-dark);
+            box-shadow:0 2px 10px rgba(0,0,0,0.06); transition:all 0.2s;
+            position:relative; overflow:hidden;
+          " onmouseover="this.style.borderColor='var(--teal)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(42,127,127,0.15)'"
+             onmouseout="this.style.borderColor='var(--cream-dark)';this.style.transform='';this.style.boxShadow='0 2px 10px rgba(0,0,0,0.06)'">
+            <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#e8f4f8,#c8e8f0);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(42,127,127,0.2);">🙋</div>
+            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;">ทั่วไป</div>
+            <div style="font-size:9px;color:var(--text-light);line-height:1.5;">อ่าน E-book<br>ไม่ต้องสมัคร</div>
+          </div>
+
+          <!-- สมาชิก -->
+          <div onclick="showPortal('login')" style="
+            padding:18px 8px; border-radius:14px; text-align:center; cursor:pointer;
+            background:linear-gradient(155deg,#1a2744,#0e1c38);
+            border:2px solid rgba(201,162,39,0.4);
+            box-shadow:0 4px 20px rgba(26,39,68,0.3); transition:all 0.2s;
+            position:relative; overflow:hidden;
+          " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 28px rgba(26,39,68,0.45)'"
+             onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(26,39,68,0.3)'">
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,162,39,0.12),transparent 70%);pointer-events:none;"></div>
+            <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:rgba(201,162,39,0.15);border:1.5px solid rgba(201,162,39,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;z-index:1;">🧑‍💻</div>
+            <div style="font-size:12px;font-weight:700;color:var(--gold-light);margin-bottom:4px;position:relative;z-index:1;">สมาชิก</div>
+            <div style="font-size:9px;color:rgba(253,246,227,0.55);line-height:1.5;position:relative;z-index:1;">E-book +<br>บันทึกข้อมูล</div>
+          </div>
+
+          <!-- Admin -->
+          <div onclick="showPortal('admin-login')" style="
+            padding:18px 8px; border-radius:14px; text-align:center; cursor:pointer;
+            background:white; border:2px solid var(--cream-dark);
+            box-shadow:0 2px 10px rgba(0,0,0,0.06); transition:all 0.2s;
+          " onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(201,162,39,0.15)'"
+             onmouseout="this.style.borderColor='var(--cream-dark)';this.style.transform='';this.style.boxShadow='0 2px 10px rgba(0,0,0,0.06)'">
+            <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#fdf0d0,#f0d890);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(201,162,39,0.25);">🔐</div>
+            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;">Admin</div>
+            <div style="font-size:9px;color:var(--text-light);line-height:1.5;">ดูข้อมูล<br>ทั้งหมด</div>
+          </div>
+
         </div>
-        <div class="po-role-btn" onclick="showPortal('login')">
-          <div class="ri">👤</div><div class="rn">สมาชิก</div><div class="rd">E-book +<br>บันทึกข้อมูล</div>
+
+        <!-- Info bar -->
+        <div style="background:rgba(42,127,127,0.07);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:10px 14px;font-size:10px;color:var(--text-mid);line-height:1.75;">
+          📖 <strong>E-book</strong> ครอบคลุม: การบาดเจ็บ · การผ่าตัด · การพยาบาล · การดูแลที่บ้าน · <span style="color:var(--gold);">Interactive 3D</span> กระดูกใบหน้า
         </div>
-        <div class="po-role-btn" onclick="showPortal('admin-login')">
-          <div class="ri">🔐</div><div class="rn">Admin</div><div class="rd">ดูข้อมูล<br>ทั้งหมด</div>
-        </div>
-      </div>
-      <div class="po-alert po-alert-info show" style="font-size:10.5px;">
-        📖 E-book ครอบคลุม: การบาดเจ็บ · การผ่าตัด · การพยาบาล · การดูแลที่บ้าน · Interactive 3D กระดูกใบหน้า
       </div>
     </div>`;
 }
