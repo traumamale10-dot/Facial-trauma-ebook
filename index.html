@@ -2440,6 +2440,17 @@ function switchAmTab(tab) {
   if (tab==='symptoms') loadAmSymptoms();
 }
 
+// Quick reply options for admin
+var _QUICK_REPLIES = [
+  { icon:'🏥', label:'แนะนำไปพบแพทย์', msg:'ขอบคุณที่รายงานอาการ ทีมพยาบาลแนะนำให้ท่านไปพบแพทย์ที่โรงพยาบาลใกล้บ้านโดยเร็ว หรือโทรสายด่วน ☎️ 1669 หากมีอาการรุนแรง' },
+  { icon:'💊', label:'แนะนำยาลดไข้', msg:'ท่านสามารถรับประทานยาลดไข้ Paracetamol (พาราเซตามอล) 500 mg ทุก 4-6 ชั่วโมงเมื่อมีไข้ ดื่มน้ำให้เพียงพอ และพักผ่อน หากไข้ไม่ลดใน 24 ชั่วโมง ให้ไปพบแพทย์' },
+  { icon:'🧊', label:'แนะนำประคบเย็น', msg:'แนะนำให้ประคบเย็นบริเวณที่บวมหรือปวด ครั้งละ 15-20 นาที ทุก 1-2 ชั่วโมง ห้ามประคบน้ำแข็งโดยตรง ให้ใช้ผ้าหุ้มก่อนทุกครั้ง' },
+  { icon:'🪥', label:'แนะนำดูแลแผล', msg:'ดูแลทำความสะอาดแผลตามที่แพทย์แนะนำ หากพบสัญญาณการติดเชื้อ เช่น บวม แดง มีหนอง หรือไข้สูง ให้รีบไปพบแพทย์ทันที' },
+  { icon:'🍲', label:'แนะนำอาหารอ่อน', msg:'แนะนำให้รับประทานอาหารอ่อนหรือเหลว เช่น โจ๊ก ข้าวต้ม ซุป นม ในระยะนี้ หลีกเลี่ยงอาหารแข็งหรือเหนียว และดื่มน้ำให้เพียงพออย่างน้อย 8 แก้วต่อวัน' },
+  { icon:'😴', label:'แนะนำพักผ่อน', msg:'แนะนำให้พักผ่อนให้เพียงพอ หลีกเลี่ยงการออกแรงหรือกิจกรรมหนัก นอนยกศีรษะสูง 30-45 องศาเพื่อลดอาการบวม' },
+  { icon:'🚨', label:'ฉุกเฉิน — โทร 1669', msg:'⚠️ อาการของท่านอาจต้องได้รับการดูแลฉุกเฉิน กรุณาโทรสายด่วน ☎️ 1669 ทันที หรือให้ผู้ดูแลพาไปห้องฉุกเฉินโรงพยาบาลใกล้บ้านโดยเร็วที่สุด' },
+];
+
 async function loadAmSymptoms() {
   var sp=document.getElementById('am-sym-spinner');
   if(sp) sp.classList.add('show');
@@ -2450,34 +2461,119 @@ async function loadAmSymptoms() {
   if (r.error||!r.data||r.data.length<=1) {
     el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีรายงานอาการ</div>'; return;
   }
-  var rows=r.data.slice(1).reverse();
-  el.innerHTML='<div style="display:flex;flex-direction:column;gap:10px;">' +
-    rows.map(function(row){
+
+  // Get patient data for linking
+  var ptData = {};
+  var pr = await apiCall({ action:'getPatients', adminPass:'1234' });
+  if (pr.data && pr.data.length > 1) {
+    pr.data.slice(1).forEach(function(row) {
+      var memId = String(row[13]).trim();
+      var hn = String(row[2]).trim();
+      if (memId && hn) ptData[memId + '_' + hn] = row[0]; // key = memberId_hn → rowId
+    });
+  }
+
+  var rows = r.data.slice(1).reverse();
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px;">' +
+    rows.map(function(row) {
+      var rowId = row[0];
+      var memberId = String(row[5]||'').trim();
+      var hn = String(row[2]||'').trim();
       var isPending = String(row[7]).trim() !== 'acknowledged';
-      return '<div style="background:white;border-radius:10px;border:2px solid ' + (isPending?'rgba(192,57,43,0.4)':'rgba(180,150,80,0.15)') + ';padding:14px 16px;">' +
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+      var hasReply = row[8] && String(row[8]).trim().length > 0;
+      var ptKey = memberId + '_' + hn;
+      var ptRowId = ptData[ptKey] || null;
+
+      // Format date
+      var dateStr = String(row[4]||'');
+      try {
+        var d = new Date(row[4]);
+        if (!isNaN(d)) dateStr = d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}) +
+          ' ' + d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+      } catch(e) {}
+
+      var quickBtns = _QUICK_REPLIES.map(function(qr,qi) {
+        return '<button onclick="selectQuickReply(\'' + rowId + '\',' + qi + ')" style="' +
+          'padding:5px 10px;border-radius:7px;border:1px solid rgba(26,39,68,0.2);' +
+          'background:white;font-family:\'Sarabun\',sans-serif;font-size:10px;font-weight:600;' +
+          'color:var(--navy);cursor:pointer;transition:all 0.15s;white-space:nowrap;' +
+          '" onmouseover="this.style.background=\'var(--navy)\';this.style.color=\'var(--gold-light)\'"' +
+          ' onmouseout="this.style.background=\'white\';this.style.color=\'var(--navy)\'">' +
+          qr.icon + ' ' + qr.label + '</button>';
+      }).join('');
+
+      return '<div id="sym-card-' + rowId + '" style="background:white;border-radius:12px;border:2px solid ' +
+        (isPending ? 'rgba(192,57,43,0.35)' : 'rgba(39,174,96,0.25)') +
+        ';padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">' +
+
+        // Header
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">' +
           '<div>' +
-            '<span style="font-family:\'Noto Serif Thai\',serif;font-size:13px;font-weight:700;color:var(--navy);">HN: ' + (row[2]||'—') + '</span>' +
-            '<span style="margin-left:8px;font-size:10px;color:var(--text-light);">ID ' + (row[5]||'') + ' · ' + (row[1]||'') + '</span>' +
+            '<span style="font-family:\'Noto Serif Thai\',serif;font-size:14px;font-weight:700;color:var(--navy);">HN: ' + hn + '</span>' +
+            '<span style="margin-left:8px;font-size:10px;color:var(--text-light);">' + (row[1]||'') + ' · ID ' + memberId + '</span>' +
           '</div>' +
-          '<span style="font-size:10px;color:var(--text-light);">' + (row[4]||'') + '</span>' +
+          '<div style="display:flex;gap:6px;align-items:center;">' +
+            (ptRowId ? '<button onclick="jumpToPatient(\'' + ptRowId + '\')" style="padding:3px 9px;border:1px solid var(--teal);background:rgba(42,127,127,0.08);color:var(--teal);border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;font-family:\'Sarabun\',sans-serif;">📋 ข้อมูลผู้ป่วย</button>' : '') +
+            '<span style="font-size:10px;color:var(--text-light);">' + dateStr + '</span>' +
+          '</div>' +
         '</div>' +
-        '<div style="font-size:11.5px;color:#7a1a1a;background:rgba(192,57,43,0.07);border-radius:7px;padding:8px 12px;margin-bottom:8px;">' +
+
+        // อาการ
+        '<div style="font-size:11.5px;color:#7a1a1a;background:rgba(192,57,43,0.07);border-radius:8px;padding:9px 13px;margin-bottom:8px;">' +
           '<strong>⚠️ อาการ:</strong> ' + (row[3]||'—') +
         '</div>' +
-        (row[6] ? '<div style="font-size:11px;color:var(--text-mid);margin-bottom:8px;">📝 รายละเอียด: ' + row[6] + '</div>' : '') +
-        (isPending
-          ? '<button onclick="doAckSymptom(\'' + row[0] + '\')" style="width:100%;padding:8px;border:none;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--gold-light);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✅ รับทราบ</button>'
-          : '<div style="font-size:10.5px;color:#1a7a42;text-align:center;padding:4px;"><span style="background:rgba(39,174,96,0.12);padding:3px 10px;border-radius:6px;">✅ รับทราบแล้ว</span></div>'
-        ) +
+        (row[6] ? '<div style="font-size:11px;color:var(--text-mid);background:rgba(42,127,127,0.05);border-radius:7px;padding:8px 12px;margin-bottom:10px;">📝 ' + row[6] + '</div>' : '') +
+
+        // Previous reply
+        (hasReply ? '<div style="font-size:11px;background:rgba(26,39,68,0.06);border-left:3px solid var(--navy);border-radius:0 8px 8px 0;padding:8px 12px;margin-bottom:10px;color:var(--text-mid);">💬 <strong>ตอบกลับ:</strong> ' + row[8] + '</div>' : '') +
+
+        (isPending ? (
+          // Quick replies
+          '<div style="margin-bottom:10px;">' +
+            '<div style="font-size:9.5px;font-weight:700;color:var(--text-light);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">⚡ ตอบกลับด่วน</div>' +
+            '<div style="display:flex;flex-wrap:wrap;gap:5px;">' + quickBtns + '</div>' +
+          '</div>' +
+          // Custom reply box
+          '<div style="margin-bottom:8px;">' +
+            '<textarea id="sym-reply-' + rowId + '" class="po-input" style="resize:vertical;min-height:60px;font-size:11.5px;" placeholder="หรือพิมพ์ข้อความตอบกลับเอง..."></textarea>' +
+          '</div>' +
+          '<button onclick="doAckSymptom(\'' + rowId + '\')" style="width:100%;padding:9px;border:none;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--gold-light);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✅ รับทราบ &amp; ส่งข้อความ</button>'
+        ) : (
+          '<div style="text-align:center;padding:4px;"><span style="background:rgba(39,174,96,0.1);color:#1a7a42;padding:4px 14px;border-radius:8px;font-size:10.5px;font-weight:600;">✅ รับทราบแล้ว</span></div>'
+        )) +
       '</div>';
     }).join('') + '</div>';
 }
 
+function selectQuickReply(rowId, idx) {
+  var ta = document.getElementById('sym-reply-' + rowId);
+  if (ta) ta.value = _QUICK_REPLIES[idx].msg;
+}
+
 async function doAckSymptom(rowId) {
-  var r = await apiCall({ action:'ackSymptom', adminPass:'1234', rowId: rowId });
+  var ta = document.getElementById('sym-reply-' + rowId);
+  var replyMsg = ta ? ta.value.trim() : '';
+  if (!replyMsg) {
+    replyMsg = 'ทีมพยาบาลได้รับทราบอาการของท่านแล้ว หากอาการไม่ดีขึ้น กรุณาไปพบแพทย์ที่โรงพยาบาลใกล้บ้านทันที หรือโทร ☎️ 1669';
+  }
+  var r = await apiCall({ action:'ackSymptom', adminPass:'1234', rowId: rowId, replyMsg: replyMsg });
   if (r.error) { alert('เกิดข้อผิดพลาด: '+r.error); return; }
   loadAmSymptoms();
+}
+
+function jumpToPatient(ptRowId) {
+  // Switch to patients tab and highlight
+  switchAmTab('patients');
+  setTimeout(function() {
+    var cards = document.querySelectorAll('#am-pts-data tr');
+    cards.forEach(function(row) {
+      if (row.textContent.includes(ptRowId)) {
+        row.style.background = 'rgba(201,162,39,0.15)';
+        row.scrollIntoView({ behavior:'smooth', block:'center' });
+        setTimeout(function(){ row.style.background = ''; }, 3000);
+      }
+    });
+  }, 600);
 }
 
 async function loadAmPatients() {
