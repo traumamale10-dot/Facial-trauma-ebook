@@ -957,37 +957,34 @@ body.has-member-bar .nav-bar   { bottom:16px; }
     </div>
     <div class="rm-body">
       <div id="rm-alert" class="po-alert"></div>
-      <div class="po-grid2">
-        <div class="po-row">
-          <label class="po-label">HN <span class="req">*</span></label>
-          <input id="rm-hn" class="po-input" placeholder="เช่น HN12345">
-        </div>
-        <div class="po-row">
-          <label class="po-label">การบาดเจ็บ <span class="req">*</span></label>
-          <select id="rm-injury" class="po-select">
-            <option value="">-- เลือก --</option>
-            <option>กระดูกจมูกหัก (Nasal Bone)</option>
-            <option>กระดูกโหนกแก้มหัก (ZMC)</option>
-            <option>ขากรรไกรล่างหัก (Mandible)</option>
-            <option>ขากรรไกรบนหัก (Maxilla / Le Fort)</option>
-            <option>กระดูกรอบเบ้าตาหัก (Orbital)</option>
-            <option>กระดูกหน้าผากหัก (Frontal)</option>
-            <option>หลายตำแหน่ง (Multiple)</option>
-          </select>
+      <div class="po-row">
+        <label class="po-label">HN <span class="req">*</span></label>
+        <input id="rm-hn" class="po-input" placeholder="เช่น HN12345">
+      </div>
+
+      <div class="po-row">
+        <label class="po-label">การบาดเจ็บใบหน้า <span class="req">*</span> <span style="font-size:9px;color:var(--text-light);">(เลือกได้หลายข้อ)</span></label>
+        <div class="rm-check-list" id="rm-injury-list">
+          <label class="rm-check-item"><input type="checkbox" value="กระดูกจมูกหัก (Nasal Bone)"><span>กระดูกจมูกหัก (Nasal Bone)</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="กระดูกโหนกแก้มหัก (ZMC)"><span>กระดูกโหนกแก้มหัก (ZMC)</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ขากรรไกรล่างหัก (Mandible)"><span>ขากรรไกรล่างหัก (Mandible)</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ขากรรไกรบนหัก (Maxilla / Le Fort)"><span>ขากรรไกรบนหัก (Maxilla / Le Fort)</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="กระดูกรอบเบ้าตาหัก (Orbital)"><span>กระดูกรอบเบ้าตาหัก (Orbital)</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="กระดูกหน้าผากหัก (Frontal)"><span>กระดูกหน้าผากหัก (Frontal)</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="กระดูกขมับ (Temporal)"><span>กระดูกขมับ (Temporal)</span></label>
         </div>
       </div>
+
       <div class="po-row">
-        <label class="po-label">การผ่าตัด <span class="req">*</span></label>
-        <select id="rm-surgery" class="po-select">
-          <option value="">-- เลือก --</option>
-          <option>CR Nasal Bone + Nasal Packing</option>
-          <option>Maxillomandibular Fixation (MMF มัดฟัน)</option>
-          <option>ORIF with Plate &amp; Screw</option>
-          <option>Orbital Floor Reconstruction</option>
-          <option>Soft Tissue Repair</option>
-          <option>หลายวิธี (Combined)</option>
-          <option>ไม่ผ่าตัด (Conservative)</option>
-        </select>
+        <label class="po-label">การผ่าตัด <span class="req">*</span> <span style="font-size:9px;color:var(--text-light);">(เลือกได้หลายข้อ)</span></label>
+        <div class="rm-check-list" id="rm-surgery-list">
+          <label class="rm-check-item"><input type="checkbox" value="CR Nasal Bone + Nasal Packing"><span>CR Nasal Bone + Nasal Packing</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="Maxillomandibular Fixation (MMF มัดฟัน)"><span>Maxillomandibular Fixation (MMF มัดฟัน)</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ORIF with Plate &amp; Screw"><span>ORIF with Plate &amp; Screw</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="Orbital Floor Reconstruction"><span>Orbital Floor Reconstruction</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="Soft Tissue Repair"><span>Soft Tissue Repair</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ไม่ผ่าตัด (Conservative)"><span>ไม่ผ่าตัด (Conservative)</span></label>
+        </div>
       </div>
       <div class="po-grid2">
         <div class="po-row">
@@ -2129,13 +2126,14 @@ function closeRecordModal() {
 
 async function doSaveRecord() {
   const hn=document.getElementById('rm-hn').value.trim();
-  const injury=document.getElementById('rm-injury').value;
-  const surgery=document.getElementById('rm-surgery').value;
+  const injury=[...document.querySelectorAll('#rm-injury-list input:checked')].map(c=>c.value).join(', ');
+  const surgery=[...document.querySelectorAll('#rm-surgery-list input:checked')].map(c=>c.value).join(', ');
   const appoint=document.getElementById('rm-appoint').value;
-  if (!hn||!injury||!surgery||!appoint) {
-    poAlert('rm-alert','กรุณากรอกข้อมูลที่จำเป็น (*)','err'); return;
-  }
-  const syms=[...document.querySelectorAll('#record-modal .rm-check-list input:checked')].map(c=>c.value).join(', ');
+  if (!hn) { poAlert('rm-alert','กรุณากรอก HN','err'); return; }
+  if (!injury) { poAlert('rm-alert','กรุณาเลือกการบาดเจ็บอย่างน้อย 1 ข้อ','err'); return; }
+  if (!surgery) { poAlert('rm-alert','กรุณาเลือกการผ่าตัดอย่างน้อย 1 ข้อ','err'); return; }
+  if (!appoint) { poAlert('rm-alert','กรุณาระบุวันนัดตรวจ','err'); return; }
+  const syms=[...document.querySelectorAll('#record-modal .rm-check-list:not(#rm-injury-list):not(#rm-surgery-list) input:checked')].map(c=>c.value).join(', ');
   document.getElementById('rm-spinner').classList.add('show');
   const r = await apiCall({
     action:'savePatient',
@@ -2152,8 +2150,7 @@ async function doSaveRecord() {
   if (r.error) { poAlert('rm-alert', r.error, 'err'); return; }
   poAlert('rm-alert','✅ บันทึกข้อมูลสำเร็จ!','ok');
   ['rm-hn','rm-nasal','rm-stitch','rm-appoint','rm-note'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  ['rm-injury','rm-surgery'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
-  document.querySelectorAll('#record-modal .rm-check-list input').forEach(c=>c.checked=false);
+  document.querySelectorAll('#record-modal input[type="checkbox"]').forEach(c=>c.checked=false);
 }
 
 // ── ADMIN MODAL ──
