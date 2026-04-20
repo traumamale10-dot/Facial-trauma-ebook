@@ -2611,7 +2611,8 @@ async function loadAmSymptoms() {
       var rowId = row[0];
       var memberId = String(row[5]||'').trim();
       var hn = String(row[2]||'').trim();
-      var isPending = String(row[7]).trim() !== 'acknowledged';
+      var symStatus = String(row[7]||'pending').trim();
+      var isPending = symStatus !== 'acknowledged'; // pending or replied = show form
       var hasReply = row[8] && String(row[8]).trim().length > 0;
       var ptKey = memberId + '_' + hn;
       var ptRowId = ptData[ptKey] || null;
@@ -2683,13 +2684,27 @@ function selectQuickReply(rowId, idx) {
 }
 
 async function doAckSymptom(rowId) {
+  // Find textarea - search by id with exact rowId
   var ta = document.getElementById('sym-reply-' + rowId);
+  // Fallback: find by any visible textarea in the card
+  if (!ta) {
+    var card = document.getElementById('sym-card-' + rowId);
+    if (card) ta = card.querySelector('textarea');
+  }
   var replyMsg = ta ? ta.value.trim() : '';
   if (!replyMsg) {
     replyMsg = 'ทีมพยาบาลได้รับทราบอาการของท่านแล้ว หากอาการไม่ดีขึ้น กรุณาไปพบแพทย์ที่โรงพยาบาลใกล้บ้านทันที หรือโทร ☎️ 1669';
   }
-  var r = await apiCall({ action:'ackSymptom', adminPass:'1234', rowId: rowId, replyMsg: replyMsg });
-  if (r.error) { alert('เกิดข้อผิดพลาด: '+r.error); return; }
+  // Disable button to prevent double click
+  var btn = event && event.target ? event.target : null;
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...'; }
+
+  var r = await apiCall({ action:'ackSymptom', adminPass:'1234', rowId: String(rowId), replyMsg: replyMsg });
+  if (r.error) {
+    alert('เกิดข้อผิดพลาด: ' + r.error);
+    if (btn) { btn.disabled = false; btn.innerHTML = '✅ รับทราบ & ส่งข้อความ'; }
+    return;
+  }
   loadAmSymptoms();
 }
 
