@@ -2383,11 +2383,12 @@ async function openMyDataModal() {
     html += '<div style="margin-bottom:18px;">' +
       '<div style="font-family:\'Noto Serif Thai\',serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid rgba(192,57,43,0.2);">⚠️ รายงานอาการที่แจ้งภายหลัง</div>' +
       symRows.map(function(row) {
-        var isPending = String(row[7]).trim() !== 'acknowledged';
+        var status   = String(row[7]).trim(); // pending / replied / acknowledged
         var hasReply  = row[8] && String(row[8]).trim().length > 0;
+        var isPending = status !== 'acknowledged';
         // row: 0=RowID 1=ชื่อ 2=HN 3=อาการ 4=วันที่ 5=MemberID 6=รายละเอียด 7=สถานะ 8=ตอบกลับ
-        return '<div id="symcard-' + row[0] + '" style="background:white;border-radius:10px;border:2px solid ' +
-          (isPending && !hasReply ? 'rgba(192,57,43,0.3)' : hasReply && isPending ? 'rgba(201,162,39,0.45)' : 'rgba(39,174,96,0.25)') +
+        var borderColor = status==='acknowledged' ? 'rgba(39,174,96,0.25)' : (status==='replied'||hasReply) ? 'rgba(201,162,39,0.45)' : 'rgba(192,57,43,0.3)';
+        return '<div id="symcard-' + row[0] + '" style="background:white;border-radius:10px;border:2px solid ' + borderColor +
           ';padding:13px 15px;margin-bottom:8px;">' +
 
           // Header row
@@ -2414,7 +2415,7 @@ async function openMyDataModal() {
             )
           ) : (
             '<div style="font-size:10.5px;color:var(--text-light);text-align:center;padding:4px;">' +
-              (isPending ? '⏳ รอทีมพยาบาลตอบกลับ...' : '<span style="background:rgba(39,174,96,0.1);color:#1a7a42;padding:3px 12px;border-radius:8px;">✅ รับทราบแล้ว</span>') +
+              (status==='acknowledged' ? '<span style="background:rgba(39,174,96,0.1);color:#1a7a42;padding:3px 12px;border-radius:8px;">✅ รับทราบแล้ว</span>' : '⏳ รอทีมพยาบาลตอบกลับ...') +
             '</div>'
           )) +
 
@@ -2449,19 +2450,22 @@ async function openMyDataModal() {
         symSection = '<div style="margin-top:12px;border-top:1px dashed rgba(192,57,43,0.2);padding-top:10px;">' +
           '<div style="font-size:9.5px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">⚠️ รายงานอาการผิดปกติ</div>' +
           linkedSymptoms.map(function(s) {
-            var isPending = String(s[7]).trim() !== 'acknowledged';
+            var sStatus   = String(s[7]).trim();
             var hasReply  = s[8] && String(s[8]).trim().length > 0;
-            return '<div style="background:' + (isPending && hasReply ? 'rgba(201,162,39,0.06)' : isPending ? 'rgba(192,57,43,0.05)' : 'rgba(39,174,96,0.04)') + ';' +
-              'border-radius:8px;border:1px solid ' + (isPending && hasReply ? 'rgba(201,162,39,0.3)' : isPending ? 'rgba(192,57,43,0.2)' : 'rgba(39,174,96,0.2)') + ';' +
+            var isPending = sStatus !== 'acknowledged';
+            var sBg = sStatus==='acknowledged' ? 'rgba(39,174,96,0.04)' : (sStatus==='replied'||hasReply) ? 'rgba(201,162,39,0.06)' : 'rgba(192,57,43,0.05)';
+            var sBorder = sStatus==='acknowledged' ? 'rgba(39,174,96,0.2)' : (sStatus==='replied'||hasReply) ? 'rgba(201,162,39,0.3)' : 'rgba(192,57,43,0.2)';
+            return '<div style="background:' + sBg + ';' +
+              'border-radius:8px;border:1px solid ' + sBorder + ';' +
               'padding:9px 12px;margin-bottom:6px;">' +
 
               // Date + status badge
               '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
                 '<span style="font-size:10px;color:var(--text-light);">🕐 ' + (s[4]||'') + '</span>' +
                 '<span style="font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:6px;' +
-                  (isPending && hasReply ? 'background:rgba(201,162,39,0.15);color:#8a6000;">' + '🔔 รอรับทราบ' :
-                   isPending ? 'background:rgba(192,57,43,0.1);color:var(--red);">' + '⏳ รอตอบกลับ' :
-                   'background:rgba(39,174,96,0.1);color:#1a7a42;">' + '✅ รับทราบแล้ว') +
+                  (sStatus==='acknowledged' ? 'background:rgba(39,174,96,0.12);color:#1a7a42;">' + '✅ รับทราบแล้ว' :
+                   (sStatus==='replied'||hasReply) ? 'background:rgba(201,162,39,0.15);color:#8a6000;">' + '🔔 มีข้อแนะนำใหม่' :
+                   'background:rgba(192,57,43,0.1);color:var(--red);">' + '⏳ รอทีมพยาบาลตอบ') +
                 '</span>' +
               '</div>' +
 
@@ -2475,8 +2479,8 @@ async function openMyDataModal() {
                   '<div style="font-size:9px;font-weight:700;color:var(--text-light);letter-spacing:0.05em;margin-bottom:3px;">💬 ข้อความจากทีมพยาบาล</div>' +
                   '<div style="font-size:11px;color:var(--text-mid);line-height:1.7;">' + s[8] + '</div>' +
                 '</div>' +
-                (isPending ?
-                  '<button onclick="doPatientAckSymptom(\'' + s[0] + '\')" style="width:100%;padding:7px;border:none;background:linear-gradient(135deg,#1a5f1a,#27ae60);color:white;border-radius:7px;font-family:\'Sarabun\',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;">✅ รับทราบข้อความ</button>'
+                ((sStatus==='replied'||hasReply) && isPending ?
+                  '<button onclick="doPatientAckSymptom(\'' + s[0] + '\')" style="width:100%;padding:7px;border:none;background:linear-gradient(135deg,#1a5f1a,#27ae60);color:white;border-radius:7px;font-family:\'Sarabun\',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;">✅ รับทราบข้อแนะนำ</button>'
                   : '')
               : '') +
             '</div>';
