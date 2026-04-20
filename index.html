@@ -1050,6 +1050,21 @@ body.has-member-bar .nav-bar   { bottom:16px; }
   </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     MY DATA MODAL (Member)
+══════════════════════════════════════ -->
+<div id="mydata-modal" style="position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="width:100%;max-width:560px;margin:auto;background:var(--cream);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:poFadeUp 0.3s ease;">
+    <div style="background:linear-gradient(135deg,var(--navy),var(--navy-light));padding:18px 22px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-family:'Noto Serif Thai',serif;font-size:15px;font-weight:700;color:var(--cream);">📊 ข้อมูลของฉัน</span>
+      <button onclick="document.getElementById('mydata-modal').style.display='none'" style="background:rgba(255,255,255,0.1);border:none;color:var(--cream);width:28px;height:28px;border-radius:7px;font-size:16px;cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:18px 22px 24px;max-height:75vh;overflow-y:auto;" id="mydata-content">
+      <div class="po-spinner show"><div class="po-spin"></div>กำลังโหลด...</div>
+    </div>
+  </div>
+</div>
+
 <div class="book-wrap">
   <!-- Spine -->
   <div class="book-spine">
@@ -1167,7 +1182,7 @@ function bsel(k) {
   document.querySelectorAll('.bdot').forEach(function(g){
     g.classList.remove('sel');
     var circ = g.querySelector('circle');
-    if (circ) circ.setAttribute('r','2.2');
+    if (circ) circ.setAttribute('r','1.0');
   });
   // enlarge ONLY dots matching key
   document.querySelectorAll('.bdot').forEach(function(g){
@@ -1537,23 +1552,18 @@ function getPages() {
         #bep .bsvg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
 
         /* connector line */
-        #bep .bline { stroke:rgba(255,255,255,0.45); stroke-width:0.6; stroke-dasharray:1.5 1; }
+        #bep .bline { stroke:rgba(240,210,80,0.55); stroke-width:0.35; stroke-dasharray:1.2 0.8; filter:drop-shadow(0 0 1.5px rgba(240,210,80,0.6)); }
         #bep .bline.hi { stroke:white; stroke-width:1.8; stroke-dasharray:none; }
 
         /* dot on bone */
         #bep .bdot { pointer-events:all; cursor:pointer; }
         #bep .bdot circle { transition:r 0.18s, filter 0.18s; }
         #bep .bdot:hover circle { filter:brightness(1.3); }
-        #bep .bdot.sel circle { r:2.8; filter:drop-shadow(0 0 3px rgba(255,255,255,0.9)); }
+        #bep .bdot.sel circle { r:2.2; filter:drop-shadow(0 0 4px rgba(240,210,80,0.9)); }
 
-        /* label box */
-        #bep .blabel {
-          pointer-events:all; cursor:pointer;
-          transition:opacity 0.18s;
-        }
-        #bep .blabel rect { rx:4; ry:4; }
-        #bep .blabel.sel rect { stroke:#e8c44a !important; stroke-width:1.5; }
-        #bep .blabel text { font-family:'Sarabun',sans-serif; font-size:2.8px; font-weight:700; }
+        /* label — text only, no box */
+        #bep .blabel { pointer-events:all; cursor:pointer; }
+        #bep .blabel text { font-family:'Sarabun',sans-serif; font-size:3px; font-weight:700; text-shadow:0 0 3px rgba(0,0,0,0.9),0 0 6px rgba(0,0,0,0.7); }
 
         /* info panel */
         #bep .bipanel {
@@ -1597,103 +1607,101 @@ function getPages() {
           <!-- FRONTAL — top center, label above -->
           <line class="bline" x1="50" y1="18" x2="50" y2="8"/>
           <g class="blabel" onclick="bsel('frontal')">
-            <rect x="34" y="2" width="32" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(75,175,212,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="50" y="4.5" text-anchor="middle" fill="#6ecff6" font-size="2.0px" font-weight="700">หน้าผาก</text>
           </g>
           <g class="bdot" id="bd-frontal" onclick="bsel('frontal')">
-            <circle cx="50" cy="20" r="1.4" fill="#4bafd4" stroke="white" stroke-width="0.5"/>
+            <circle cx="50" cy="20" r="1.0" fill="#4bafd4" stroke="white" stroke-width="0.4"/>
           </g>
 
           <!-- TEMPORAL LEFT — label outside left -->
-          <line class="bline" x1="14" y1="32" x2="6" y2="26"/>
+          <line class="bline" x1="22" y1="35" x2="6" y2="26"/>
           <g class="blabel" onclick="bsel('temporal')">
-            <rect x="0" y="21" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(156,107,181,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="9" y="24.5" text-anchor="middle" fill="#c49ee8" font-size="2.0px" font-weight="700">ขมับ</text>
           </g>
           <g class="bdot" id="bd-temporal" onclick="bsel('temporal')">
-            <circle cx="14" cy="33" r="1.4" fill="#9c6bb5" stroke="white" stroke-width="0.5"/>
+            <circle cx="22" cy="36" r="1.0" fill="#9c6bb5" stroke="white" stroke-width="0.4"/>
           </g>
 
           <!-- TEMPORAL RIGHT -->
-          <line class="bline" x1="86" y1="32" x2="94" y2="26"/>
+          <line class="bline" x1="78" y1="35" x2="94" y2="26"/>
           <g class="blabel" onclick="bsel('temporal')">
-            <rect x="82" y="21" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(156,107,181,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="91" y="24.5" text-anchor="middle" fill="#c49ee8" font-size="2.0px" font-weight="700">ขมับ</text>
           </g>
           <g class="bdot" onclick="bsel('temporal')">
-            <circle cx="86" cy="33" r="1.4" fill="#9c6bb5" stroke="white" stroke-width="0.5"/>
+            <circle cx="78" cy="36" r="1.0" fill="#9c6bb5" stroke="white" stroke-width="0.4"/>
           </g>
 
           <!-- ORBITAL LEFT -->
           <line class="bline" x1="29" y1="42" x2="6" y2="38"/>
           <g class="blabel" onclick="bsel('orbital')">
-            <rect x="0" y="33" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(58,158,138,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="9" y="36.5" text-anchor="middle" fill="#5fd4c0" font-size="2.0px" font-weight="700">เบ้าตา</text>
           </g>
           <g class="bdot" id="bd-orbital" onclick="bsel('orbital')">
-            <circle cx="30" cy="43" r="1.4" fill="#3a9e8a" stroke="white" stroke-width="0.5"/>
+            <circle cx="30" cy="43" r="1.0" fill="#3a9e8a" stroke="white" stroke-width="0.4"/>
           </g>
 
           <!-- ORBITAL RIGHT -->
           <line class="bline" x1="71" y1="42" x2="94" y2="38"/>
           <g class="blabel" onclick="bsel('orbital')">
-            <rect x="82" y="33" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(58,158,138,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="91" y="36.5" text-anchor="middle" fill="#5fd4c0" font-size="2.0px" font-weight="700">เบ้าตา</text>
           </g>
           <g class="bdot" onclick="bsel('orbital')">
-            <circle cx="70" cy="43" r="1.4" fill="#3a9e8a" stroke="white" stroke-width="0.5"/>
+            <circle cx="70" cy="43" r="1.0" fill="#3a9e8a" stroke="white" stroke-width="0.4"/>
           </g>
 
           <!-- NASAL — center, label above -->
           <line class="bline" x1="50" y1="50" x2="50" y2="43"/>
           <g class="blabel" onclick="bsel('nasal')">
-            <rect x="36" y="37" width="28" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(224,112,64,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="50" y="40.5" text-anchor="middle" fill="#f0956a" font-size="2.0px" font-weight="700">กระดูกจมูก</text>
           </g>
           <g class="bdot" id="bd-nasal" onclick="bsel('nasal')">
-            <circle cx="50" cy="51" r="1.4" fill="#e07040" stroke="white" stroke-width="0.5"/>
+            <circle cx="50" cy="51" r="1.0" fill="#e07040" stroke="white" stroke-width="0.4"/>
           </g>
 
           <!-- ZYGOMATIC LEFT -->
-          <line class="bline" x1="18" y1="54" x2="6" y2="51"/>
+          <line class="bline" x1="27" y1="56" x2="6" y2="51"/>
           <g class="blabel" onclick="bsel('zygomatic')">
-            <rect x="0" y="46" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(74,158,92,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="9" y="49.5" text-anchor="middle" fill="#7dd494" font-size="2.0px" font-weight="700">โหนกแก้ม</text>
           </g>
           <g class="bdot" id="bd-zygomatic" onclick="bsel('zygomatic')">
-            <circle cx="18" cy="55" r="1.4" fill="#4a9e5c" stroke="white" stroke-width="0.5"/>
+            <circle cx="27" cy="57" r="1.0" fill="#4a9e5c" stroke="white" stroke-width="0.4"/>
           </g>
 
           <!-- ZYGOMATIC RIGHT -->
-          <line class="bline" x1="82" y1="54" x2="94" y2="51"/>
+          <line class="bline" x1="73" y1="56" x2="94" y2="51"/>
           <g class="blabel" onclick="bsel('zygomatic')">
-            <rect x="82" y="46" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(74,158,92,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="91" y="49.5" text-anchor="middle" fill="#7dd494" font-size="2.0px" font-weight="700">โหนกแก้ม</text>
           </g>
           <g class="bdot" onclick="bsel('zygomatic')">
-            <circle cx="82" cy="55" r="1.4" fill="#4a9e5c" stroke="white" stroke-width="0.5"/>
+            <circle cx="73" cy="57" r="1.0" fill="#4a9e5c" stroke="white" stroke-width="0.4"/>
           </g>
 
           <!-- MAXILLA — label left -->
           <line class="bline" x1="48" y1="65" x2="6" y2="63"/>
           <g class="blabel" onclick="bsel('maxilla')">
-            <rect x="0" y="58" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(212,96,138,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="9" y="61.5" text-anchor="middle" fill="#ee90bb" font-size="2.0px" font-weight="700">ขากรรไกรบน</text>
           </g>
           <g class="bdot" id="bd-maxilla" onclick="bsel('maxilla')">
-            <circle cx="49" cy="66" r="1.4" fill="#d4608a" stroke="white" stroke-width="0.5"/>
-            <text x="49" y="68" text-anchor="middle" fill="white" font-size="1.8px" font-weight="800">Mx</text>
+            <circle cx="49" cy="66" r="1.0" fill="#d4608a" stroke="white" stroke-width="0.4"/>
           </g>
 
           <!-- MANDIBLE — label right -->
           <line class="bline" x1="52" y1="82" x2="94" y2="79"/>
           <g class="blabel" onclick="bsel('mandible')">
-            <rect x="82" y="74" width="18" height="3" fill="rgba(20,32,60,0.88)" stroke="rgba(200,160,48,0.6)" stroke-width="0.6" rx="2"/>
+            
             <text x="91" y="77.5" text-anchor="middle" fill="#f0cc60" font-size="2.0px" font-weight="700">ขากรรไกรล่าง</text>
           </g>
           <g class="bdot" id="bd-mandible" onclick="bsel('mandible')">
-            <circle cx="51" cy="83" r="1.4" fill="#c8a030" stroke="white" stroke-width="0.5"/>
-            <text x="51" y="85" text-anchor="middle" fill="white" font-size="1.8px" font-weight="800">Md</text>
+            <circle cx="51" cy="83" r="1.0" fill="#c8a030" stroke="white" stroke-width="0.4"/>
           </g>
         </svg>
       </div>
@@ -1855,14 +1863,19 @@ async function apiCall(data) {
 
 function cdHTML(dateStr) {
   if (!dateStr) return '—';
-  const d = new Date(dateStr), now = new Date();
-  const diff = Math.floor((d - now) / 86400000);
+  // Compare date only (strip time)
+  const d = new Date(dateStr);
+  const dDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const now = new Date();
+  const nDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diff = Math.round((dDate - nDate) / 86400000);
   const df = d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
-  if (diff < 0) return `${df} <span class="cd-past">(ผ่านไป ${Math.abs(diff)} วัน)</span>`;
-  if (diff === 0) return `${df} <span class="cd-urgent">🔴 วันนี้!</span>`;
-  if (diff <= 3)  return `${df} <span class="cd-urgent">🔴 อีก ${diff} วัน</span>`;
-  if (diff <= 7)  return `${df} <span class="cd-soon">🟡 อีก ${diff} วัน</span>`;
-  return `${df} <span class="cd-ok">🟢 อีก ${diff} วัน</span>`;
+  if (diff < 0)  return df + ' <span class="cd-past">(ผ่านไปแล้ว ' + Math.abs(diff) + ' วัน)</span>';
+  if (diff === 0) return df + ' <span class="cd-urgent">🔴 วันนี้!</span>';
+  if (diff === 1) return df + ' <span class="cd-urgent">🔴 พรุ่งนี้!</span>';
+  if (diff <= 3)  return df + ' <span class="cd-urgent">🔴 อีก ' + diff + ' วัน</span>';
+  if (diff <= 7)  return df + ' <span class="cd-soon">🟡 อีก ' + diff + ' วัน</span>';
+  return df + ' <span class="cd-ok">🟢 อีก ' + diff + ' วัน</span>';
 }
 
 // ── PASSWORD TOGGLE ──
@@ -2099,6 +2112,7 @@ function showMemberBar(role, name) {
     badge.textContent = 'สมาชิก';
     btns.innerHTML = `
       <button class="mb-btn mb-btn-record" onclick="openRecordModal()">📋 บันทึกข้อมูล</button>
+      <button class="mb-btn" style="background:rgba(201,162,39,0.18);color:var(--gold-light);border:1px solid rgba(201,162,39,0.3);" onclick="openMyDataModal()">📊 ข้อมูลของฉัน</button>
       <button class="mb-btn mb-btn-logout" onclick="doLogout()">ออกจากระบบ</button>`;
   } else {
     badge.className = 'mb-badge mb-badge-member';
@@ -2135,7 +2149,7 @@ async function doSaveRecord() {
   if (!appoint) { poAlert('rm-alert','กรุณาระบุวันนัดตรวจ','err'); return; }
   const syms=[...document.querySelectorAll('#record-modal .rm-check-list:not(#rm-injury-list):not(#rm-surgery-list) input:checked')].map(c=>c.value).join(', ');
   document.getElementById('rm-spinner').classList.add('show');
-  const r = await apiCall({
+  var payload = {
     action:'savePatient',
     memberId: portalUser ? portalUser.id : 'guest',
     memberName: portalUser ? portalUser.name : 'Guest',
@@ -2145,7 +2159,14 @@ async function doSaveRecord() {
     appointDate: appoint,
     symptoms: syms,
     note: document.getElementById('rm-note').value
-  });
+  };
+  if (window._editRowId) {
+    payload.action = 'updatePatient';
+    payload.rowId = window._editRowId;
+    payload.updateNote = 'อัปเดตโดย ' + (portalUser ? portalUser.name : 'สมาชิก');
+    window._editRowId = null;
+  }
+  const r = await apiCall(payload);
   document.getElementById('rm-spinner').classList.remove('show');
   if (r.error) { poAlert('rm-alert', r.error, 'err'); return; }
   poAlert('rm-alert','✅ บันทึกข้อมูลสำเร็จ!','ok');
@@ -2153,6 +2174,62 @@ async function doSaveRecord() {
   document.querySelectorAll('#record-modal input[type="checkbox"]').forEach(c=>c.checked=false);
 }
 
+// ── MY DATA MODAL (Member) ──
+async function openMyDataModal() {
+  var modal = document.getElementById('mydata-modal');
+  modal.style.display = 'flex';
+  var el = document.getElementById('mydata-content');
+  el.innerHTML = '<div class="po-spinner show"><div class="po-spin"></div>กำลังโหลด...</div>';
+
+  var r = await apiCall({ action:'getMyData', memberId: portalUser.id });
+  if (r.error || !r.data || r.data.length <= 1) {
+    el.innerHTML = '<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลที่บันทึก</div>'; return;
+  }
+  var rows = r.data.slice(1);
+  el.innerHTML = rows.reverse().map(function(row, idx) {
+    var rowIndex = rows.length - idx; // for edit reference
+    var hasUpdate = row[11] && row[12] !== 'acknowledged';
+    return '<div style="background:white;border-radius:10px;border:1.5px solid ' + (hasUpdate ? 'var(--gold)' : 'var(--cream-dark)') + ';padding:14px 16px;margin-bottom:12px;">' +
+      (hasUpdate ? '<div style="background:rgba(201,162,39,0.1);border-radius:6px;padding:6px 10px;font-size:11px;color:#8a6000;margin-bottom:10px;">⚠️ มีการอัปเดต: ' + row[11] + '</div>' : '') +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">' +
+        '<div style="font-family:\'Noto Serif Thai\',serif;font-size:14px;font-weight:700;color:var(--navy);">HN: ' + (row[2]||'—') + '</div>' +
+        '<div style="font-size:10px;color:var(--text-light);">' + (row[9] ? new Date(row[9]).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}) : '') + '</div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">' +
+        '<div><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">การบาดเจ็บ</span>' + (row[3]||'—') + '</div>' +
+        '<div><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">การผ่าตัด</span>' + (row[4]||'—') + '</div>' +
+        '<div><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">ถอด Nasal Packing</span>' + (row[5] ? cdHTML(row[5]) : '—') + '</div>' +
+        '<div><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">ตัดไหม</span>' + (row[6] ? cdHTML(row[6]) : '—') + '</div>' +
+        '<div style="grid-column:1/-1;"><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">🗓️ วันนัดตรวจ</span>' + (row[7] ? cdHTML(row[7]) : '—') + '</div>' +
+        (row[8] ? '<div style="grid-column:1/-1;"><span style="font-size:9px;font-weight:700;color:var(--red);text-transform:uppercase;display:block;">⚠️ อาการผิดปกติ</span>' + row[8] + '</div>' : '') +
+        (row[10] ? '<div style="grid-column:1/-1;"><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">หมายเหตุ</span>' + row[10] + '</div>' : '') +
+      '</div>' +
+      '<button onclick="openEditRecord(\'' + row[0] + '\',\'' + row[2] + '\')" style="margin-top:12px;width:100%;padding:8px;border:1.5px solid var(--teal);background:rgba(42,127,127,0.08);color:var(--teal);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✏️ แก้ไข / อัปเดตข้อมูล</button>' +
+    '</div>';
+  }).join('');
+}
+
+// ── EDIT RECORD ──
+function openEditRecord(rowId, hn) {
+  document.getElementById('mydata-modal').style.display = 'none';
+  // Pre-fill record modal
+  document.getElementById('rm-hn').value = hn;
+  // Store rowId for update
+  window._editRowId = rowId;
+  document.getElementById('rm-appoint').value = '';
+  document.querySelectorAll('#record-modal input[type="checkbox"]').forEach(function(c){ c.checked=false; });
+  // Show note about update
+  poAlert('rm-alert','กำลังแก้ไขข้อมูล HN: ' + hn + ' (ระบุข้อมูลที่ต้องการอัปเดต)','info');
+  openRecordModal();
+}
+
+// ── ACKNOWLEDGE UPDATE (Admin) ──
+async function doAcknowledge(rowId) {
+  var r = await apiCall({ action:'acknowledgeUpdate', adminPass:'1234', rowId: rowId });
+  if (r.error) { alert('เกิดข้อผิดพลาด: ' + r.error); return; }
+  alert('✅ รับทราบแล้ว');
+  loadAmPatients();
+}
 // ── ADMIN MODAL ──
 function openAdminModal() {
   document.getElementById('admin-modal').classList.add('show');
@@ -2173,21 +2250,31 @@ function switchAmTab(tab) {
 }
 
 async function loadAmPatients() {
-  const sp=document.getElementById('am-pts-spinner'); sp.classList.add('show');
+  const sp=document.getElementById('am-pts-spinner'); if(sp) sp.classList.add('show');
   const r = await apiCall({ action:'getPatients', adminPass:'1234' });
-  sp.classList.remove('show');
+  if(sp) sp.classList.remove('show');
   const el=document.getElementById('am-pts-data');
   if (r.error||!r.data||r.data.length<=1) { el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลผู้ป่วย</div>'; return; }
   const rows=r.data.slice(1);
   el.innerHTML=`<div style="overflow-x:auto"><table class="am-table">
-    <thead><tr><th>ID</th><th>ชื่อ</th><th>HN</th><th>การบาดเจ็บ</th><th>การผ่าตัด</th><th>ถอด Packing</th><th>ตัดไหม</th><th>วันนัด</th><th>อาการ</th></tr></thead>
-    <tbody>${rows.map(r=>`<tr>
-      <td>${r[0]||'—'}</td><td>${r[1]||'—'}</td><td><strong>${r[2]||'—'}</strong></td>
-      <td>${r[3]||'—'}</td><td>${r[4]||'—'}</td>
-      <td>${r[5]?cdHTML(r[5]):'—'}</td><td>${r[6]?cdHTML(r[6]):'—'}</td>
-      <td>${r[7]?cdHTML(r[7]):'—'}</td>
-      <td style="color:${r[8]?'var(--red)':'var(--text-light)'}">${r[8]||'ปกติ'}</td>
-    </tr>`).join('')}</tbody></table></div>`;
+    <thead><tr><th>ID</th><th>ชื่อ</th><th>HN</th><th>การบาดเจ็บ</th><th>การผ่าตัด</th><th>ถอด Packing</th><th>ตัดไหม</th><th>วันนัด</th><th>อาการ</th><th>สถานะ</th></tr></thead>
+    <tbody>${rows.map(function(r){
+      var hasUpdate = r[11] && r[12] !== 'acknowledged';
+      return '<tr style="' + (hasUpdate ? 'background:rgba(201,162,39,0.06);' : '') + '">' +
+      '<td>' + (r[0]||'—') + '</td>' +
+      '<td>' + (r[1]||'—') + '</td>' +
+      '<td><strong>' + (r[2]||'—') + '</strong></td>' +
+      '<td>' + (r[3]||'—') + '</td>' +
+      '<td>' + (r[4]||'—') + '</td>' +
+      '<td>' + (r[5]?cdHTML(r[5]):'—') + '</td>' +
+      '<td>' + (r[6]?cdHTML(r[6]):'—') + '</td>' +
+      '<td>' + (r[7]?cdHTML(r[7]):'—') + '</td>' +
+      '<td style="color:' + (r[8]?'var(--red)':'var(--text-light)') + '">' + (r[8]||'ปกติ') + '</td>' +
+      '<td>' + (hasUpdate
+        ? '<span class="badge-pending">🔔 อัปเดต</span><br><button onclick="doAcknowledge(\'' + r[0] + '\')" style="margin-top:4px;padding:3px 8px;border:1px solid var(--teal);background:rgba(42,127,127,0.1);color:var(--teal);border-radius:5px;font-size:10px;cursor:pointer;">รับทราบ</button>'
+        : '<span class="badge-approved">✅ ปกติ</span>') + '</td>' +
+      '</tr>';
+    }).join('')}</tbody></table></div>`;
 }
 
 async function loadAmMembers() {
