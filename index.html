@@ -1035,12 +1035,17 @@ body.has-member-bar .nav-bar   { bottom:16px; }
     </div>
     <div class="am-tabs">
       <button class="am-tab active" onclick="switchAmTab('patients')">🩺 ข้อมูลผู้ป่วย</button>
+      <button class="am-tab" onclick="switchAmTab('symptoms')">⚠️ รายงานอาการ</button>
       <button class="am-tab" onclick="switchAmTab('members')">👥 สมาชิก</button>
     </div>
     <div class="am-body">
       <div id="am-patients" class="am-tab-content active">
         <div id="am-pts-spinner" class="po-spinner show"><div class="po-spin"></div>กำลังโหลด...</div>
         <div id="am-pts-data"></div>
+      </div>
+      <div id="am-symptoms" class="am-tab-content">
+        <div id="am-sym-spinner" class="po-spinner show"><div class="po-spin"></div>กำลังโหลด...</div>
+        <div id="am-sym-data"></div>
       </div>
       <div id="am-members" class="am-tab-content">
         <div id="am-mem-spinner" class="po-spinner"><div class="po-spin"></div>กำลังโหลด...</div>
@@ -1061,6 +1066,73 @@ body.has-member-bar .nav-bar   { bottom:16px; }
     </div>
     <div style="padding:18px 22px 24px;max-height:75vh;overflow-y:auto;" id="mydata-content">
       <div class="po-spinner show"><div class="po-spin"></div>กำลังโหลด...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SYMPTOM REPORT MODAL
+══════════════════════════════════════ -->
+<div id="symptom-modal" style="position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="width:100%;max-width:460px;margin:auto;background:var(--cream);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.45);animation:poFadeUp 0.3s ease;">
+    <div style="background:linear-gradient(135deg,#8B1A1A,#c0392b);padding:18px 22px;display:flex;justify-content:space-between;align-items:center;position:relative;">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,rgba(255,200,100,0.8),rgba(255,100,100,0.4),transparent);"></div>
+      <span style="font-family:'Noto Serif Thai',serif;font-size:15px;font-weight:700;color:white;">⚠️ รายงานอาการผิดปกติ</span>
+      <button onclick="document.getElementById('symptom-modal').style.display='none'" style="background:rgba(255,255,255,0.15);border:none;color:white;width:28px;height:28px;border-radius:7px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+    <div style="padding:20px 22px 24px;max-height:78vh;overflow-y:auto;" id="symptom-form-area">
+
+      <div id="sym-alert" class="po-alert"></div>
+
+      <!-- วันที่และเวลา (auto) -->
+      <div style="background:rgba(192,57,43,0.06);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:9px 13px;margin-bottom:14px;font-size:11.5px;color:#7a1a1a;">
+        🕐 วันที่/เวลาบันทึก: <strong id="sym-datetime-display">—</strong>
+      </div>
+
+      <!-- HN -->
+      <div class="po-row">
+        <label class="po-label">HN ผู้ป่วย <span class="req">*</span></label>
+        <input id="sym-hn" class="po-input" placeholder="เช่น HN12345">
+      </div>
+
+      <!-- อาการ checklist -->
+      <div class="po-row">
+        <label class="po-label">⚠️ อาการที่พบ <span class="req">*</span> <span style="font-size:9px;color:var(--text-light);">(เลือกได้หลายข้อ)</span></label>
+        <div class="rm-check-list" id="sym-checklist">
+          <label class="rm-check-item"><input type="checkbox" value="ไข้สูงกว่า 38°C"><span>🌡️ ไข้สูงกว่า 38°C</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="เลือดออกมากผิดปกติ"><span>🩸 เลือดออกมากผิดปกติ หยุดไม่ได้</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="แผลบวมแดง มีหนองซึม"><span>🔴 แผลบวมแดง มีหนองซึม</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ปวดมากขึ้นผิดปกติ"><span>😣 ปวดมากขึ้นผิดปกติ</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="หายใจลำบาก"><span>😮‍💨 หายใจลำบาก หายใจไม่ออก</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="มองภาพซ้อน / ตาปิดไม่สนิท"><span>👁️ มองภาพซ้อน / ตาปิดไม่สนิท</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="สบฟันเปลี่ยนไป"><span>🦷 สบฟันเปลี่ยนไปจากเดิม</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ชาหรืออ่อนแรงใบหน้า"><span>😶 ชาหรืออ่อนแรงใบหน้าเพิ่มขึ้น</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="คลื่นไส้ อาเจียน"><span>🤢 คลื่นไส้ อาเจียน</span></label>
+          <label class="rm-check-item"><input type="checkbox" value="ไม่สามารถรับประทานอาหารได้"><span>🍽️ ไม่สามารถรับประทานอาหารได้</span></label>
+        </div>
+      </div>
+
+      <!-- รายละเอียดเพิ่มเติม -->
+      <div class="po-row">
+        <label class="po-label">รายละเอียดเพิ่มเติม</label>
+        <textarea id="sym-detail" class="po-input" style="resize:vertical;min-height:65px;" placeholder="อธิบายอาการเพิ่มเติม เช่น เริ่มมีอาการเมื่อไร รุนแรงแค่ไหน..."></textarea>
+      </div>
+
+      <div id="sym-spinner" class="po-spinner"><div class="po-spin"></div>กำลังส่ง...</div>
+      <button class="po-btn po-btn-navy" style="background:linear-gradient(135deg,#8B1A1A,#c0392b);margin-bottom:8px;" onclick="doReportSymptom()">📤 รายงานอาการ</button>
+      <button class="po-btn po-btn-ghost" onclick="document.getElementById('symptom-modal').style.display='none'">ปิด</button>
+    </div>
+
+    <!-- Auto-reply message (hidden until submit) -->
+    <div id="sym-reply" style="display:none;padding:18px 22px;background:rgba(192,57,43,0.06);border-top:2px solid rgba(192,57,43,0.15);">
+      <div style="font-family:'Noto Serif Thai',serif;font-size:14px;font-weight:700;color:#8B1A1A;margin-bottom:10px;">📨 ได้รับรายงานของคุณแล้ว</div>
+      <div style="font-size:12px;color:var(--text-mid);line-height:1.9;background:white;border-radius:10px;padding:14px 16px;border-left:4px solid var(--red);">
+        ขอบคุณที่แจ้งอาการให้ทราบ ทีมพยาบาลได้รับรายงานของท่านแล้ว<br><br>
+        <strong style="color:var(--red);">⚠️ หากอาการไม่ดีขึ้นหรือมีอาการรุนแรง:</strong><br>
+        กรุณา <strong>รีบไปพบแพทย์ที่โรงพยาบาลใกล้บ้านทันที</strong><br>
+        หรือโทรสายด่วนฉุกเฉิน <strong style="font-size:16px;color:var(--red);">☎️ 1669</strong>
+      </div>
+      <button class="po-btn po-btn-ghost" style="margin-top:12px;" onclick="document.getElementById('symptom-modal').style.display='none'">รับทราบ / ปิด</button>
     </div>
   </div>
 </div>
@@ -1962,7 +2034,7 @@ function renderPoLanding(el) {
             position:relative; overflow:hidden;
           " onmouseover="this.style.borderColor='var(--teal)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(42,127,127,0.15)'"
              onmouseout="this.style.borderColor='var(--cream-dark)';this.style.transform='';this.style.boxShadow='0 2px 10px rgba(0,0,0,0.06)'">
-            <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#e8f4f8,#c8e8f0);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(42,127,127,0.2);">🙋</div>
+            <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#e8f4f8,#c8e8f0);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(42,127,127,0.2);">👁️</div>
             <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;">ทั่วไป</div>
             <div style="font-size:9px;color:var(--text-light);line-height:1.5;">อ่าน E-book<br>ไม่ต้องสมัคร</div>
           </div>
@@ -1977,7 +2049,7 @@ function renderPoLanding(el) {
           " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 28px rgba(26,39,68,0.45)'"
              onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(26,39,68,0.3)'">
             <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,162,39,0.12),transparent 70%);pointer-events:none;"></div>
-            <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:rgba(201,162,39,0.15);border:1.5px solid rgba(201,162,39,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;z-index:1;">🧑‍💻</div>
+            <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:rgba(201,162,39,0.15);border:1.5px solid rgba(201,162,39,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;z-index:1;">👤</div>
             <div style="font-size:12px;font-weight:700;color:var(--gold-light);margin-bottom:4px;position:relative;z-index:1;">สมาชิก</div>
             <div style="font-size:9px;color:rgba(253,246,227,0.55);line-height:1.5;position:relative;z-index:1;">E-book +<br>บันทึกข้อมูล</div>
           </div>
@@ -2177,6 +2249,7 @@ function showMemberBar(role, name) {
     badge.textContent = 'สมาชิก';
     btns.innerHTML = `
       <button class="mb-btn mb-btn-record" onclick="openRecordModal()">📋 บันทึกข้อมูล</button>
+      <button class="mb-btn" style="background:rgba(192,57,43,0.22);color:#ffaaaa;border:1px solid rgba(192,57,43,0.4);" onclick="openSymptomModal()">⚠️ รายงานอาการ</button>
       <button class="mb-btn" style="background:rgba(201,162,39,0.18);color:var(--gold-light);border:1px solid rgba(201,162,39,0.3);" onclick="openMyDataModal()">📊 ข้อมูลของฉัน</button>
       <button class="mb-btn mb-btn-logout" onclick="doLogout()">ออกจากระบบ</button>`;
   } else {
@@ -2186,6 +2259,56 @@ function showMemberBar(role, name) {
   }
   bar.classList.add('show');
   document.body.classList.add('has-member-bar');
+}
+
+// ── SYMPTOM REPORT MODAL ──
+function openSymptomModal() {
+  var modal = document.getElementById('symptom-modal');
+  modal.style.display = 'flex';
+  // Set current datetime
+  var now = new Date();
+  var dtStr = now.toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'long',year:'numeric'}) +
+              ' ' + now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  var el = document.getElementById('sym-datetime-display');
+  if (el) el.textContent = dtStr;
+  // Pre-fill HN if available
+  document.getElementById('sym-hn').value = '';
+  document.querySelectorAll('#sym-checklist input').forEach(function(c){ c.checked=false; });
+  document.getElementById('sym-detail').value = '';
+  document.getElementById('sym-form-area').style.display = 'block';
+  document.getElementById('sym-reply').style.display = 'none';
+  var a = document.getElementById('sym-alert'); if(a) a.className='po-alert';
+}
+
+async function doReportSymptom() {
+  var hn = document.getElementById('sym-hn').value.trim();
+  var syms = [...document.querySelectorAll('#sym-checklist input:checked')].map(function(c){ return c.value; }).join(', ');
+  var detail = document.getElementById('sym-detail').value.trim();
+  if (!hn) { poAlert('sym-alert','กรุณากรอก HN','err'); return; }
+  if (!syms) { poAlert('sym-alert','กรุณาเลือกอาการอย่างน้อย 1 ข้อ','err'); return; }
+
+  var now = new Date();
+  var dtStr = now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}) +
+              ' ' + now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+
+  document.getElementById('sym-spinner').classList.add('show');
+  var r = await apiCall({
+    action: 'reportSymptom',
+    memberId: portalUser ? portalUser.id : 'guest',
+    memberName: portalUser ? portalUser.name : 'Guest',
+    hn: hn,
+    symptoms: syms,
+    detail: detail,
+    reportTime: dtStr,
+    ackStatus: 'pending'
+  });
+  document.getElementById('sym-spinner').classList.remove('show');
+
+  if (r.error) { poAlert('sym-alert', r.error, 'err'); return; }
+
+  // Show auto-reply
+  document.getElementById('sym-form-area').style.display = 'none';
+  document.getElementById('sym-reply').style.display = 'block';
 }
 
 function doLogout() {
@@ -2305,13 +2428,56 @@ function closeAdminModal() {
 }
 
 function switchAmTab(tab) {
-  document.querySelectorAll('.am-tab').forEach((b,i)=>b.classList.toggle('active',['patients','members'][i]===tab));
-  ['am-patients','am-members'].forEach(id=>{
-    const el=document.getElementById(id);
+  document.querySelectorAll('.am-tab').forEach(function(b,i){
+    b.classList.toggle('active',['patients','symptoms','members'][i]===tab);
+  });
+  ['am-patients','am-symptoms','am-members'].forEach(function(id){
+    var el=document.getElementById(id);
     if(el) el.classList.toggle('active', id==='am-'+tab);
   });
   if (tab==='members') loadAmMembers();
   if (tab==='patients') loadAmPatients();
+  if (tab==='symptoms') loadAmSymptoms();
+}
+
+async function loadAmSymptoms() {
+  var sp=document.getElementById('am-sym-spinner');
+  if(sp) sp.classList.add('show');
+  var r = await apiCall({ action:'getSymptoms', adminPass:'1234' });
+  if(sp) sp.classList.remove('show');
+  var el=document.getElementById('am-sym-data');
+  if (!el) return;
+  if (r.error||!r.data||r.data.length<=1) {
+    el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีรายงานอาการ</div>'; return;
+  }
+  var rows=r.data.slice(1).reverse();
+  el.innerHTML='<div style="display:flex;flex-direction:column;gap:10px;">' +
+    rows.map(function(row){
+      var isPending = String(row[7]).trim() !== 'acknowledged';
+      return '<div style="background:white;border-radius:10px;border:2px solid ' + (isPending?'rgba(192,57,43,0.4)':'rgba(180,150,80,0.15)') + ';padding:14px 16px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+          '<div>' +
+            '<span style="font-family:\'Noto Serif Thai\',serif;font-size:13px;font-weight:700;color:var(--navy);">HN: ' + (row[2]||'—') + '</span>' +
+            '<span style="margin-left:8px;font-size:10px;color:var(--text-light);">ID ' + (row[5]||'') + ' · ' + (row[1]||'') + '</span>' +
+          '</div>' +
+          '<span style="font-size:10px;color:var(--text-light);">' + (row[4]||'') + '</span>' +
+        '</div>' +
+        '<div style="font-size:11.5px;color:#7a1a1a;background:rgba(192,57,43,0.07);border-radius:7px;padding:8px 12px;margin-bottom:8px;">' +
+          '<strong>⚠️ อาการ:</strong> ' + (row[3]||'—') +
+        '</div>' +
+        (row[6] ? '<div style="font-size:11px;color:var(--text-mid);margin-bottom:8px;">📝 รายละเอียด: ' + row[6] + '</div>' : '') +
+        (isPending
+          ? '<button onclick="doAckSymptom(\'' + row[0] + '\')" style="width:100%;padding:8px;border:none;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--gold-light);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✅ รับทราบ</button>'
+          : '<div style="font-size:10.5px;color:#1a7a42;text-align:center;padding:4px;"><span style="background:rgba(39,174,96,0.12);padding:3px 10px;border-radius:6px;">✅ รับทราบแล้ว</span></div>'
+        ) +
+      '</div>';
+    }).join('') + '</div>';
+}
+
+async function doAckSymptom(rowId) {
+  var r = await apiCall({ action:'ackSymptom', adminPass:'1234', rowId: rowId });
+  if (r.error) { alert('เกิดข้อผิดพลาด: '+r.error); return; }
+  loadAmSymptoms();
 }
 
 async function loadAmPatients() {
