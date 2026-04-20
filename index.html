@@ -1926,12 +1926,27 @@ document.addEventListener('touchend',   e => {
 const API_URL = 'https://script.google.com/macros/s/AKfycbx_XYekbmKnseZqwzbONQ2kK9T-nlpnMB2eZukAM2g30w3G3VWdHkpuZEGgXEZDj7WhcQ/exec';
 let portalUser = null;
 
-async function apiCall(data) {
+// ── API CACHE (TTL 30 วินาที) ──
+var _cache = {};
+async function apiCall(data, useCache) {
+  var key = JSON.stringify(data);
+  var now = Date.now();
+  if (useCache && _cache[key] && now - _cache[key].t < 30000) {
+    return _cache[key].v;
+  }
   try {
-    const r = await fetch(API_URL, { method:'POST', body:JSON.stringify(data), headers:{'Content-Type':'text/plain'} });
-    return await r.json();
+    const r = await fetch(API_URL, {
+      method:'POST',
+      body: JSON.stringify(data),
+      headers: {'Content-Type':'text/plain'},
+      // Google Apps Script ไม่รองรับ cache header แต่เพิ่ม signal timeout
+    });
+    var v = await r.json();
+    if (useCache && !v.error) _cache[key] = { v, t: now };
+    return v;
   } catch(e) { return { error:'ไม่สามารถเชื่อมต่อได้' }; }
 }
+function clearCache() { _cache = {}; }
 
 function cdHTML(dateStr) {
   if (!dateStr) return '—';
@@ -2371,8 +2386,8 @@ async function openMyDataModal() {
 
   // Load patient records + symptom reports in parallel
   var [pr, sr] = await Promise.all([
-    apiCall({ action:'getMyData', memberId: portalUser.id }),
-    apiCall({ action:'getMySymptoms', memberId: portalUser.id })
+    apiCall({ action:'getMyData', memberId: portalUser.id }, true),
+    apiCall({ action:'getMySymptoms', memberId: portalUser.id }, true)
   ]);
 
   var html = '';
@@ -2524,6 +2539,7 @@ async function openMyDataModal() {
 
 // ── ผู้ป่วยรับทราบข้อความ Admin ──
 async function doPatientAckSymptom(symRowId) {
+  clearCache();
   var r = await apiCall({ action:'patientAckSymptom', memberId: portalUser.id, symRowId: symRowId });
   if (r.error) { alert('เกิดข้อผิดพลาด: ' + r.error); return; }
   openMyDataModal(); // reload
@@ -2545,6 +2561,7 @@ function openEditRecord(rowId, hn) {
 
 // ── ACKNOWLEDGE UPDATE (Admin) ──
 async function doAcknowledge(rowId) {
+  clearCache();
   var r = await apiCall({ action:'acknowledgeUpdate', adminPass:'1234', rowId: rowId });
   if (r.error) { alert('เกิดข้อผิดพลาด: ' + r.error); return; }
   alert('✅ รับทราบแล้ว');
@@ -2586,7 +2603,13 @@ var _QUICK_REPLIES = [
 async function loadAmSymptoms() {
   var sp=document.getElementById('am-sym-spinner');
   if(sp) sp.classList.add('show');
-  var r = await apiCall({ action:'getSymptoms', adminPass:'1234' });
+
+  // Parallel fetch — symptoms + patients พร้อมกัน
+  var [r, pr] = await Promise.all([
+    apiCall({ action:'getSymptoms', adminPass:'1234' }, true),
+    apiCall({ action:'getPatients', adminPass:'1234' }, true)
+  ]);
+
   if(sp) sp.classList.remove('show');
   var el=document.getElementById('am-sym-data');
   if (!el) return;
@@ -2594,14 +2617,13 @@ async function loadAmSymptoms() {
     el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีรายงานอาการ</div>'; return;
   }
 
-  // Get patient data for linking
+  // Build patient lookup from parallel result
   var ptData = {};
-  var pr = await apiCall({ action:'getPatients', adminPass:'1234' });
   if (pr.data && pr.data.length > 1) {
     pr.data.slice(1).forEach(function(row) {
-      var memId = String(row[13]).trim();
+      var memId = String(row[0]).trim().replace(/^0+/,'');
       var hn = String(row[2]).trim();
-      if (memId && hn) ptData[memId + '_' + hn] = row[0]; // key = memberId_hn → rowId
+      if (memId && hn) ptData[memId + '_' + hn] = row[0];
     });
   }
 
@@ -2738,6 +2760,7 @@ async function doAckSymptom(rowId) {
   var btn = event && event.target ? event.target : null;
   if (btn) { btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...'; }
 
+  clearCache();
   var r = await apiCall({ action:'ackSymptom', adminPass:'1234', rowId: String(rowId), replyMsg: replyMsg });
   if (r.error) {
     alert('เกิดข้อผิดพลาด: ' + r.error);
@@ -2764,7 +2787,7 @@ function jumpToPatient(ptRowId) {
 
 async function loadAmPatients() {
   const sp=document.getElementById('am-pts-spinner'); if(sp) sp.classList.add('show');
-  const r = await apiCall({ action:'getPatients', adminPass:'1234' });
+  const r = await apiCall({ action:'getPatients', adminPass:'1234' }, true);
   if(sp) sp.classList.remove('show');
   const el=document.getElementById('am-pts-data');
   if (r.error||!r.data||r.data.length<=1) { el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลผู้ป่วย</div>'; return; }
