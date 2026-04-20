@@ -2061,7 +2061,7 @@ function renderPoLanding(el) {
             box-shadow:0 2px 10px rgba(0,0,0,0.06); transition:all 0.2s;
           " onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(201,162,39,0.15)'"
              onmouseout="this.style.borderColor='var(--cream-dark)';this.style.transform='';this.style.boxShadow='0 2px 10px rgba(0,0,0,0.06)'">
-            <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#fdf0d0,#f0d890);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(201,162,39,0.25);">🔐</div>
+            <div style="width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#fdf0d0,#f0d890);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(201,162,39,0.25);">🔓</div>
             <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;">Admin</div>
             <div style="font-size:9px;color:var(--text-light);line-height:1.5;">ดูข้อมูล<br>ทั้งหมด</div>
           </div>
@@ -2091,7 +2091,7 @@ function renderPoLogin(el) {
   el.innerHTML = `
     <div class="po-header">
       <div class="po-logo">
-        <div class="po-icon">🧑‍💻</div>
+        <div class="po-icon">👤</div>
         <div><h2>เข้าสู่ระบบสมาชิก</h2><p>Member Login</p></div>
       </div>
     </div>
@@ -2426,25 +2426,88 @@ async function openMyDataModal() {
   // ── PATIENT RECORDS SECTION ──
   if (!pr.error && pr.data && pr.data.length > 1) {
     var ptRows = pr.data.slice(1).reverse();
+
+    // Build symptom lookup by HN
+    var symByHN = {};
+    if (sr.data && sr.data.length > 1) {
+      sr.data.slice(1).forEach(function(s) {
+        var hn = String(s[2]||'').trim();
+        if (!symByHN[hn]) symByHN[hn] = [];
+        symByHN[hn].push(s);
+      });
+    }
+
     html += '<div style="font-family:\'Noto Serif Thai\',serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid rgba(42,127,127,0.2);">📋 ข้อมูลการรักษา</div>';
     html += ptRows.map(function(row) {
       var hasUpdate = row[11] && row[12] !== 'acknowledged';
-      return '<div style="background:white;border-radius:10px;border:1.5px solid ' + (hasUpdate?'var(--gold)':'var(--cream-dark)') + ';padding:14px 16px;margin-bottom:10px;">' +
-        (hasUpdate ? '<div style="background:rgba(201,162,39,0.1);border-radius:6px;padding:6px 10px;font-size:11px;color:#8a6000;margin-bottom:8px;">🔔 มีการอัปเดต: ' + row[11] + '</div>' : '') +
-        '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">' +
-          '<span style="font-family:\'Noto Serif Thai\',serif;font-size:14px;font-weight:700;color:var(--navy);">HN: ' + (row[2]||'—') + '</span>' +
+      var hn = String(row[2]||'').trim();
+      var linkedSymptoms = symByHN[hn] || [];
+
+      // Build symptom section for this HN
+      var symSection = '';
+      if (linkedSymptoms.length > 0) {
+        symSection = '<div style="margin-top:12px;border-top:1px dashed rgba(192,57,43,0.2);padding-top:10px;">' +
+          '<div style="font-size:9.5px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">⚠️ รายงานอาการผิดปกติ</div>' +
+          linkedSymptoms.map(function(s) {
+            var isPending = String(s[7]).trim() !== 'acknowledged';
+            var hasReply  = s[8] && String(s[8]).trim().length > 0;
+            return '<div style="background:' + (isPending && hasReply ? 'rgba(201,162,39,0.06)' : isPending ? 'rgba(192,57,43,0.05)' : 'rgba(39,174,96,0.04)') + ';' +
+              'border-radius:8px;border:1px solid ' + (isPending && hasReply ? 'rgba(201,162,39,0.3)' : isPending ? 'rgba(192,57,43,0.2)' : 'rgba(39,174,96,0.2)') + ';' +
+              'padding:9px 12px;margin-bottom:6px;">' +
+
+              // Date + status badge
+              '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+                '<span style="font-size:10px;color:var(--text-light);">🕐 ' + (s[4]||'') + '</span>' +
+                '<span style="font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:6px;' +
+                  (isPending && hasReply ? 'background:rgba(201,162,39,0.15);color:#8a6000;">' + '🔔 รอรับทราบ' :
+                   isPending ? 'background:rgba(192,57,43,0.1);color:var(--red);">' + '⏳ รอตอบกลับ' :
+                   'background:rgba(39,174,96,0.1);color:#1a7a42;">' + '✅ รับทราบแล้ว') +
+                '</span>' +
+              '</div>' +
+
+              // อาการ
+              '<div style="font-size:11px;color:#7a1a1a;font-weight:600;margin-bottom:' + (s[6]||s[8] ? '5px' : '0') + ';">' + (s[3]||'—') + '</div>' +
+              (s[6] ? '<div style="font-size:10.5px;color:var(--text-mid);margin-bottom:' + (s[8]?'5px':'0') + ';">📝 ' + s[6] + '</div>' : '') +
+
+              // Admin reply
+              (hasReply ?
+                '<div style="background:rgba(26,39,68,0.07);border-left:3px solid var(--navy);border-radius:0 7px 7px 0;padding:8px 11px;' + (isPending?'margin-bottom:8px;':'') + '">' +
+                  '<div style="font-size:9px;font-weight:700;color:var(--text-light);letter-spacing:0.05em;margin-bottom:3px;">💬 ข้อความจากทีมพยาบาล</div>' +
+                  '<div style="font-size:11px;color:var(--text-mid);line-height:1.7;">' + s[8] + '</div>' +
+                '</div>' +
+                (isPending ?
+                  '<button onclick="doPatientAckSymptom(\'' + s[0] + '\')" style="width:100%;padding:7px;border:none;background:linear-gradient(135deg,#1a5f1a,#27ae60);color:white;border-radius:7px;font-family:\'Sarabun\',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;">✅ รับทราบข้อความ</button>'
+                  : '')
+              : '') +
+            '</div>';
+          }).join('') +
+        '</div>';
+      }
+
+      return '<div style="background:white;border-radius:12px;border:1.5px solid ' + (hasUpdate?'var(--gold)':'var(--cream-dark)') + ';padding:16px 18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">' +
+        (hasUpdate ? '<div style="background:rgba(201,162,39,0.1);border-radius:7px;padding:7px 11px;font-size:11px;color:#8a6000;margin-bottom:10px;">🔔 มีการอัปเดต: ' + row[11] + '</div>' : '') +
+
+        // Header
+        '<div style="display:flex;justify-content:space-between;margin-bottom:12px;">' +
+          '<span style="font-family:\'Noto Serif Thai\',serif;font-size:15px;font-weight:700;color:var(--navy);">HN: ' + (row[2]||'—') + '</span>' +
           '<span style="font-size:10px;color:var(--text-light);">' + (row[9] ? new Date(row[9]).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}) : '') + '</span>' +
         '</div>' +
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">' +
-          '<div><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">การบาดเจ็บ</span>' + (row[3]||'—') + '</div>' +
-          '<div><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">การผ่าตัด</span>' + (row[4]||'—') + '</div>' +
-          '<div><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">ถอด Nasal Packing</span>' + (row[5] ? cdHTML(row[5]) : '—') + '</div>' +
-          '<div><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">ตัดไหม</span>' + (row[6] ? cdHTML(row[6]) : '—') + '</div>' +
-          '<div style="grid-column:1/-1;"><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">🗓️ วันนัดตรวจ</span>' + (row[7] ? cdHTML(row[7]) : '—') + '</div>' +
-          (row[8] ? '<div style="grid-column:1/-1;"><span style="font-size:9px;font-weight:700;color:var(--red);text-transform:uppercase;display:block;">⚠️ อาการผิดปกติ</span>' + row[8] + '</div>' : '') +
-          (row[10] ? '<div style="grid-column:1/-1;"><span style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;display:block;">หมายเหตุ</span>' + row[10] + '</div>' : '') +
+
+        // Info grid
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11.5px;">' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">การบาดเจ็บ</div>' + (row[3]||'—') + '</div>' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">การผ่าตัด</div>' + (row[4]||'—') + '</div>' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">ถอด Nasal Packing</div>' + (row[5] ? cdHTML(row[5]) : '—') + '</div>' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">ตัดไหม</div>' + (row[6] ? cdHTML(row[6]) : '—') + '</div>' +
+          '<div style="grid-column:1/-1;"><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">🗓️ วันนัดตรวจ</div>' + (row[7] ? cdHTML(row[7]) : '—') + '</div>' +
+          (row[8] ? '<div style="grid-column:1/-1;"><div style="font-size:9px;font-weight:700;color:var(--red);text-transform:uppercase;margin-bottom:3px;">⚠️ อาการผิดปกติ (บันทึกแรก)</div><span style="color:#7a1a1a;">' + row[8] + '</span></div>' : '') +
+          (row[10] ? '<div style="grid-column:1/-1;"><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">หมายเหตุ</div>' + row[10] + '</div>' : '') +
         '</div>' +
-        '<button onclick="openEditRecord(\'' + row[0] + '\',\'' + row[2] + '\')" style="margin-top:12px;width:100%;padding:8px;border:1.5px solid var(--teal);background:rgba(42,127,127,0.08);color:var(--teal);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✏️ แก้ไข / อัปเดตข้อมูล</button>' +
+
+        // Symptom reports linked to this HN
+        symSection +
+
+        '<button onclick="openEditRecord(\'' + row[0] + '\',\'' + row[2] + '\')" style="margin-top:12px;width:100%;padding:9px;border:1.5px solid var(--teal);background:rgba(42,127,127,0.07);color:var(--teal);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✏️ แก้ไข / อัปเดตข้อมูล</button>' +
       '</div>';
     }).join('');
   }
