@@ -1948,6 +1948,17 @@ async function apiCall(data, useCache) {
 }
 function clearCache() { _cache = {}; }
 
+// แปลงค่าวันที่ (ISO string / Date) ให้เป็นรูปแบบ YYYY-MM-DD สำหรับ <input type="date">
+function toDateInputValue(v) {
+  if (!v) return '';
+  var d = new Date(v);
+  if (isNaN(d.getTime())) return '';
+  var y = d.getFullYear();
+  var m = String(d.getMonth() + 1).padStart(2, '0');
+  var day = String(d.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + day;
+}
+
 function cdHTML(dateStr) {
   if (!dateStr) return '—';
   // Compare date only (strip time)
@@ -2443,6 +2454,12 @@ async function openMyDataModal() {
   if (!pr.error && pr.data && pr.data.length > 1) {
     var ptRows = pr.data.slice(1).reverse();
 
+    // เก็บข้อมูลผู้ป่วยแต่ละแถวไว้ใน cache (key = rowId) เพื่อให้ openEditRecord ดึงข้อมูลเดิมมาแสดงในฟอร์มแก้ไขได้
+    window._myPatientRows = {};
+    ptRows.forEach(function(r) {
+      window._myPatientRows[String(r[0]).trim()] = r;
+    });
+
     // Build symptom lookup by HN
     var symByHN = {};
     if (sr.data && sr.data.length > 1) {
@@ -2546,16 +2563,58 @@ async function doPatientAckSymptom(symRowId) {
 }
 
 // ── EDIT RECORD ──
+// row columns: 0=RowID 1=ชื่อ 2=HN 3=การบาดเจ็บ 4=การผ่าตัด 5=วันถอด Nasal Packing
+// 6=วันตัดไหม 7=วันนัดตรวจ 8=อาการผิดปกติ(บันทึกแรก) 9=วันบันทึก 10=หมายเหตุ
 function openEditRecord(rowId, hn) {
   document.getElementById('mydata-modal').style.display = 'none';
-  // Pre-fill record modal
-  document.getElementById('rm-hn').value = hn;
+
+  // ดึงข้อมูลปัจจุบันของผู้ป่วยรายนี้จาก cache ที่เก็บไว้ตอนโหลด "ข้อมูลของฉัน"
+  var row = (window._myPatientRows && window._myPatientRows[String(rowId).trim()]) || null;
+
   // Store rowId for update
   window._editRowId = rowId;
-  document.getElementById('rm-appoint').value = '';
-  document.querySelectorAll('#record-modal input[type="checkbox"]').forEach(function(c){ c.checked=false; });
-  // Show note about update
-  poAlert('rm-alert','กำลังแก้ไขข้อมูล HN: ' + hn + ' (ระบุข้อมูลที่ต้องการอัปเดต)','info');
+
+  // เคลียร์ค่าเดิมในฟอร์มก่อนเสมอ
+  document.getElementById('rm-hn').value = hn;
+  document.querySelectorAll('#record-modal input[type="checkbox"]').forEach(function(c){ c.checked = false; });
+
+  if (row) {
+    // ── ติ๊กช่อง "การบาดเจ็บใบหน้า" ตามข้อมูลเดิม ──
+    var injuryVals = String(row[3] || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+    document.querySelectorAll('#rm-injury-list input[type="checkbox"]').forEach(function(c) {
+      if (injuryVals.indexOf(c.value) !== -1) c.checked = true;
+    });
+
+    // ── ติ๊กช่อง "การผ่าตัด" ตามข้อมูลเดิม ──
+    var surgeryVals = String(row[4] || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+    document.querySelectorAll('#rm-surgery-list input[type="checkbox"]').forEach(function(c) {
+      if (surgeryVals.indexOf(c.value) !== -1) c.checked = true;
+    });
+
+    // ── ติ๊กช่อง "อาการผิดปกติ" ตามข้อมูลเดิม (ถ้ามี) ──
+    var symptomVals = String(row[8] || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+    document.querySelectorAll('#record-modal .rm-check-list:not(#rm-injury-list):not(#rm-surgery-list) input[type="checkbox"]').forEach(function(c) {
+      if (symptomVals.indexOf(c.value) !== -1) c.checked = true;
+    });
+
+    // ── เติมวันที่เดิมลงในช่องวันที่ ──
+    document.getElementById('rm-nasal').value   = toDateInputValue(row[5]);
+    document.getElementById('rm-stitch').value  = toDateInputValue(row[6]);
+    document.getElementById('rm-appoint').value = toDateInputValue(row[7]);
+
+    // ── เติมหมายเหตุเดิม ──
+    document.getElementById('rm-note').value = row[10] || '';
+
+    poAlert('rm-alert','กำลังแก้ไขข้อมูล HN: ' + hn + ' (ข้อมูลเดิมถูกดึงขึ้นมาให้แล้ว แก้ไขเฉพาะส่วนที่ต้องการอัปเดต)','info');
+  } else {
+    // หากหาข้อมูลเดิมไม่พบ (เช่น cache หมดอายุ) ให้เปิดฟอร์มว่างพร้อมแจ้งเตือน
+    document.getElementById('rm-nasal').value = '';
+    document.getElementById('rm-stitch').value = '';
+    document.getElementById('rm-appoint').value = '';
+    document.getElementById('rm-note').value = '';
+    poAlert('rm-alert','ไม่พบข้อมูลเดิมในแคช กรุณากรอกข้อมูลของ HN: ' + hn + ' ใหม่อีกครั้ง','err');
+  }
+
   openRecordModal();
 }
 
