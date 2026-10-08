@@ -831,6 +831,7 @@ body.has-member-bar .nav-bar   { bottom:16px; }
   animation:poFadeUp 0.3s ease;
 }
 .rm-header {
+  position:relative;
   background:linear-gradient(135deg,var(--navy),var(--navy-light));
   padding:18px 22px; display:flex; justify-content:space-between; align-items:center;
   flex-shrink:0;
@@ -910,6 +911,12 @@ body.has-member-bar .nav-bar   { bottom:16px; }
 .cd-urgent { color:var(--red); font-weight:600; font-size:10px; }
 .cd-soon   { color:var(--gold); font-weight:600; font-size:10px; }
 .cd-ok     { color:#27ae60; font-weight:600; font-size:10px; }
+.am-qr {
+  padding:5px 10px; border-radius:7px; border:1px solid rgba(26,39,68,0.2);
+  background:white; font-family:'Sarabun',sans-serif; font-size:10px; font-weight:600;
+  color:var(--navy); cursor:pointer; transition:all 0.15s; white-space:nowrap;
+}
+.am-qr:hover { background:var(--navy); color:var(--gold-light); }
 .cd-past   { color:var(--text-light); font-size:10px; text-decoration:line-through; }
 </style>
 </head>
@@ -1002,7 +1009,7 @@ body.has-member-bar .nav-bar   { bottom:16px; }
       </div>
       <div class="po-row">
         <label class="po-label">⚠️ อาการผิดปกติ (เลือกทุกข้อที่เกี่ยวข้อง)</label>
-        <div class="rm-check-list">
+        <div class="rm-check-list" id="rm-symptom-list">
           <label class="rm-check-item"><input type="checkbox" value="ไข้สูงกว่า 38°C"><span>ไข้สูงกว่า 38°C</span></label>
           <label class="rm-check-item"><input type="checkbox" value="เลือดออกมากผิดปกติ"><span>เลือดออกมากผิดปกติ</span></label>
           <label class="rm-check-item"><input type="checkbox" value="แผลบวมแดง มีหนองซึม"><span>แผลบวมแดง มีหนองซึม</span></label>
@@ -1019,7 +1026,7 @@ body.has-member-bar .nav-bar   { bottom:16px; }
         <textarea id="rm-note" class="po-input" style="resize:vertical;min-height:60px;" placeholder="อาการ หรือคำถามสำหรับแพทย์..."></textarea>
       </div>
       <div id="rm-spinner" class="po-spinner"><div class="po-spin"></div>กำลังบันทึก...</div>
-      <button class="po-btn po-btn-navy" onclick="doSaveRecord()">💾 บันทึกข้อมูล</button>
+      <button class="po-btn po-btn-navy" id="rm-save-btn" onclick="doSaveRecord()">💾 บันทึกข้อมูล</button>
     </div>
   </div>
 </div>
@@ -1212,7 +1219,7 @@ var _BD = {
     sym:'หน้าผากบุ๋ม บวม ปวดศีรษะ อาจมีน้ำใสไหลจากจมูก (CSF leak)',
     tx:'รอยแตกเล็กน้อย: รักษาตามอาการ | รุนแรง: Frontal sinus obliteration หรือ Cranialization ร่วมกับศัลยแพทย์ระบบประสาท',
     nur:'สังเกต CSF leak · ประเมิน GCS ทุก 1-2 ชม. · ยกศีรษะ 30° · งดเป่าจมูก · ติดตามการมองเห็น',
-    ref:'ATLS 10th Ed.; Fonseca OMS 2018'},
+    ref:'ATLS 11th Ed.; Fonseca OMS 2018'},
   nasal:{th:'กระดูกจมูก',en:'Nasal Bone Fracture',
     sym:'จมูกบวม เบี้ยว เจ็บ เลือดกำเดาออก หายใจทางจมูกลำบาก',
     tx:'การจัดกระดูกให้เข้าที่ (Closed Reduction) ภายใต้การวางยาสลบ ใส่ Nasal packing และ Nasal splint',
@@ -1232,7 +1239,7 @@ var _BD = {
     sym:'สบฟันผิดปกติ ใบหน้าบวม ขยับขากรรไกรบนได้ผิดปกติ ปวด',
     tx:'ผ่าตัดจัดตำแหน่งและยึดตรึงด้วยโลหะ (Plating) ร่วมกับ MMF ตามความรุนแรง',
     nur:'ประคบเย็นลดบวม · ทานอาหารอ่อนหรือเหลว · พบทันตแพทย์สม่ำเสมอ · บ้วนปากน้ำเกลือ',
-    ref:"ATLS 10th Ed.; Peterson's OMS 4th Ed. 2022"},
+    ref:"ATLS 11th Ed.; Peterson's OMS 4th Ed. 2022"},
   mandible:{th:'กระดูกขากรรไกรล่าง',en:'Mandibular Fracture',
     sym:'อ้าปากไม่ได้หรืออ้าได้น้อย เจ็บปวด สบฟันผิดปกติ บวมช้ำ ชาริมฝีปากล่าง',
     tx:'ORIF ยึดด้วยโลหะ หรือมัดฟัน (MMF) 4-6 สัปดาห์ ตามตำแหน่งและความรุนแรง',
@@ -1335,7 +1342,7 @@ function getPages() {
           `).join('')}
         </div>
         <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(180,150,80,0.18);text-align:center;">
-          <p style="font-size:10px;color:var(--text-light);line-height:1.7;">รูปภาพทั้งหมดฝังอยู่ในไฟล์ HTML<br>ทุกคนที่เปิดไฟล์นี้จะเห็นรูปเหมือนกัน</p>
+          <p style="font-size:10px;color:var(--text-light);line-height:1.7;">ข้อมูลในคู่มือนี้ใช้ประกอบคำแนะนำของแพทย์และพยาบาล<br>หากมีข้อสงสัย กรุณาสอบถามทีมผู้ดูแล</p>
         </div>
       </div>
       <div class="page-num">สารบัญ</div>
@@ -1548,7 +1555,7 @@ function getPages() {
         <div class="step-desc">ชาใบหน้าบริเวณผ่าตัดเป็นปกติในระยะแรก ส่วนใหญ่ดีขึ้นใน 3–6 เดือน หากชาเพิ่มหรืออ่อนแรงให้รีบพบแพทย์</div>
       </div></div>
       <div class="warn-block">
-        🚨 <strong>รีบพบแพทย์หาก:</strong> ไข้ &gt;38.5°C · แผลบวมแดงมาก · หนองซึม · ปวดรุนแรงขึ้น · มองภาพซ้อน · สบฟันเปลี่ยน
+        🚨 <strong>รีบพบแพทย์หาก:</strong> ไข้สูงกว่า 38°C · แผลบวมแดงมาก · หนองซึม · ปวดรุนแรงขึ้น · มองภาพซ้อน · สบฟันเปลี่ยน
       </div>
       <div class="gold-block">
         💡 Titanium plate ปลอดภัย ไม่ก่อปฏิกิริยากับร่างกาย ส่วนใหญ่ไม่ต้องนำออก และผ่าน MRI ได้
@@ -1586,7 +1593,7 @@ function getPages() {
         <div class="sec-title">การดูแลตนเองเมื่อกลับบ้าน (2)</div>
         <div class="sec-big">4</div>
       </div>
-      ${imgSlot('img_contact','QR Code / ข้อมูลติดต่อหน่วยงาน')}
+      ${imgSlot('img_contact','ภาพประกอบ: สิ่งที่ต้องหลีกเลี่ยงและอาการที่ต้องมาพบแพทย์')}
       <div class="ch-sub">Things to Avoid &amp; Warning Signs</div>
       <div class="divider"></div>
       <p class="body-text" style="font-weight:600;color:var(--navy);">🚫 สิ่งที่ต้องหลีกเลี่ยง</p>
@@ -1631,7 +1638,7 @@ function getPages() {
         #bep .bdot { pointer-events:all; cursor:pointer; }
         #bep .bdot circle { transition:r 0.18s, filter 0.18s; }
         #bep .bdot:hover circle { filter:brightness(1.3); }
-        #bep .bdot.sel circle { r:2.2; filter:drop-shadow(0 0 4px rgba(240,210,80,0.9)); }
+        #bep .bdot.sel circle { r:2.8; filter:drop-shadow(0 0 4px rgba(240,210,80,0.9)); }
 
         /* label — text only, no box */
         #bep .blabel { pointer-events:all; cursor:pointer; }
@@ -1818,7 +1825,7 @@ let cur = 0;
 let busy = false;
 let pages;
 
-const LABELS = ['ปก','สารบัญ','1','2','★','3','4','5','6','7','8','ปิดท้าย'];
+const LABELS = ['ปก','สารบัญ','1','2','3','4','5','6','7','8','★','ปิดท้าย'];
 
 function renderPage(idx, el) {
   el.innerHTML = pages[idx]();
@@ -1906,63 +1913,123 @@ function jumpTo(pg) {
 
 function goMenu() { jumpTo(1); }
 
-// Keyboard
+// Keyboard — ไม่พลิกหน้าเมื่อกำลังพิมพ์ หรือมีหน้าต่าง/portal เปิดอยู่
+function _uiBlocked(target) {
+  if (target && target.closest && target.closest('input,textarea,select,[contenteditable]')) return true;
+  if (!document.body.classList.contains('ebook-ready')) return true;
+  var po = document.getElementById('portal-overlay');
+  if (po && !po.classList.contains('hidden')) return true;
+  if (document.querySelector('#record-modal.show, #admin-modal.show')) return true;
+  var ids = ['mydata-modal','symptom-modal'];
+  for (var i = 0; i < ids.length; i++) {
+    var m = document.getElementById(ids[i]);
+    if (m && m.style.display === 'flex') return true;
+  }
+  return false;
+}
 document.addEventListener('keydown', e => {
+  if (_uiBlocked(e.target)) return;
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextPage();
   if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevPage();
 });
 
-// Touch swipe
-let tx = 0;
-document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
-document.addEventListener('touchend',   e => {
+// Touch swipe — เฉพาะเมื่อปัดบนตัวหนังสือเท่านั้น
+let tx = 0, txOk = false;
+document.addEventListener('touchstart', e => {
+  txOk = !_uiBlocked(e.target) && !!(e.target.closest && e.target.closest('.book-wrap'));
+  tx = e.touches[0].clientX;
+}, {passive:true});
+document.addEventListener('touchend', e => {
+  if (!txOk) return;
   const dx = e.changedTouches[0].clientX - tx;
   if (Math.abs(dx) > 50) { dx < 0 ? nextPage() : prevPage(); }
 }, {passive:true});
 
 // ══════════════════════════════════════════════════════
-// PORTAL SYSTEM — Login / Register / Member / Admin
+// PORTAL SYSTEM — Login / Register / Member / Admin  (v2 — ใช้ Session Token)
 // ══════════════════════════════════════════════════════
 const API_URL = 'https://script.google.com/macros/s/AKfycbx_XYekbmKnseZqwzbONQ2kK9T-nlpnMB2eZukAM2g30w3G3VWdHkpuZEGgXEZDj7WhcQ/exec';
-let portalUser = null;
+let portalUser = null;   // { role, id, name, token }
 
-// ── API CACHE (TTL 30 วินาที) ──
+// ── API (แนบ token อัตโนมัติ + cache 30 วินาที) ──
 var _cache = {};
 async function apiCall(data, useCache) {
-  var key = JSON.stringify(data);
+  var payload = Object.assign({}, data);
+  if (portalUser && portalUser.token) payload.token = portalUser.token;
+  var key = JSON.stringify(payload);
   var now = Date.now();
-  if (useCache && _cache[key] && now - _cache[key].t < 30000) {
-    return _cache[key].v;
-  }
+  if (useCache && _cache[key] && now - _cache[key].t < 30000) return _cache[key].v;
   try {
     const r = await fetch(API_URL, {
-      method:'POST',
-      body: JSON.stringify(data),
-      headers: {'Content-Type':'text/plain'},
-      // Google Apps Script ไม่รองรับ cache header แต่เพิ่ม signal timeout
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'text/plain' }
     });
     var v = await r.json();
-    if (useCache && !v.error) _cache[key] = { v, t: now };
+    if (v && v.error === 'SESSION_EXPIRED') {
+      handleSessionExpired();
+      return { error: v.message || 'กรุณาเข้าสู่ระบบใหม่' };
+    }
+    if (useCache && !v.error) _cache[key] = { v: v, t: now };
     return v;
-  } catch(e) { return { error:'ไม่สามารถเชื่อมต่อได้' }; }
+  } catch (e) { return { error: 'ไม่สามารถเชื่อมต่อได้ กรุณาตรวจสอบอินเทอร์เน็ต' }; }
 }
 function clearCache() { _cache = {}; }
 
-// แปลงค่าวันที่ (ISO string / Date) ให้เป็นรูปแบบ YYYY-MM-DD สำหรับ <input type="date">
+function handleSessionExpired() {
+  if (!portalUser) return;
+  portalUser = null;
+  clearCache();
+  ['record-modal','admin-modal'].forEach(function(id){ document.getElementById(id).classList.remove('show'); });
+  ['mydata-modal','symptom-modal'].forEach(function(id){ document.getElementById(id).style.display = 'none'; });
+  document.getElementById('member-bar').classList.remove('show');
+  document.body.classList.remove('has-member-bar');
+  showPortal('landing');
+  alert('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่อีกครั้ง');
+}
+
+// ── ป้องกัน XSS: แปลงอักขระพิเศษก่อนแสดงข้อมูลจาก Sheet ──
+function esc(v) {
+  if (v === undefined || v === null) return '';
+  return String(v).replace(/[&<>"'`]/g, function (c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;', '`':'&#96;' }[c];
+  });
+}
+
+// แปลง 'YYYY-MM-DD' เป็นวันที่ตามเวลาเครื่อง (ไม่คลาดเคลื่อนเรื่อง time zone) / ค่าอื่นใช้ new Date ปกติ
+function parseDateVal(v) {
+  if (!v) return null;
+  var s = String(v).trim();
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  var d = m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// แปลงค่าวันที่ให้เป็นรูปแบบ YYYY-MM-DD สำหรับ <input type="date">
 function toDateInputValue(v) {
   if (!v) return '';
-  var d = new Date(v);
-  if (isNaN(d.getTime())) return '';
-  var y = d.getFullYear();
-  var m = String(d.getMonth() + 1).padStart(2, '0');
-  var day = String(d.getDate()).padStart(2, '0');
-  return y + '-' + m + '-' + day;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(String(v).trim())) return String(v).trim();
+  var d = parseDateVal(v);
+  if (!d) return '';
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+// วันที่ + เวลาแบบไทย (รองรับข้อมูลเก่าที่เก็บเป็นข้อความไทยอยู่แล้ว)
+function fmtDT(v) {
+  if (!v) return '';
+  var d = parseDateVal(v);
+  if (!d) return esc(v);
+  return d.toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'numeric' }) + ' ' +
+         d.toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+}
+function fmtD(v) {
+  var d = parseDateVal(v);
+  return d ? d.toLocaleDateString('th-TH', { day:'numeric', month:'short', year:'numeric' }) : esc(v || '');
 }
 
 function cdHTML(dateStr) {
-  if (!dateStr) return '—';
-  // Compare date only (strip time)
-  const d = new Date(dateStr);
+  var d = parseDateVal(dateStr);
+  if (!d) return '—';
   const dDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const now = new Date();
   const nDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -2274,7 +2341,7 @@ function showMemberBar(role, name) {
     badge.className = 'mb-badge mb-badge-member';
     badge.textContent = 'สมาชิก';
     btns.innerHTML = `
-      <button class="mb-btn mb-btn-record" onclick="openRecordModal()">📋 บันทึกข้อมูล</button>
+      <button class="mb-btn mb-btn-record" onclick="openNewRecord()">📋 บันทึกข้อมูล</button>
       <button class="mb-btn" style="background:rgba(192,57,43,0.22);color:#ffaaaa;border:1px solid rgba(192,57,43,0.4);" onclick="openSymptomModal()">⚠️ รายงานอาการ</button>
       <button class="mb-btn" style="background:rgba(201,162,39,0.18);color:var(--gold-light);border:1px solid rgba(201,162,39,0.3);" onclick="openMyDataModal()">📊 ข้อมูลของฉัน</button>
       <button class="mb-btn mb-btn-logout" onclick="doLogout()">ออกจากระบบ</button>`;
@@ -2291,609 +2358,490 @@ function showMemberBar(role, name) {
 function openSymptomModal() {
   var modal = document.getElementById('symptom-modal');
   modal.style.display = 'flex';
-  // Set current datetime
   var now = new Date();
-  var dtStr = now.toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'long',year:'numeric'}) +
-              ' ' + now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
   var el = document.getElementById('sym-datetime-display');
-  if (el) el.textContent = dtStr;
-  // Pre-fill HN if available
+  if (el) el.textContent = now.toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'long',year:'numeric'}) +
+    ' ' + now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('sym-hn').value = '';
-  document.querySelectorAll('#sym-checklist input').forEach(function(c){ c.checked=false; });
+  document.querySelectorAll('#sym-checklist input').forEach(function(c){ c.checked = false; });
   document.getElementById('sym-detail').value = '';
-  document.getElementById('sym-form-area').style.display = 'block';
+  document.getElementById('symptom-form-area').style.display = 'block';
   document.getElementById('sym-reply').style.display = 'none';
-  var a = document.getElementById('sym-alert'); if(a) a.className='po-alert';
+  var a = document.getElementById('sym-alert'); if (a) a.className = 'po-alert';
 }
 
+var _symSending = false;
 async function doReportSymptom() {
+  if (_symSending) return;
   var hn = document.getElementById('sym-hn').value.trim();
   var syms = [...document.querySelectorAll('#sym-checklist input:checked')].map(function(c){ return c.value; }).join(', ');
   var detail = document.getElementById('sym-detail').value.trim();
-  if (!hn) { poAlert('sym-alert','กรุณากรอก HN','err'); return; }
+  if (!hn)   { poAlert('sym-alert','กรุณากรอก HN','err'); return; }
   if (!syms) { poAlert('sym-alert','กรุณาเลือกอาการอย่างน้อย 1 ข้อ','err'); return; }
 
-  var now = new Date();
-  var dtStr = now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}) +
-              ' ' + now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-
+  _symSending = true;
   document.getElementById('sym-spinner').classList.add('show');
-  var r = await apiCall({
-    action: 'reportSymptom',
-    memberId: portalUser ? portalUser.id : 'guest',
-    memberName: portalUser ? portalUser.name : 'Guest',
-    hn: hn,
-    symptoms: syms,
-    detail: detail,
-    reportTime: dtStr,
-    ackStatus: 'pending'
-  });
+  var r = await apiCall({ action:'reportSymptom', hn: hn, symptoms: syms, detail: detail });
   document.getElementById('sym-spinner').classList.remove('show');
+  _symSending = false;
 
   if (r.error) { poAlert('sym-alert', r.error, 'err'); return; }
-
-  // Show auto-reply
-  document.getElementById('sym-form-area').style.display = 'none';
+  clearCache();
+  document.getElementById('symptom-form-area').style.display = 'none';
   document.getElementById('sym-reply').style.display = 'block';
 }
 
-function doLogout() {
+async function doLogout() {
+  if (portalUser && portalUser.token) apiCall({ action:'logout' });  // ไม่ต้องรอผล
   portalUser = null;
+  clearCache();
+  window._editRowId = null;
   document.getElementById('member-bar').classList.remove('show');
   document.body.classList.remove('has-member-bar');
   showPortal('landing');
 }
 
 // ── RECORD MODAL ──
+// เปิดแบบ "บันทึกใหม่" (ปุ่มบนแถบสมาชิก) → ล้างฟอร์มและออกจากโหมดแก้ไขเสมอ
+function openNewRecord() {
+  window._editRowId = null;
+  resetRecordForm();
+  setRecordMode(false);
+  openRecordModal();
+}
 function openRecordModal() {
   document.getElementById('record-modal').classList.add('show');
 }
 function closeRecordModal() {
   document.getElementById('record-modal').classList.remove('show');
+  window._editRowId = null;           // ปิดแล้วออกจากโหมดแก้ไข กันบันทึกใหม่ไปทับรายการเดิม
+  setRecordMode(false);
+}
+function resetRecordForm() {
+  ['rm-hn','rm-nasal','rm-stitch','rm-appoint','rm-note'].forEach(function(id){
+    var e = document.getElementById(id); if (e) e.value = '';
+  });
+  document.querySelectorAll('#record-modal input[type="checkbox"]').forEach(function(c){ c.checked = false; });
+  var a = document.getElementById('rm-alert'); if (a) a.className = 'po-alert';
+}
+function setRecordMode(isEdit) {
+  var t = document.querySelector('#record-modal .rm-title');
+  if (t) t.textContent = isEdit ? '✏️ แก้ไขข้อมูลผู้ป่วย' : '📋 บันทึกข้อมูลผู้ป่วย';
+  var b = document.getElementById('rm-save-btn');
+  if (b) b.textContent = isEdit ? '💾 บันทึกการแก้ไข' : '💾 บันทึกข้อมูล';
 }
 
+var _recSaving = false;
 async function doSaveRecord() {
-  const hn=document.getElementById('rm-hn').value.trim();
-  const injury=[...document.querySelectorAll('#rm-injury-list input:checked')].map(c=>c.value).join(', ');
-  const surgery=[...document.querySelectorAll('#rm-surgery-list input:checked')].map(c=>c.value).join(', ');
-  const appoint=document.getElementById('rm-appoint').value;
-  if (!hn) { poAlert('rm-alert','กรุณากรอก HN','err'); return; }
-  if (!injury) { poAlert('rm-alert','กรุณาเลือกการบาดเจ็บอย่างน้อย 1 ข้อ','err'); return; }
+  if (_recSaving) return;
+  const hn = document.getElementById('rm-hn').value.trim();
+  const injury  = [...document.querySelectorAll('#rm-injury-list input:checked')].map(c=>c.value).join(', ');
+  const surgery = [...document.querySelectorAll('#rm-surgery-list input:checked')].map(c=>c.value).join(', ');
+  const appoint = document.getElementById('rm-appoint').value;
+  if (!hn)      { poAlert('rm-alert','กรุณากรอก HN','err'); return; }
+  if (!injury)  { poAlert('rm-alert','กรุณาเลือกการบาดเจ็บอย่างน้อย 1 ข้อ','err'); return; }
   if (!surgery) { poAlert('rm-alert','กรุณาเลือกการผ่าตัดอย่างน้อย 1 ข้อ','err'); return; }
   if (!appoint) { poAlert('rm-alert','กรุณาระบุวันนัดตรวจ','err'); return; }
-  const syms=[...document.querySelectorAll('#record-modal .rm-check-list:not(#rm-injury-list):not(#rm-surgery-list) input:checked')].map(c=>c.value).join(', ');
-  document.getElementById('rm-spinner').classList.add('show');
+  const syms = [...document.querySelectorAll('#rm-symptom-list input:checked')].map(c=>c.value).join(', ');
+
+  var editId = window._editRowId || null;
   var payload = {
-    action:'savePatient',
-    memberId: portalUser ? portalUser.id : 'guest',
-    memberName: portalUser ? portalUser.name : 'Guest',
-    hn, injury, surgery,
+    action: editId ? 'updatePatient' : 'savePatient',
+    hn: hn, injury: injury, surgery: surgery,
     nasalPackDate: document.getElementById('rm-nasal').value,
     stitchDate: document.getElementById('rm-stitch').value,
     appointDate: appoint,
     symptoms: syms,
     note: document.getElementById('rm-note').value
   };
-  if (window._editRowId) {
-    payload.action = 'updatePatient';
-    payload.rowId = window._editRowId;
-    payload.updateNote = 'อัปเดตโดย ' + (portalUser ? portalUser.name : 'สมาชิก');
-    window._editRowId = null;
-  }
+  if (editId) payload.rowId = editId;
+
+  _recSaving = true;
+  document.getElementById('rm-spinner').classList.add('show');
   const r = await apiCall(payload);
   document.getElementById('rm-spinner').classList.remove('show');
-  if (r.error) { poAlert('rm-alert', r.error, 'err'); return; }
-  poAlert('rm-alert','✅ บันทึกข้อมูลสำเร็จ!','ok');
-  ['rm-hn','rm-nasal','rm-stitch','rm-appoint','rm-note'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  document.querySelectorAll('#record-modal input[type="checkbox"]').forEach(c=>c.checked=false);
+  _recSaving = false;
+
+  if (r.error) { poAlert('rm-alert', r.error, 'err'); return; }   // ล้มเหลว → ยังอยู่ในโหมดเดิม กดซ้ำได้
+  clearCache();
+  window._editRowId = null;
+  setRecordMode(false);
+  resetRecordForm();
+  poAlert('rm-alert', editId ? '✅ บันทึกการแก้ไขสำเร็จ!' : '✅ บันทึกข้อมูลสำเร็จ!', 'ok');
 }
 
 // ── MY DATA MODAL (Member) ──
+// patients: 0=RowID 1=ชื่อ 2=HN 3=การบาดเจ็บ 4=การผ่าตัด 5=ถอด Packing 6=ตัดไหม 7=วันนัด
+//           8=อาการ(บันทึกแรก) 9=วันบันทึก 10=หมายเหตุ 11=หมายเหตุอัปเดต 12=สถานะอัปเดต 13=MemberID
+// symptoms: 0=RowID 1=ชื่อ 2=HN 3=อาการ 4=วันที่รายงาน 5=MemberID 6=รายละเอียด 7=สถานะ
+//           8=ข้อความตอบกลับ 9=วันที่ Admin ตอบ 10=วันที่ผู้ป่วยรับทราบ
+
+// การ์ดรายงานอาการ 1 รายการ (ฝั่งสมาชิก)
+function symCardMember(s) {
+  var st = String(s[7] || '').trim();
+  var hasReply = s[8] && String(s[8]).trim().length > 0;
+  var acked = st === 'acknowledged';
+  var bg  = acked ? 'rgba(39,174,96,0.04)'  : hasReply ? 'rgba(201,162,39,0.06)' : 'rgba(192,57,43,0.05)';
+  var bd  = acked ? 'rgba(39,174,96,0.2)'   : hasReply ? 'rgba(201,162,39,0.3)'  : 'rgba(192,57,43,0.2)';
+  var badge = acked ? 'background:rgba(39,174,96,0.12);color:#1a7a42;">✅ รับทราบแล้ว'
+            : hasReply ? 'background:rgba(201,162,39,0.15);color:#8a6000;">🔔 มีข้อแนะนำใหม่'
+            : 'background:rgba(192,57,43,0.1);color:var(--red);">⏳ รอทีมพยาบาลตอบ';
+  return '<div style="background:' + bg + ';border-radius:8px;border:1px solid ' + bd + ';padding:9px 12px;margin-bottom:6px;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:6px;">' +
+      '<span style="font-size:10px;color:var(--text-light);">🕐 ' + fmtDT(s[4]) + '</span>' +
+      '<span style="font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:6px;' + badge + '</span>' +
+    '</div>' +
+    '<div style="font-size:11px;color:#7a1a1a;font-weight:600;">' + esc(s[3] || '—') + '</div>' +
+    (s[6] ? '<div style="font-size:10.5px;color:var(--text-mid);margin-top:5px;">📝 ' + esc(s[6]) + '</div>' : '') +
+    (hasReply ?
+      '<div style="background:rgba(26,39,68,0.07);border-left:3px solid var(--navy);border-radius:0 7px 7px 0;padding:8px 11px;margin-top:6px;">' +
+        '<div style="font-size:9px;font-weight:700;color:var(--text-light);letter-spacing:0.05em;margin-bottom:3px;">💬 ข้อความจากทีมพยาบาล</div>' +
+        '<div style="font-size:11px;color:var(--text-mid);line-height:1.7;">' + esc(s[8]) + '</div>' +
+      '</div>' +
+      (!acked ? '<button data-id="' + esc(s[0]) + '" onclick="doPatientAckSymptom(this.dataset.id,this)" style="margin-top:8px;width:100%;padding:8px;border:none;background:linear-gradient(135deg,#1a5f1a,#27ae60);color:white;border-radius:7px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✅ รับทราบข้อแนะนำ</button>' : '')
+    : '') +
+  '</div>';
+}
+
 async function openMyDataModal() {
   var modal = document.getElementById('mydata-modal');
   modal.style.display = 'flex';
   var el = document.getElementById('mydata-content');
   el.innerHTML = '<div class="po-spinner show"><div class="po-spin"></div>กำลังโหลด...</div>';
 
-  // Load patient records + symptom reports in parallel
   var [pr, sr] = await Promise.all([
-    apiCall({ action:'getMyData', memberId: portalUser.id }, true),
-    apiCall({ action:'getMySymptoms', memberId: portalUser.id }, true)
+    apiCall({ action:'getMyData' }, true),
+    apiCall({ action:'getMySymptoms' }, true)
   ]);
+  if (!portalUser) return; // session หมดอายุระหว่างโหลด
+  if (pr.error && sr.error) {
+    el.innerHTML = '<div class="po-alert po-alert-err show">' + esc(pr.error) + '</div>';
+    return;
+  }
+
+  var ptRows  = (!pr.error && pr.data && pr.data.length > 1) ? pr.data.slice(1).reverse() : [];
+  var symRows = (!sr.error && sr.data && sr.data.length > 1) ? sr.data.slice(1).reverse() : [];
+
+  // cache ข้อมูลผู้ป่วยไว้ใช้ตอนกดแก้ไข
+  window._myPatientRows = {};
+  ptRows.forEach(function(r) { window._myPatientRows[String(r[0]).trim()] = r; });
+
+  // จัดกลุ่มรายงานอาการตาม HN
+  var hnSet = {};
+  ptRows.forEach(function(r){ hnSet[String(r[2] || '').trim()] = true; });
+  var symByHN = {}, orphan = [];
+  symRows.forEach(function(s) {
+    var hn = String(s[2] || '').trim();
+    if (hnSet[hn]) (symByHN[hn] = symByHN[hn] || []).push(s);
+    else orphan.push(s);
+  });
 
   var html = '';
 
-  // ── SYMPTOM REPORTS SECTION ──
-  var symRows = (sr.data && sr.data.length > 1) ? sr.data.slice(1).reverse() : [];
-  if (symRows.length > 0) {
+  // รายงานอาการที่ไม่ตรงกับ HN ใดในข้อมูลการรักษา (แสดงแยก ไม่ซ้ำกับด้านล่าง)
+  if (orphan.length) {
     html += '<div style="margin-bottom:18px;">' +
-      '<div style="font-family:\'Noto Serif Thai\',serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid rgba(192,57,43,0.2);">⚠️ รายงานอาการที่แจ้งภายหลัง</div>' +
-      symRows.map(function(row) {
-        var status   = String(row[7]).trim(); // pending / replied / acknowledged
-        var hasReply  = row[8] && String(row[8]).trim().length > 0;
-        var isPending = status !== 'acknowledged';
-        // row: 0=RowID 1=ชื่อ 2=HN 3=อาการ 4=วันที่ 5=MemberID 6=รายละเอียด 7=สถานะ 8=ตอบกลับ
-        var borderColor = status==='acknowledged' ? 'rgba(39,174,96,0.25)' : (status==='replied'||hasReply) ? 'rgba(201,162,39,0.45)' : 'rgba(192,57,43,0.3)';
-        return '<div id="symcard-' + row[0] + '" style="background:white;border-radius:10px;border:2px solid ' + borderColor +
-          ';padding:13px 15px;margin-bottom:8px;">' +
-
-          // Header row
-          '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">' +
-            '<span style="font-weight:700;font-size:12px;color:var(--navy);">HN: ' + (row[2]||'—') + '</span>' +
-            '<span style="font-size:10px;color:var(--text-light);">' + (row[4]||'') + '</span>' +
-          '</div>' +
-
-          // อาการ
-          '<div style="font-size:11px;color:#7a1a1a;background:rgba(192,57,43,0.07);border-radius:7px;padding:7px 11px;margin-bottom:6px;">' +
-            '<strong>⚠️ อาการที่รายงาน:</strong> ' + (row[3]||'—') +
-          '</div>' +
-          (row[6] ? '<div style="font-size:10.5px;color:var(--text-mid);margin-bottom:6px;">📝 ' + row[6] + '</div>' : '') +
-
-          // Admin reply
-          (hasReply ? (
-            '<div style="background:rgba(26,39,68,0.06);border-left:3px solid var(--navy);border-radius:0 8px 8px 0;padding:9px 13px;' + (isPending?'margin-bottom:8px;':'') + '">' +
-              '<div style="font-size:9.5px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:4px;">💬 ข้อความจากทีมพยาบาล</div>' +
-              '<div style="font-size:11.5px;color:var(--text-mid);line-height:1.7;">' + row[8] + '</div>' +
-            '</div>' +
-            (isPending && (status==='replied'||hasReply) ?
-              '<button onclick="doPatientAckSymptom(\'' + row[0] + '\')" style="width:100%;padding:9px;border:none;background:linear-gradient(135deg,#1a5f1a,#27ae60);color:white;border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(39,174,96,0.3);">✅ รับทราบข้อแนะนำ</button>'
-              : status==='acknowledged' ? '<div style="text-align:center;"><span style="background:rgba(39,174,96,0.1);color:#1a7a42;padding:4px 14px;border-radius:8px;font-size:10.5px;font-weight:600;">✅ รับทราบแล้ว</span></div>' : ''
-            )
-          ) : (
-            '<div style="font-size:10.5px;color:var(--text-light);text-align:center;padding:4px;">' +
-              (status==='acknowledged' ? '<span style="background:rgba(39,174,96,0.1);color:#1a7a42;padding:3px 12px;border-radius:8px;">✅ รับทราบแล้ว</span>' : '⏳ รอทีมพยาบาลตอบกลับ...') +
-            '</div>'
-          )) +
-
-        '</div>';
+      '<div style="font-family:\'Noto Serif Thai\',serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid rgba(192,57,43,0.2);">⚠️ รายงานอาการ</div>' +
+      orphan.map(function(s){
+        return '<div style="font-size:11px;font-weight:700;color:var(--navy);margin:4px 0;">HN: ' + esc(s[2] || '—') + '</div>' + symCardMember(s);
       }).join('') +
     '</div>';
   }
 
-  // ── PATIENT RECORDS SECTION ──
-  if (!pr.error && pr.data && pr.data.length > 1) {
-    var ptRows = pr.data.slice(1).reverse();
-
-    // เก็บข้อมูลผู้ป่วยแต่ละแถวไว้ใน cache (key = rowId) เพื่อให้ openEditRecord ดึงข้อมูลเดิมมาแสดงในฟอร์มแก้ไขได้
-    window._myPatientRows = {};
-    ptRows.forEach(function(r) {
-      window._myPatientRows[String(r[0]).trim()] = r;
-    });
-
-    // Build symptom lookup by HN
-    var symByHN = {};
-    if (sr.data && sr.data.length > 1) {
-      sr.data.slice(1).forEach(function(s) {
-        var hn = String(s[2]||'').trim();
-        if (!symByHN[hn]) symByHN[hn] = [];
-        symByHN[hn].push(s);
-      });
-    }
-
+  if (ptRows.length) {
     html += '<div style="font-family:\'Noto Serif Thai\',serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid rgba(42,127,127,0.2);">📋 ข้อมูลการรักษา</div>';
     html += ptRows.map(function(row) {
       var hasUpdate = row[11] && row[12] !== 'acknowledged';
-      var hn = String(row[2]||'').trim();
-      var linkedSymptoms = symByHN[hn] || [];
-
-      // Build symptom section for this HN
-      var symSection = '';
-      if (linkedSymptoms.length > 0) {
-        symSection = '<div style="margin-top:12px;border-top:1px dashed rgba(192,57,43,0.2);padding-top:10px;">' +
+      var linked = symByHN[String(row[2] || '').trim()] || [];
+      var symSection = linked.length ?
+        '<div style="margin-top:12px;border-top:1px dashed rgba(192,57,43,0.2);padding-top:10px;">' +
           '<div style="font-size:9.5px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">⚠️ รายงานอาการผิดปกติ</div>' +
-          linkedSymptoms.map(function(s) {
-            var sStatus   = String(s[7]).trim();
-            var hasReply  = s[8] && String(s[8]).trim().length > 0;
-            var isPending = sStatus !== 'acknowledged';
-            var sBg = sStatus==='acknowledged' ? 'rgba(39,174,96,0.04)' : (sStatus==='replied'||hasReply) ? 'rgba(201,162,39,0.06)' : 'rgba(192,57,43,0.05)';
-            var sBorder = sStatus==='acknowledged' ? 'rgba(39,174,96,0.2)' : (sStatus==='replied'||hasReply) ? 'rgba(201,162,39,0.3)' : 'rgba(192,57,43,0.2)';
-            return '<div style="background:' + sBg + ';' +
-              'border-radius:8px;border:1px solid ' + sBorder + ';' +
-              'padding:9px 12px;margin-bottom:6px;">' +
+          linked.map(symCardMember).join('') +
+        '</div>' : '';
+      var lbl = 'font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;';
 
-              // Date + status badge
-              '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
-                '<span style="font-size:10px;color:var(--text-light);">🕐 ' + (s[4]||'') + '</span>' +
-                '<span style="font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:6px;' +
-                  (sStatus==='acknowledged' ? 'background:rgba(39,174,96,0.12);color:#1a7a42;">' + '✅ รับทราบแล้ว' :
-                   (sStatus==='replied'||hasReply) ? 'background:rgba(201,162,39,0.15);color:#8a6000;">' + '🔔 มีข้อแนะนำใหม่' :
-                   'background:rgba(192,57,43,0.1);color:var(--red);">' + '⏳ รอทีมพยาบาลตอบ') +
-                '</span>' +
-              '</div>' +
-
-              // อาการ
-              '<div style="font-size:11px;color:#7a1a1a;font-weight:600;margin-bottom:' + (s[6]||s[8] ? '5px' : '0') + ';">' + (s[3]||'—') + '</div>' +
-              (s[6] ? '<div style="font-size:10.5px;color:var(--text-mid);margin-bottom:' + (s[8]?'5px':'0') + ';">📝 ' + s[6] + '</div>' : '') +
-
-              // Admin reply
-              (hasReply ?
-                '<div style="background:rgba(26,39,68,0.07);border-left:3px solid var(--navy);border-radius:0 7px 7px 0;padding:8px 11px;' + (isPending?'margin-bottom:8px;':'') + '">' +
-                  '<div style="font-size:9px;font-weight:700;color:var(--text-light);letter-spacing:0.05em;margin-bottom:3px;">💬 ข้อความจากทีมพยาบาล</div>' +
-                  '<div style="font-size:11px;color:var(--text-mid);line-height:1.7;">' + s[8] + '</div>' +
-                '</div>' +
-                ((sStatus==='replied'||hasReply) && isPending ?
-                  '<button onclick="doPatientAckSymptom(\'' + s[0] + '\')" style="width:100%;padding:7px;border:none;background:linear-gradient(135deg,#1a5f1a,#27ae60);color:white;border-radius:7px;font-family:\'Sarabun\',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;">✅ รับทราบข้อแนะนำ</button>'
-                  : '')
-              : '') +
-            '</div>';
-          }).join('') +
-        '</div>';
-      }
-
-      return '<div style="background:white;border-radius:12px;border:1.5px solid ' + (hasUpdate?'var(--gold)':'var(--cream-dark)') + ';padding:16px 18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">' +
-        (hasUpdate ? '<div style="background:rgba(201,162,39,0.1);border-radius:7px;padding:7px 11px;font-size:11px;color:#8a6000;margin-bottom:10px;">🔔 มีการอัปเดต: ' + row[11] + '</div>' : '') +
-
-        // Header
-        '<div style="display:flex;justify-content:space-between;margin-bottom:12px;">' +
-          '<span style="font-family:\'Noto Serif Thai\',serif;font-size:15px;font-weight:700;color:var(--navy);">HN: ' + (row[2]||'—') + '</span>' +
-          '<span style="font-size:10px;color:var(--text-light);">' + (row[9] ? new Date(row[9]).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}) : '') + '</span>' +
+      return '<div style="background:white;border-radius:12px;border:1.5px solid ' + (hasUpdate ? 'var(--gold)' : 'var(--cream-dark)') + ';padding:16px 18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">' +
+        (hasUpdate ? '<div style="background:rgba(201,162,39,0.1);border-radius:7px;padding:7px 11px;font-size:11px;color:#8a6000;margin-bottom:10px;">🔔 ' + esc(row[11]) + ' — รอทีมพยาบาลรับทราบ</div>' : '') +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:12px;gap:8px;">' +
+          '<span style="font-family:\'Noto Serif Thai\',serif;font-size:15px;font-weight:700;color:var(--navy);">HN: ' + esc(row[2] || '—') + '</span>' +
+          '<span style="font-size:10px;color:var(--text-light);">' + fmtD(row[9]) + '</span>' +
         '</div>' +
-
-        // Info grid
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11.5px;">' +
-          '<div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">การบาดเจ็บ</div>' + (row[3]||'—') + '</div>' +
-          '<div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">การผ่าตัด</div>' + (row[4]||'—') + '</div>' +
-          '<div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">ถอด Nasal Packing</div>' + (row[5] ? cdHTML(row[5]) : '—') + '</div>' +
-          '<div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">ตัดไหม</div>' + (row[6] ? cdHTML(row[6]) : '—') + '</div>' +
-          '<div style="grid-column:1/-1;"><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">🗓️ วันนัดตรวจ</div>' + (row[7] ? cdHTML(row[7]) : '—') + '</div>' +
-          (row[8] ? '<div style="grid-column:1/-1;"><div style="font-size:9px;font-weight:700;color:var(--red);text-transform:uppercase;margin-bottom:3px;">⚠️ อาการผิดปกติ (บันทึกแรก)</div><span style="color:#7a1a1a;">' + row[8] + '</span></div>' : '') +
-          (row[10] ? '<div style="grid-column:1/-1;"><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase;margin-bottom:3px;">หมายเหตุ</div>' + row[10] + '</div>' : '') +
+          '<div><div style="' + lbl + '">การบาดเจ็บ</div>' + esc(row[3] || '—') + '</div>' +
+          '<div><div style="' + lbl + '">การผ่าตัด</div>' + esc(row[4] || '—') + '</div>' +
+          '<div><div style="' + lbl + '">ถอด Nasal Packing</div>' + (row[5] ? cdHTML(row[5]) : '—') + '</div>' +
+          '<div><div style="' + lbl + '">ตัดไหม</div>' + (row[6] ? cdHTML(row[6]) : '—') + '</div>' +
+          '<div style="grid-column:1/-1;"><div style="' + lbl + '">🗓️ วันนัดตรวจ</div>' + (row[7] ? cdHTML(row[7]) : '—') + '</div>' +
+          (row[8] ? '<div style="grid-column:1/-1;"><div style="' + lbl + 'color:var(--red);">⚠️ อาการผิดปกติ (บันทึกแรก)</div><span style="color:#7a1a1a;">' + esc(row[8]) + '</span></div>' : '') +
+          (row[10] ? '<div style="grid-column:1/-1;"><div style="' + lbl + '">หมายเหตุ</div>' + esc(row[10]) + '</div>' : '') +
         '</div>' +
-
-        // Symptom reports linked to this HN
         symSection +
-
-        '<button onclick="openEditRecord(\'' + row[0] + '\',\'' + row[2] + '\')" style="margin-top:12px;width:100%;padding:9px;border:1.5px solid var(--teal);background:rgba(42,127,127,0.07);color:var(--teal);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✏️ แก้ไข / อัปเดตข้อมูล</button>' +
+        '<button data-id="' + esc(row[0]) + '" onclick="openEditRecord(this.dataset.id)" style="margin-top:12px;width:100%;padding:9px;border:1.5px solid var(--teal);background:rgba(42,127,127,0.07);color:var(--teal);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✏️ แก้ไข / อัปเดตข้อมูล</button>' +
       '</div>';
     }).join('');
   }
 
-  if (!html) {
-    html = '<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลที่บันทึก</div>';
-  }
-  el.innerHTML = html;
+  el.innerHTML = html || '<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลที่บันทึก</div>';
 }
 
 // ── ผู้ป่วยรับทราบข้อความ Admin ──
-async function doPatientAckSymptom(symRowId) {
+async function doPatientAckSymptom(symRowId, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...'; }
+  var r = await apiCall({ action:'patientAckSymptom', symRowId: symRowId });
+  if (r.error) {
+    alert('เกิดข้อผิดพลาด: ' + r.error);
+    if (btn) { btn.disabled = false; btn.textContent = '✅ รับทราบข้อแนะนำ'; }
+    return;
+  }
   clearCache();
-  var r = await apiCall({ action:'patientAckSymptom', memberId: portalUser.id, symRowId: symRowId });
-  if (r.error) { alert('เกิดข้อผิดพลาด: ' + r.error); return; }
-  openMyDataModal(); // reload
+  openMyDataModal();
 }
 
 // ── EDIT RECORD ──
-// row columns: 0=RowID 1=ชื่อ 2=HN 3=การบาดเจ็บ 4=การผ่าตัด 5=วันถอด Nasal Packing
-// 6=วันตัดไหม 7=วันนัดตรวจ 8=อาการผิดปกติ(บันทึกแรก) 9=วันบันทึก 10=หมายเหตุ
-function openEditRecord(rowId, hn) {
+function openEditRecord(rowId) {
+  var row = window._myPatientRows && window._myPatientRows[String(rowId).trim()];
+  if (!row) { alert('ไม่พบข้อมูลเดิม กรุณาเปิด "ข้อมูลของฉัน" ใหม่อีกครั้ง'); return; }
   document.getElementById('mydata-modal').style.display = 'none';
 
-  // ดึงข้อมูลปัจจุบันของผู้ป่วยรายนี้จาก cache ที่เก็บไว้ตอนโหลด "ข้อมูลของฉัน"
-  var row = (window._myPatientRows && window._myPatientRows[String(rowId).trim()]) || null;
+  resetRecordForm();
+  window._editRowId = String(rowId).trim();
+  setRecordMode(true);
 
-  // Store rowId for update
-  window._editRowId = rowId;
+  var split = function(v){ return String(v || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean); };
+  var tick = function(sel, vals){
+    document.querySelectorAll(sel + ' input[type="checkbox"]').forEach(function(c){ c.checked = vals.indexOf(c.value) !== -1; });
+  };
+  document.getElementById('rm-hn').value = row[2] || '';
+  tick('#rm-injury-list',  split(row[3]));
+  tick('#rm-surgery-list', split(row[4]));
+  tick('#rm-symptom-list', split(row[8]));
+  document.getElementById('rm-nasal').value   = toDateInputValue(row[5]);
+  document.getElementById('rm-stitch').value  = toDateInputValue(row[6]);
+  document.getElementById('rm-appoint').value = toDateInputValue(row[7]);
+  document.getElementById('rm-note').value    = row[10] || '';
 
-  // เคลียร์ค่าเดิมในฟอร์มก่อนเสมอ
-  document.getElementById('rm-hn').value = hn;
-  document.querySelectorAll('#record-modal input[type="checkbox"]').forEach(function(c){ c.checked = false; });
-
-  if (row) {
-    // ── ติ๊กช่อง "การบาดเจ็บใบหน้า" ตามข้อมูลเดิม ──
-    var injuryVals = String(row[3] || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
-    document.querySelectorAll('#rm-injury-list input[type="checkbox"]').forEach(function(c) {
-      if (injuryVals.indexOf(c.value) !== -1) c.checked = true;
-    });
-
-    // ── ติ๊กช่อง "การผ่าตัด" ตามข้อมูลเดิม ──
-    var surgeryVals = String(row[4] || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
-    document.querySelectorAll('#rm-surgery-list input[type="checkbox"]').forEach(function(c) {
-      if (surgeryVals.indexOf(c.value) !== -1) c.checked = true;
-    });
-
-    // ── ติ๊กช่อง "อาการผิดปกติ" ตามข้อมูลเดิม (ถ้ามี) ──
-    var symptomVals = String(row[8] || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
-    document.querySelectorAll('#record-modal .rm-check-list:not(#rm-injury-list):not(#rm-surgery-list) input[type="checkbox"]').forEach(function(c) {
-      if (symptomVals.indexOf(c.value) !== -1) c.checked = true;
-    });
-
-    // ── เติมวันที่เดิมลงในช่องวันที่ ──
-    document.getElementById('rm-nasal').value   = toDateInputValue(row[5]);
-    document.getElementById('rm-stitch').value  = toDateInputValue(row[6]);
-    document.getElementById('rm-appoint').value = toDateInputValue(row[7]);
-
-    // ── เติมหมายเหตุเดิม ──
-    document.getElementById('rm-note').value = row[10] || '';
-
-    poAlert('rm-alert','กำลังแก้ไขข้อมูล HN: ' + hn + ' (ข้อมูลเดิมถูกดึงขึ้นมาให้แล้ว แก้ไขเฉพาะส่วนที่ต้องการอัปเดต)','info');
-  } else {
-    // หากหาข้อมูลเดิมไม่พบ (เช่น cache หมดอายุ) ให้เปิดฟอร์มว่างพร้อมแจ้งเตือน
-    document.getElementById('rm-nasal').value = '';
-    document.getElementById('rm-stitch').value = '';
-    document.getElementById('rm-appoint').value = '';
-    document.getElementById('rm-note').value = '';
-    poAlert('rm-alert','ไม่พบข้อมูลเดิมในแคช กรุณากรอกข้อมูลของ HN: ' + hn + ' ใหม่อีกครั้ง','err');
-  }
-
+  poAlert('rm-alert', 'กำลังแก้ไขข้อมูล HN: ' + (row[2] || '') + ' — ดึงข้อมูลเดิมมาให้แล้ว แก้เฉพาะส่วนที่ต้องการ', 'info');
   openRecordModal();
 }
 
-// ── ACKNOWLEDGE UPDATE (Admin) ──
-async function doAcknowledge(rowId) {
-  clearCache();
-  var r = await apiCall({ action:'acknowledgeUpdate', adminPass:'1234', rowId: rowId });
-  if (r.error) { alert('เกิดข้อผิดพลาด: ' + r.error); return; }
-  alert('✅ รับทราบแล้ว');
-  loadAmPatients();
-}
-// ── ADMIN MODAL ──
+// ══════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════
 function openAdminModal() {
   document.getElementById('admin-modal').classList.add('show');
-  loadAmPatients();
+  switchAmTab('patients');
 }
 function closeAdminModal() {
   document.getElementById('admin-modal').classList.remove('show');
 }
 
 function switchAmTab(tab) {
-  document.querySelectorAll('.am-tab').forEach(function(b,i){
-    b.classList.toggle('active',['patients','symptoms','members'][i]===tab);
+  document.querySelectorAll('.am-tab').forEach(function(b, i){
+    b.classList.toggle('active', ['patients','symptoms','members'][i] === tab);
   });
   ['am-patients','am-symptoms','am-members'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el) el.classList.toggle('active', id==='am-'+tab);
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('active', id === 'am-' + tab);
   });
-  if (tab==='members') loadAmMembers();
-  if (tab==='patients') loadAmPatients();
-  if (tab==='symptoms') loadAmSymptoms();
+  if (tab === 'members')  return loadAmMembers();
+  if (tab === 'patients') return loadAmPatients();
+  if (tab === 'symptoms') return loadAmSymptoms();
 }
 
-// Quick reply options for admin
+// ข้อความตอบกลับด่วน (⚠️ เนื้อหาทางคลินิก — ทบทวนให้ตรงแนวปฏิบัติของหน่วยงานก่อนใช้)
 var _QUICK_REPLIES = [
   { icon:'🏥', label:'แนะนำไปพบแพทย์', msg:'ขอบคุณที่รายงานอาการ ทีมพยาบาลแนะนำให้ท่านไปพบแพทย์ที่โรงพยาบาลใกล้บ้านโดยเร็ว หรือโทรสายด่วน ☎️ 1669 หากมีอาการรุนแรง' },
-  { icon:'💊', label:'แนะนำยาลดไข้', msg:'ท่านสามารถรับประทานยาลดไข้ Paracetamol (พาราเซตามอล) 500 mg ทุก 4-6 ชั่วโมงเมื่อมีไข้ ดื่มน้ำให้เพียงพอ และพักผ่อน หากไข้ไม่ลดใน 24 ชั่วโมง ให้ไปพบแพทย์' },
+  { icon:'💊', label:'แนะนำยาลดไข้', msg:'สำหรับผู้ใหญ่ รับประทานยาพาราเซตามอล 500 mg ครั้งละ 1 เม็ด ห่างกันอย่างน้อย 4–6 ชั่วโมงเมื่อมีไข้หรือปวด ไม่เกิน 8 เม็ด (4,000 mg) ต่อวัน หากมีโรคตับ ดื่มสุราเป็นประจำ หรือน้ำหนักตัวน้อยกว่า 50 กก. ให้ปรึกษาแพทย์หรือเภสัชกรก่อน ดื่มน้ำให้เพียงพอและพักผ่อน หากไข้ไม่ลดภายใน 24 ชั่วโมง ให้ไปพบแพทย์' },
   { icon:'🧊', label:'แนะนำประคบเย็น', msg:'แนะนำให้ประคบเย็นบริเวณที่บวมหรือปวด ครั้งละ 15-20 นาที ทุก 1-2 ชั่วโมง ห้ามประคบน้ำแข็งโดยตรง ให้ใช้ผ้าหุ้มก่อนทุกครั้ง' },
-  { icon:'🪥', label:'แนะนำดูแลแผล', msg:'ดูแลทำความสะอาดแผลตามที่แพทย์แนะนำ หากพบสัญญาณการติดเชื้อ เช่น บวม แดง มีหนอง หรือไข้สูง ให้รีบไปพบแพทย์ทันที' },
+  { icon:'🪥', label:'แนะนำดูแลแผล', msg:'ดูแลทำความสะอาดแผลตามที่แพทย์แนะนำ หากพบสัญญาณการติดเชื้อ เช่น บวม แดง มีหนอง หรือไข้สูงกว่า 38°C ให้รีบไปพบแพทย์ทันที' },
   { icon:'🍲', label:'แนะนำอาหารอ่อน', msg:'แนะนำให้รับประทานอาหารอ่อนหรือเหลว เช่น โจ๊ก ข้าวต้ม ซุป นม ในระยะนี้ หลีกเลี่ยงอาหารแข็งหรือเหนียว และดื่มน้ำให้เพียงพออย่างน้อย 8 แก้วต่อวัน' },
   { icon:'😴', label:'แนะนำพักผ่อน', msg:'แนะนำให้พักผ่อนให้เพียงพอ หลีกเลี่ยงการออกแรงหรือกิจกรรมหนัก นอนยกศีรษะสูง 30-45 องศาเพื่อลดอาการบวม' },
   { icon:'🚨', label:'ฉุกเฉิน — โทร 1669', msg:'⚠️ อาการของท่านอาจต้องได้รับการดูแลฉุกเฉิน กรุณาโทรสายด่วน ☎️ 1669 ทันที หรือให้ผู้ดูแลพาไปห้องฉุกเฉินโรงพยาบาลใกล้บ้านโดยเร็วที่สุด' },
 ];
 
 async function loadAmSymptoms() {
-  var sp=document.getElementById('am-sym-spinner');
-  if(sp) sp.classList.add('show');
-
-  // Parallel fetch — symptoms + patients พร้อมกัน
+  var sp = document.getElementById('am-sym-spinner');
+  var el = document.getElementById('am-sym-data');
+  if (sp) sp.classList.add('show');
   var [r, pr] = await Promise.all([
-    apiCall({ action:'getSymptoms', adminPass:'1234' }, true),
-    apiCall({ action:'getPatients', adminPass:'1234' }, true)
+    apiCall({ action:'getSymptoms' }, true),
+    apiCall({ action:'getPatients' }, true)
   ]);
-
-  if(sp) sp.classList.remove('show');
-  var el=document.getElementById('am-sym-data');
+  if (sp) sp.classList.remove('show');
   if (!el) return;
-  if (r.error||!r.data||r.data.length<=1) {
-    el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีรายงานอาการ</div>'; return;
-  }
+  if (r.error) { el.innerHTML = '<div class="po-alert po-alert-err show">' + esc(r.error) + '</div>'; return; }
+  if (!r.data || r.data.length <= 1) { el.innerHTML = '<div class="po-alert po-alert-info show">ยังไม่มีรายงานอาการ</div>'; return; }
 
-  // Build patient lookup from parallel result
-  var ptData = {};
+  // MemberID + HN → RowID ของข้อมูลผู้ป่วย
+  var ptByKey = {};
   if (pr.data && pr.data.length > 1) {
     pr.data.slice(1).forEach(function(row) {
-      var memId = String(row[0]).trim().replace(/^0+/,'');
-      var hn = String(row[2]).trim();
-      if (memId && hn) ptData[memId + '_' + hn] = row[0];
+      var mid = String(row[13] || '').trim().replace(/^0+/, '');
+      var hn = String(row[2] || '').trim();
+      if (mid && hn) ptByKey[mid + '_' + hn] = row[0];
     });
   }
 
+  var step = function(n, on, color, text, when, badgeOn, badgeOff) {
+    return '<div style="display:flex;align-items:center;gap:8px;">' +
+      '<div style="width:22px;height:22px;border-radius:50%;background:' + (on ? color : 'rgba(0,0,0,0.06)') + ';display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">' + n + '</div>' +
+      '<div style="font-size:11px;color:' + (on ? 'var(--text-mid)' : 'var(--text-light)') + ';">' + text + (when ? ' <span style="color:var(--text-light);">' + when + '</span>' : '') + '</div>' +
+      '<span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;white-space:nowrap;' + (on ? badgeOn : 'color:var(--text-light);background:rgba(0,0,0,0.05);">' + badgeOff) + '</span>' +
+    '</div>';
+  };
+
   var rows = r.data.slice(1).reverse();
-  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px;">' +
-    rows.map(function(row) {
-      var rowId = row[0];
-      var memberId = String(row[5]||'').trim();
-      var hn = String(row[2]||'').trim();
-      var symStatus = String(row[7]||'pending').trim();
-      var isPending = symStatus !== 'acknowledged'; // pending or replied = show form
-      var hasReply = row[8] && String(row[8]).trim().length > 0;
-      var ptKey = memberId + '_' + hn;
-      var ptRowId = ptData[ptKey] || null;
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px;">' + rows.map(function(row) {
+    var rowId = String(row[0]);
+    var memberId = String(row[5] || '').trim();
+    var hn = String(row[2] || '').trim();
+    var st = String(row[7] || 'pending').trim();
+    var acked = st === 'acknowledged';
+    var hasReply = row[8] && String(row[8]).trim().length > 0;
+    var ptRowId = ptByKey[memberId.replace(/^0+/, '') + '_' + hn] || null;
 
-      // Format date
-      var dateStr = String(row[4]||'');
-      try {
-        var d = new Date(row[4]);
-        if (!isNaN(d)) dateStr = d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}) +
-          ' ' + d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
-      } catch(e) {}
+    var quickBtns = _QUICK_REPLIES.map(function(qr, qi) {
+      return '<button class="am-qr" data-id="' + esc(rowId) + '" onclick="selectQuickReply(this.dataset.id,' + qi + ')">' + qr.icon + ' ' + esc(qr.label) + '</button>';
+    }).join('');
 
-      var quickBtns = _QUICK_REPLIES.map(function(qr,qi) {
-        return '<button onclick="selectQuickReply(\'' + rowId + '\',' + qi + ')" style="' +
-          'padding:5px 10px;border-radius:7px;border:1px solid rgba(26,39,68,0.2);' +
-          'background:white;font-family:\'Sarabun\',sans-serif;font-size:10px;font-weight:600;' +
-          'color:var(--navy);cursor:pointer;transition:all 0.15s;white-space:nowrap;' +
-          '" onmouseover="this.style.background=\'var(--navy)\';this.style.color=\'var(--gold-light)\'"' +
-          ' onmouseout="this.style.background=\'white\';this.style.color=\'var(--navy)\'">' +
-          qr.icon + ' ' + qr.label + '</button>';
-      }).join('');
-
-      return '<div id="sym-card-' + rowId + '" style="background:white;border-radius:12px;border:2px solid ' +
-        (symStatus==='acknowledged' ? 'rgba(39,174,96,0.3)' : symStatus==='replied' ? 'rgba(201,162,39,0.35)' : 'rgba(192,57,43,0.35)') +
-        ';padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">' +
-
-        // Header
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">' +
-          '<div>' +
-            '<span style="font-family:\'Noto Serif Thai\',serif;font-size:14px;font-weight:700;color:var(--navy);">HN: ' + hn + '</span>' +
-            '<span style="margin-left:8px;font-size:10px;color:var(--text-light);">' + (row[1]||'') + ' · ID ' + memberId + '</span>' +
-          '</div>' +
-          '<div style="display:flex;gap:6px;align-items:center;">' +
-            (ptRowId ? '<button onclick="jumpToPatient(\'' + ptRowId + '\')" style="padding:3px 9px;border:1px solid var(--teal);background:rgba(42,127,127,0.08);color:var(--teal);border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;font-family:\'Sarabun\',sans-serif;">📋 ข้อมูลผู้ป่วย</button>' : '') +
-            '<span style="font-size:10px;color:var(--text-light);">' + dateStr + '</span>' +
-          '</div>' +
+    return '<div class="am-symcard" data-id="' + esc(rowId) + '" style="background:white;border-radius:12px;border:2px solid ' +
+      (acked ? 'rgba(39,174,96,0.3)' : hasReply ? 'rgba(201,162,39,0.35)' : 'rgba(192,57,43,0.35)') + ';padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px;flex-wrap:wrap;">' +
+        '<div><span style="font-family:\'Noto Serif Thai\',serif;font-size:14px;font-weight:700;color:var(--navy);">HN: ' + esc(hn) + '</span>' +
+        '<span style="margin-left:8px;font-size:10px;color:var(--text-light);">' + esc(row[1] || '') + ' · ID ' + esc(memberId) + '</span></div>' +
+        '<div style="display:flex;gap:6px;align-items:center;">' +
+          (ptRowId ? '<button data-id="' + esc(ptRowId) + '" onclick="jumpToPatient(this.dataset.id)" style="padding:3px 9px;border:1px solid var(--teal);background:rgba(42,127,127,0.08);color:var(--teal);border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;font-family:\'Sarabun\',sans-serif;">📋 ข้อมูลผู้ป่วย</button>' : '') +
+          '<span style="font-size:10px;color:var(--text-light);">' + fmtDT(row[4]) + '</span>' +
         '</div>' +
-
-        // อาการ
-        '<div style="font-size:11.5px;color:#7a1a1a;background:rgba(192,57,43,0.07);border-radius:8px;padding:9px 13px;margin-bottom:8px;">' +
-          '<strong>⚠️ อาการ:</strong> ' + (row[3]||'—') +
+      '</div>' +
+      '<div style="font-size:11.5px;color:#7a1a1a;background:rgba(192,57,43,0.07);border-radius:8px;padding:9px 13px;margin-bottom:8px;"><strong>⚠️ อาการ:</strong> ' + esc(row[3] || '—') + '</div>' +
+      (row[6] ? '<div style="font-size:11px;color:var(--text-mid);background:rgba(42,127,127,0.05);border-radius:7px;padding:8px 12px;margin-bottom:10px;">📝 ' + esc(row[6]) + '</div>' : '') +
+      '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">' +
+        step(1, true, 'rgba(192,57,43,0.15)', 'ผู้ป่วยรายงานอาการ', fmtDT(row[4]), 'color:#c0392b;background:rgba(192,57,43,0.1);">✔ ส่งแล้ว', '') +
+        step(2, hasReply, 'rgba(26,39,68,0.15)', 'Admin ส่งข้อแนะนำ', row[9] ? fmtDT(row[9]) : '', 'color:#1a2744;background:rgba(26,39,68,0.1);">✔ ส่งแล้ว', '— รอส่ง') +
+        step(3, acked, 'rgba(39,174,96,0.2)', 'ผู้ป่วยรับทราบข้อแนะนำ', row[10] ? fmtDT(row[10]) : '', 'color:#1a7a42;background:rgba(39,174,96,0.12);">✅ รับทราบแล้ว', '⏳ รอรับทราบ') +
+      '</div>' +
+      (hasReply ? '<div style="font-size:11px;background:rgba(26,39,68,0.06);border-left:3px solid var(--navy);border-radius:0 8px 8px 0;padding:8px 12px;margin-bottom:10px;color:var(--text-mid);">💬 <strong>ข้อความที่ส่ง:</strong> ' + esc(row[8]) + '</div>' : '') +
+      (!acked ?
+        '<div style="margin-bottom:10px;">' +
+          '<div style="font-size:9.5px;font-weight:700;color:var(--text-light);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">⚡ ' + (hasReply ? 'ส่งข้อความใหม่ (แทนข้อความเดิม)' : 'ตอบกลับด่วน') + '</div>' +
+          '<div style="display:flex;flex-wrap:wrap;gap:5px;">' + quickBtns + '</div>' +
         '</div>' +
-        (row[6] ? '<div style="font-size:11px;color:var(--text-mid);background:rgba(42,127,127,0.05);border-radius:7px;padding:8px 12px;margin-bottom:10px;">📝 ' + row[6] + '</div>' : '') +
+        '<textarea class="po-input am-reply" style="resize:vertical;min-height:60px;font-size:11.5px;margin-bottom:8px;" placeholder="หรือพิมพ์ข้อความตอบกลับเอง..."></textarea>' +
+        '<button data-id="' + esc(rowId) + '" onclick="doAckSymptom(this.dataset.id,this)" style="width:100%;padding:9px;border:none;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--gold-light);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✅ รับทราบ &amp; ส่งข้อความ</button>'
+      :
+        '<div style="background:rgba(39,174,96,0.06);border-radius:8px;padding:10px 14px;text-align:center;"><span style="font-size:11px;color:#1a7a42;font-weight:600;">✅ ผู้ป่วยรับทราบข้อแนะนำเรียบร้อยแล้ว</span></div>'
+      ) +
+    '</div>';
+  }).join('') + '</div>';
+}
 
-        // ── STATUS TIMELINE ──
-        '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">' +
-
-          // Step 1: ผู้ป่วยรายงาน
-          '<div style="display:flex;align-items:center;gap:8px;">' +
-            '<div style="width:22px;height:22px;border-radius:50%;background:rgba(192,57,43,0.15);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">1</div>' +
-            '<div style="font-size:11px;color:var(--text-mid);">ผู้ป่วยรายงานอาการ <span style="color:var(--text-light);">' + dateStr + '</span></div>' +
-            '<span style="margin-left:auto;font-size:10px;font-weight:700;color:#c0392b;background:rgba(192,57,43,0.1);padding:2px 8px;border-radius:6px;">✔ ส่งแล้ว</span>' +
-          '</div>' +
-
-          // Step 2: Admin ตอบ
-          '<div style="display:flex;align-items:center;gap:8px;">' +
-            '<div style="width:22px;height:22px;border-radius:50%;background:' + (hasReply?'rgba(26,39,68,0.15)':'rgba(0,0,0,0.06)') + ';display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">2</div>' +
-            '<div style="font-size:11px;color:' + (hasReply?'var(--text-mid)':'var(--text-light)') + ';">Admin ส่งข้อแนะนำ' +
-              (row[9] ? ' <span style="color:var(--text-light);">' + new Date(row[9]).toLocaleDateString('th-TH',{day:'numeric',month:'short'}) + ' ' + new Date(row[9]).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) + '</span>' : '') +
-            '</div>' +
-            '<span style="margin-left:auto;font-size:10px;font-weight:700;' +
-              (hasReply ? 'color:#1a2744;background:rgba(26,39,68,0.1);' : 'color:var(--text-light);background:rgba(0,0,0,0.05);') +
-              'padding:2px 8px;border-radius:6px;">' +
-              (hasReply ? '✔ ส่งแล้ว' : '— รอส่ง') +
-            '</span>' +
-          '</div>' +
-
-          // Step 3: ผู้ป่วยรับทราบ
-          '<div style="display:flex;align-items:center;gap:8px;">' +
-            '<div style="width:22px;height:22px;border-radius:50%;background:' + (symStatus==='acknowledged'?'rgba(39,174,96,0.2)':'rgba(0,0,0,0.06)') + ';display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">3</div>' +
-            '<div style="font-size:11px;color:' + (symStatus==='acknowledged'?'var(--text-mid)':'var(--text-light)') + ';">ผู้ป่วยรับทราบข้อแนะนำ' +
-              (row[10] ? ' <span style="color:var(--text-light);">' + new Date(row[10]).toLocaleDateString('th-TH',{day:'numeric',month:'short'}) + ' ' + new Date(row[10]).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) + '</span>' : '') +
-            '</div>' +
-            '<span style="margin-left:auto;font-size:10px;font-weight:700;' +
-              (symStatus==='acknowledged' ? 'color:#1a7a42;background:rgba(39,174,96,0.12);' : 'color:var(--text-light);background:rgba(0,0,0,0.05);') +
-              'padding:2px 8px;border-radius:6px;">' +
-              (symStatus==='acknowledged' ? '✅ รับทราบแล้ว' : '⏳ รอรับทราบ') +
-            '</span>' +
-          '</div>' +
-
-        '</div>' +
-
-        // ข้อความตอบกลับที่เคยส่ง
-        (hasReply ? '<div style="font-size:11px;background:rgba(26,39,68,0.06);border-left:3px solid var(--navy);border-radius:0 8px 8px 0;padding:8px 12px;margin-bottom:10px;color:var(--text-mid);">💬 <strong>ข้อความที่ส่ง:</strong> ' + row[8] + '</div>' : '') +
-
-        (isPending ? (
-          // Quick replies
-          '<div style="margin-bottom:10px;">' +
-            '<div style="font-size:9.5px;font-weight:700;color:var(--text-light);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;">⚡ ' + (hasReply?'ส่งข้อความเพิ่มเติม':'ตอบกลับด่วน') + '</div>' +
-            '<div style="display:flex;flex-wrap:wrap;gap:5px;">' + quickBtns + '</div>' +
-          '</div>' +
-          '<div style="margin-bottom:8px;">' +
-            '<textarea id="sym-reply-' + rowId + '" class="po-input" style="resize:vertical;min-height:60px;font-size:11.5px;" placeholder="หรือพิมพ์ข้อความตอบกลับเอง..."></textarea>' +
-          '</div>' +
-          '<button onclick="doAckSymptom(\'' + rowId + '\')" style="width:100%;padding:9px;border:none;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:var(--gold-light);border-radius:8px;font-family:\'Sarabun\',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✅ รับทราบ &amp; ส่งข้อความ</button>'
-        ) : (
-          '<div style="background:rgba(39,174,96,0.06);border-radius:8px;padding:10px 14px;text-align:center;">' +
-            '<span style="font-size:11px;color:#1a7a42;font-weight:600;">✅ ผู้ป่วยรับทราบข้อแนะนำเรียบร้อยแล้ว</span>' +
-          '</div>'
-        )) +
-      '</div>';
-    }).join('') + '</div>';
+function _symCard(rowId) {
+  var cards = document.querySelectorAll('#am-sym-data .am-symcard');
+  for (var i = 0; i < cards.length; i++) if (cards[i].dataset.id === String(rowId)) return cards[i];
+  return null;
 }
 
 function selectQuickReply(rowId, idx) {
-  var ta = document.getElementById('sym-reply-' + rowId);
+  var card = _symCard(rowId);
+  var ta = card && card.querySelector('textarea.am-reply');
   if (ta) ta.value = _QUICK_REPLIES[idx].msg;
 }
 
-async function doAckSymptom(rowId) {
-  // Find textarea - search by id with exact rowId
-  var ta = document.getElementById('sym-reply-' + rowId);
-  // Fallback: find by any visible textarea in the card
-  if (!ta) {
-    var card = document.getElementById('sym-card-' + rowId);
-    if (card) ta = card.querySelector('textarea');
-  }
+async function doAckSymptom(rowId, btn) {
+  var card = _symCard(rowId);
+  var ta = card && card.querySelector('textarea.am-reply');
   var replyMsg = ta ? ta.value.trim() : '';
   if (!replyMsg) {
     replyMsg = 'ทีมพยาบาลได้รับทราบอาการของท่านแล้ว หากอาการไม่ดีขึ้น กรุณาไปพบแพทย์ที่โรงพยาบาลใกล้บ้านทันที หรือโทร ☎️ 1669';
   }
-  // Disable button to prevent double click
-  var btn = event && event.target ? event.target : null;
   if (btn) { btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...'; }
-
-  clearCache();
-  var r = await apiCall({ action:'ackSymptom', adminPass:'1234', rowId: String(rowId), replyMsg: replyMsg });
+  var r = await apiCall({ action:'ackSymptom', rowId: String(rowId), replyMsg: replyMsg });
   if (r.error) {
     alert('เกิดข้อผิดพลาด: ' + r.error);
-    if (btn) { btn.disabled = false; btn.innerHTML = '✅ รับทราบ & ส่งข้อความ'; }
+    if (btn) { btn.disabled = false; btn.textContent = '✅ รับทราบ & ส่งข้อความ'; }
     return;
   }
+  clearCache();
   loadAmSymptoms();
 }
 
-function jumpToPatient(ptRowId) {
-  // Switch to patients tab and highlight
-  switchAmTab('patients');
-  setTimeout(function() {
-    var cards = document.querySelectorAll('#am-pts-data tr');
-    cards.forEach(function(row) {
-      if (row.textContent.includes(ptRowId)) {
-        row.style.background = 'rgba(201,162,39,0.15)';
-        row.scrollIntoView({ behavior:'smooth', block:'center' });
-        setTimeout(function(){ row.style.background = ''; }, 3000);
-      }
-    });
-  }, 600);
+async function jumpToPatient(ptRowId) {
+  await switchAmTab('patients');
+  var rows = document.querySelectorAll('#am-pts-data tr[data-id]');
+  rows.forEach(function(tr) {
+    if (tr.dataset.id === String(ptRowId)) {
+      tr.style.background = 'rgba(201,162,39,0.25)';
+      tr.scrollIntoView({ behavior:'smooth', block:'center' });
+      setTimeout(function(){ tr.style.background = ''; }, 3000);
+    }
+  });
 }
 
 async function loadAmPatients() {
-  const sp=document.getElementById('am-pts-spinner'); if(sp) sp.classList.add('show');
-  const r = await apiCall({ action:'getPatients', adminPass:'1234' }, true);
-  if(sp) sp.classList.remove('show');
-  const el=document.getElementById('am-pts-data');
-  if (r.error||!r.data||r.data.length<=1) { el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลผู้ป่วย</div>'; return; }
-  const rows=r.data.slice(1);
-  el.innerHTML=`<div style="overflow-x:auto"><table class="am-table">
-    <thead><tr><th>ID</th><th>ชื่อ</th><th>HN</th><th>การบาดเจ็บ</th><th>การผ่าตัด</th><th>ถอด Packing</th><th>ตัดไหม</th><th>วันนัด</th><th>อาการ</th><th>สถานะ</th></tr></thead>
-    <tbody>${rows.map(function(r){
+  const sp = document.getElementById('am-pts-spinner'); if (sp) sp.classList.add('show');
+  const r = await apiCall({ action:'getPatients' }, true);
+  if (sp) sp.classList.remove('show');
+  const el = document.getElementById('am-pts-data');
+  if (r.error) { el.innerHTML = '<div class="po-alert po-alert-err show">' + esc(r.error) + '</div>'; return; }
+  if (!r.data || r.data.length <= 1) { el.innerHTML = '<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลผู้ป่วย</div>'; return; }
+  const rows = r.data.slice(1).reverse();
+  el.innerHTML = '<div style="overflow-x:auto"><table class="am-table">' +
+    '<thead><tr><th>สมาชิก</th><th>ชื่อ</th><th>HN</th><th>การบาดเจ็บ</th><th>การผ่าตัด</th><th>ถอด Packing</th><th>ตัดไหม</th><th>วันนัด</th><th>อาการ</th><th>สถานะ</th></tr></thead>' +
+    '<tbody>' + rows.map(function(r) {
       var hasUpdate = r[11] && r[12] !== 'acknowledged';
-      return '<tr style="' + (hasUpdate ? 'background:rgba(201,162,39,0.06);' : '') + '">' +
-      '<td>' + (r[0]||'—') + '</td>' +
-      '<td>' + (r[1]||'—') + '</td>' +
-      '<td><strong>' + (r[2]||'—') + '</strong></td>' +
-      '<td>' + (r[3]||'—') + '</td>' +
-      '<td>' + (r[4]||'—') + '</td>' +
-      '<td>' + (r[5]?cdHTML(r[5]):'—') + '</td>' +
-      '<td>' + (r[6]?cdHTML(r[6]):'—') + '</td>' +
-      '<td>' + (r[7]?cdHTML(r[7]):'—') + '</td>' +
-      '<td style="color:' + (r[8]?'var(--red)':'var(--text-light)') + '">' + (r[8]||'ปกติ') + '</td>' +
-      '<td>' + (hasUpdate
-        ? '<span class="badge-pending">🔔 อัปเดต</span><br><button onclick="doAcknowledge(\'' + r[0] + '\')" style="margin-top:4px;padding:3px 8px;border:1px solid var(--teal);background:rgba(42,127,127,0.1);color:var(--teal);border-radius:5px;font-size:10px;cursor:pointer;">รับทราบ</button>'
-        : '<span class="badge-approved">✅ ปกติ</span>') + '</td>' +
+      return '<tr data-id="' + esc(r[0]) + '" style="' + (hasUpdate ? 'background:rgba(201,162,39,0.06);' : '') + '">' +
+        '<td>' + esc(r[13] || '—') + '</td>' +
+        '<td>' + esc(r[1] || '—') + '</td>' +
+        '<td><strong>' + esc(r[2] || '—') + '</strong></td>' +
+        '<td>' + esc(r[3] || '—') + '</td>' +
+        '<td>' + esc(r[4] || '—') + '</td>' +
+        '<td>' + (r[5] ? cdHTML(r[5]) : '—') + '</td>' +
+        '<td>' + (r[6] ? cdHTML(r[6]) : '—') + '</td>' +
+        '<td>' + (r[7] ? cdHTML(r[7]) : '—') + '</td>' +
+        '<td style="color:' + (r[8] ? 'var(--red)' : 'var(--text-light)') + '">' + esc(r[8] || 'ปกติ') + '</td>' +
+        '<td>' + (hasUpdate
+          ? '<span class="badge-pending">🔔 อัปเดต</span><div style="font-size:9.5px;color:var(--text-light);margin-top:2px;">' + esc(r[11]) + '</div>' +
+            '<button data-id="' + esc(r[0]) + '" onclick="doAcknowledge(this.dataset.id,this)" style="margin-top:4px;padding:3px 8px;border:1px solid var(--teal);background:rgba(42,127,127,0.1);color:var(--teal);border-radius:5px;font-size:10px;cursor:pointer;">รับทราบ</button>'
+          : '<span class="badge-approved">✅ ปกติ</span>') + '</td>' +
       '</tr>';
-    }).join('')}</tbody></table></div>`;
+    }).join('') + '</tbody></table></div>';
+}
+
+async function doAcknowledge(rowId, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+  var r = await apiCall({ action:'acknowledgeUpdate', rowId: rowId });
+  if (r.error) { alert('เกิดข้อผิดพลาด: ' + r.error); if (btn) { btn.disabled = false; btn.textContent = 'รับทราบ'; } return; }
+  clearCache();
+  loadAmPatients();
 }
 
 async function loadAmMembers() {
-  const sp=document.getElementById('am-mem-spinner'); sp.classList.add('show');
-  const r = await apiCall({ action:'getMembers', adminPass:'1234' });
+  const sp = document.getElementById('am-mem-spinner'); sp.classList.add('show');
+  const r = await apiCall({ action:'getMembers' });
   sp.classList.remove('show');
-  const el=document.getElementById('am-mem-data');
-  if (r.error||!r.data||r.data.length<=1) { el.innerHTML='<div class="po-alert po-alert-info show">ยังไม่มีสมาชิก</div>'; return; }
-  const rows=r.data.slice(1);
-  el.innerHTML=`<div style="overflow-x:auto"><table class="am-table">
-    <thead><tr><th>ID</th><th>วันสมัคร</th><th>Username</th><th>ชื่อ</th><th>เบอร์โทร</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
-    <tbody>${rows.map(r=>`<tr>
-      <td><strong>${r[0]}</strong></td>
-      <td>${r[1]?new Date(r[1]).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}):'—'}</td>
-      <td>${r[2]}</td><td>${r[4]}</td><td>${r[5]||'—'}</td>
-      <td><span class="${r[6]==='approved'?'badge-approved':'badge-pending'}">${r[6]==='approved'?'✅ อนุมัติ':'⏳ รออนุมัติ'}</span></td>
-      <td>${r[6]!=='approved'?`<button class="po-btn po-btn-navy po-btn-sm" onclick="doApprove('${r[0]}')">อนุมัติ</button>`:'—'}</td>
-    </tr>`).join('')}</tbody></table></div>`;
+  const el = document.getElementById('am-mem-data');
+  if (r.error) { el.innerHTML = '<div class="po-alert po-alert-err show">' + esc(r.error) + '</div>'; return; }
+  if (!r.data || r.data.length <= 1) { el.innerHTML = '<div class="po-alert po-alert-info show">ยังไม่มีสมาชิก</div>'; return; }
+  const rows = r.data.slice(1);
+  el.innerHTML = '<div style="overflow-x:auto"><table class="am-table">' +
+    '<thead><tr><th>ID</th><th>วันสมัคร</th><th>Username</th><th>ชื่อ</th><th>เบอร์โทร</th><th>สถานะ</th><th>จัดการ</th></tr></thead>' +
+    '<tbody>' + rows.map(function(r) {
+      var ok = r[6] === 'approved';
+      return '<tr>' +
+        '<td><strong>' + esc(r[0]) + '</strong></td>' +
+        '<td>' + (r[1] ? fmtD(r[1]) : '—') + '</td>' +
+        '<td>' + esc(r[2]) + '</td><td>' + esc(r[4]) + '</td><td>' + esc(r[5] || '—') + '</td>' +
+        '<td><span class="' + (ok ? 'badge-approved' : 'badge-pending') + '">' + (ok ? '✅ อนุมัติ' : '⏳ รออนุมัติ') + '</span></td>' +
+        '<td>' + (!ok ? '<button class="po-btn po-btn-navy po-btn-sm" data-id="' + esc(r[0]) + '" data-name="' + esc(r[4]) + '" onclick="doApprove(this.dataset.id,this.dataset.name)">อนุมัติ</button>' : '—') + '</td>' +
+      '</tr>';
+    }).join('') + '</tbody></table></div>';
 }
 
-async function doApprove(userId) {
-  if (!confirm(`อนุมัติสมาชิก ID: ${userId}?`)) return;
-  const r = await apiCall({ action:'approve', adminPass:'1234', userId });
-  if (r.error) { alert('เกิดข้อผิดพลาด: '+r.error); return; }
+async function doApprove(userId, name) {
+  if (!confirm('อนุมัติสมาชิก ID: ' + userId + (name ? ' (' + name + ')' : '') + ' ?')) return;
+  const r = await apiCall({ action:'approve', userId: userId });
+  if (r.error) { alert('เกิดข้อผิดพลาด: ' + r.error); return; }
   alert('✅ อนุมัติสำเร็จ!');
   loadAmMembers();
 }
