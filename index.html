@@ -608,13 +608,15 @@ body.has-member-bar .au-panel { bottom: 78px; }
 /* ===== VIDEO ===== */
 .nav-btn.vid-btn { display:none; border-color:#7fd1d1; background:rgba(42,127,127,0.28); font-size:15px; }
 .nav-btn.vid-btn.has-video { display:flex; }
-#vid-modal { position:fixed; inset:0; z-index:1600; background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; padding:14px; }
-#vid-modal.show { display:flex; }
-.vid-box { width:min(720px,100%); background:#0c1224; border:1px solid rgba(201,162,39,0.4); border-radius:14px; overflow:hidden; }
-.vid-head { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; color:var(--gold-light); font-family:'Sarabun',sans-serif; font-weight:700; font-size:15px; }
-.vid-head button { background:rgba(255,255,255,0.1); border:none; color:#fff; width:36px; height:36px; border-radius:50%; font-size:16px; cursor:pointer; }
-#vid-frame { position:relative; width:100%; aspect-ratio:16/9; background:#000; }
-#vid-frame iframe, #vid-frame video { position:absolute; inset:0; width:100%; height:100%; border:0; }
+.pv-box { margin:4px 0 16px; background:#0f1730; border-radius:14px; padding:10px; box-shadow:0 4px 16px rgba(0,0,0,0.15); }
+.pv-head { color:var(--gold-light); font-family:'Sarabun',sans-serif; font-weight:700; font-size:14px; margin:0 2px 8px; }
+.pv-tabs { display:flex; gap:6px; overflow-x:auto; margin-bottom:8px; scrollbar-width:none; }
+.pv-tab { flex-shrink:0; padding:6px 12px; border-radius:14px; border:1px solid rgba(201,162,39,0.4); background:transparent; color:var(--cream); font-family:'Sarabun',sans-serif; font-size:13px; font-weight:600; cursor:pointer; }
+.pv-tab.on { background:var(--gold-light); color:#1a2744; border-color:var(--gold-light); }
+.pv-frame { position:relative; width:100%; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:#000 center/cover no-repeat; cursor:pointer; }
+.pv-frame iframe, .pv-frame video { position:absolute; inset:0; width:100%; height:100%; border:0; background:#000; }
+.pv-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:64px; height:64px; border-radius:50%; background:rgba(201,162,39,0.95); color:#1a2744; font-size:26px; display:flex; align-items:center; justify-content:center; padding-left:4px; box-shadow:0 4px 18px rgba(0,0,0,0.5); }
+.pv-note { color:rgba(253,246,227,0.6); font-size:11.5px; text-align:center; margin-top:6px; font-family:'Sarabun',sans-serif; }
 
 /* ===== SCROLL HINT ===== */
 #scrollHint { position:fixed; left:50%; bottom:84px; transform:translateX(-50%); z-index:998; display:none;
@@ -1343,14 +1345,6 @@ body.has-member-bar .nav-bar   { bottom:16px; }
 <!-- ปุ่มเลื่อนลงอ่านต่อ -->
 <button id="scrollHint" onclick="scrollHintClick()" aria-label="เลื่อนลงอ่านต่อ">⌄ เลื่อนลงอ่านต่อ</button>
 
-<!-- คลิปวิดีโอ -->
-<div id="vid-modal" onclick="if(event.target===this)closeVideo()">
-  <div class="vid-box">
-    <div class="vid-head"><span id="vid-title">🎬 คลิปวิดีโอ</span><button onclick="closeVideo()" aria-label="ปิด">✕</button></div>
-    <div id="vid-frame"></div>
-  </div>
-</div>
-
 <!-- การฟื้นตัวของฉัน -->
 <div id="rec-modal" class="big-modal">
   <div class="bm-box">
@@ -2054,6 +2048,7 @@ const LABELS = ['ปก','สารบัญ','1','2','3','4','5','6','7','8','�
 
 function renderPage(idx, el) {
   el.innerHTML = pages[idx]();
+  if (typeof injectPageVideo === 'function') injectPageVideo(idx, el);
   // Re-attach check toggle (inline onclick already handles it)
 }
 
@@ -2147,7 +2142,7 @@ function _uiBlocked(target) {
   if (!document.body.classList.contains('ebook-ready')) return true;
   var po = document.getElementById('portal-overlay');
   if (po && !po.classList.contains('hidden')) return true;
-  if (document.querySelector('#record-modal.show, #admin-modal.show, #rec-modal.show, #rf-modal.show, #vid-modal.show')) return true;
+  if (document.querySelector('#record-modal.show, #admin-modal.show, #rec-modal.show, #rf-modal.show')) return true;
   var ids = ['mydata-modal','symptom-modal'];
   for (var i = 0; i < ids.length; i++) {
     var m = document.getElementById(ids[i]);
@@ -2407,11 +2402,13 @@ function auToggleAuto() {
 
 
 // ══════════════════════════════════════════════════════
-// คลิปวิดีโอประจำหน้า
+// คลิปวิดีโอประจำหน้า — เล่นในหน้า E-book เลย ไม่ต้องออกไปเว็บอื่น
 // ──────────────────────────────────────────────────────
-// ใส่ลิงก์ YouTube (แนะนำให้ตั้งเป็น "ไม่เป็นสาธารณะ / Unlisted") หรือไฟล์ .mp4 ในโฟลเดอร์ videos/
-//   เช่น 'https://youtu.be/AbCdEfGhIjK'  หรือ  'videos/mmf-mouth-care.mp4'
-// หน้าไหนไม่มีคลิป ให้ปล่อยเป็น ''  → ปุ่ม 🎬 จะไม่แสดงในหน้านั้น
+// ใส่ลิงก์ YouTube (แนะนำตั้งเป็น "ไม่เป็นสาธารณะ / Unlisted") หรือไฟล์ .mp4 ในโฟลเดอร์ videos/
+//   • 1 คลิป :  'https://youtu.be/AbCdEfGhIjK'
+//   • หลายคลิป: [ { title:'การบ้วนปาก', url:'https://youtu.be/AAA...' },
+//               { title:'การตัดลวดฉุกเฉิน', url:'videos/cut-wire.mp4' } ]
+// หน้าไหนไม่มีคลิป ให้ปล่อยเป็น ''  → จะไม่มีกล่องวิดีโอและปุ่ม 🎬 ในหน้านั้น
 // ══════════════════════════════════════════════════════
 const PAGE_VIDEO = [
   /* 0  ปก        */ '',
@@ -2428,32 +2425,92 @@ const PAGE_VIDEO = [
   /* 11 ปิดท้าย   */ '',
 ];
 
-function _vidEmbed(src) {
-  src = String(src || '').trim();
-  if (!src) return '';
-  if (/\.(mp4|webm|m4v)(\?|$)/i.test(src)) {
-    return '<video src="' + esc(src) + '" controls playsinline preload="metadata"></video>';
-  }
-  var m = src.match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/) || src.match(/^([\w-]{11})$/);
-  if (!m) return '';
-  return '<iframe src="https://www.youtube-nocookie.com/embed/' + m[1] + '?rel=0&playsinline=1" title="คลิปวิดีโอ" ' +
-         'allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+function _vidList(i) {
+  var v = PAGE_VIDEO[i];
+  if (!v) return [];
+  if (!Array.isArray(v)) v = [v];
+  return v.map(function (x, n) {
+    if (typeof x === 'string') x = { url: x };
+    return { title: x.title || (v.length > 1 ? 'คลิปที่ ' + (n + 1) : 'คลิปวิดีโอ'), url: String(x.url || '').trim() };
+  }).filter(function (x) { return _vidInfo(x.url); });
+}
+function _vidInfo(url) {
+  if (!url) return null;
+  if (/\.(mp4|webm|m4v)(\?|#|$)/i.test(url)) return { type:'file', src:url };
+  var m = url.match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/|live\/)([\w-]{11})/) || url.match(/^([\w-]{11})$/);
+  return m ? { type:'yt', id:m[1] } : null;
+}
+// กล่องวิดีโอ: แสดงภาพตัวอย่างก่อน กดแล้วจึงโหลดวิดีโอ (ประหยัดเน็ต)
+function _vidCover(v) {
+  var info = _vidInfo(v.url);
+  var bg = info.type === 'yt' ? 'background-image:url(https://i.ytimg.com/vi/' + info.id + '/hqdefault.jpg);' : '';
+  return '<div class="pv-frame" data-url="' + esc(v.url) + '" style="' + bg + '" onclick="pvPlay(this)" role="button" aria-label="เล่นวิดีโอ ' + esc(v.title) + '">' +
+           '<span class="pv-play">▶</span>' +
+         '</div>';
+}
+function _vidBlock(i) {
+  var list = _vidList(i);
+  if (!list.length) return '';
+  var tabs = list.length > 1
+    ? '<div class="pv-tabs">' + list.map(function (v, n) {
+        return '<button class="pv-tab' + (n ? '' : ' on') + '" data-n="' + n + '" onclick="pvTab(this)">' + esc(v.title) + '</button>';
+      }).join('') + '</div>'
+    : '';
+  return '<div class="pv-box" data-pg="' + i + '">' +
+           '<div class="pv-head">🎬 ' + (list.length > 1 ? 'คลิปวิดีโอ (' + list.length + ' คลิป)' : esc(list[0].title)) + '</div>' +
+           tabs + '<div class="pv-holder">' + _vidCover(list[0]) + '</div>' +
+           '<div class="pv-note">แตะเพื่อเล่น · ดูได้ในหน้านี้เลย</div>' +
+         '</div>';
+}
+function pvPlay(el) {
+  var info = _vidInfo(el.getAttribute('data-url'));
+  if (!info) return;
+  if (typeof AU !== 'undefined' && AU && AU.el) AU.el.pause();
+  el.onclick = null;
+  el.style.backgroundImage = '';
+  el.innerHTML = info.type === 'yt'
+    ? '<iframe src="https://www.youtube-nocookie.com/embed/' + info.id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="คลิปวิดีโอ" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'
+    : '<video src="' + esc(info.src) + '" controls autoplay playsinline></video>';
+}
+function pvTab(btn) {
+  var box = btn.closest('.pv-box');
+  var list = _vidList(+box.dataset.pg);
+  box.querySelectorAll('.pv-tab').forEach(function (b) { b.classList.toggle('on', b === btn); });
+  box.querySelector('.pv-holder').innerHTML = _vidCover(list[+btn.dataset.n]);
+}
+// ใส่กล่องวิดีโอลงในหน้า (ต่อจากหัวบท ถ้ามี)
+function injectPageVideo(idx, el) {
+  var html = _vidBlock(idx);
+  if (!html) return;
+  var inner = el.querySelector('.page-inner') || el;
+  var band = inner.querySelector('.sec-band');
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  var box = tmp.firstChild;
+  if (band && band.parentNode) band.parentNode.insertBefore(box, band.nextSibling);
+  else inner.insertBefore(box, inner.firstChild);
+}
+// หยุดวิดีโอในหน้าที่พลิกผ่านไปแล้ว
+function stopHiddenVideos() {
+  document.querySelectorAll('.page:not(.front) .pv-holder').forEach(function (h) {
+    if (!h.querySelector('iframe,video')) return;
+    var box = h.closest('.pv-box');
+    var on = box.querySelector('.pv-tab.on');
+    h.innerHTML = _vidCover(_vidList(+box.dataset.pg)[on ? +on.dataset.n : 0]);
+  });
 }
 function vidOnPageChange() {
+  stopHiddenVideos();
   var b = document.getElementById('vidBtn');
-  if (b) b.classList.toggle('has-video', !!_vidEmbed(PAGE_VIDEO[cur]));
+  if (b) b.classList.toggle('has-video', _vidList(cur).length > 0);
 }
+// ปุ่ม 🎬 ที่แถบล่าง → เลื่อนไปที่กล่องวิดีโอแล้วเล่น
 function openVideo() {
-  var html = _vidEmbed(PAGE_VIDEO[cur]);
-  if (!html) return;
-  if (typeof AU !== 'undefined' && AU && AU.el) AU.el.pause();
-  document.getElementById('vid-frame').innerHTML = html;
-  document.getElementById('vid-title').textContent = '🎬 คลิปวิดีโอ — ' + _auPageName(cur);
-  document.getElementById('vid-modal').classList.add('show');
-}
-function closeVideo() {
-  document.getElementById('vid-modal').classList.remove('show');
-  document.getElementById('vid-frame').innerHTML = '';   // หยุดเล่นวิดีโอ
+  var box = document.querySelector('.page.front .pv-box');
+  if (!box) return;
+  box.scrollIntoView({ behavior:'smooth', block:'center' });
+  var f = box.querySelector('.pv-frame[data-url]');
+  if (f && !f.querySelector('iframe,video')) setTimeout(function () { pvPlay(f); }, 350);
 }
 
 // ══════════════════════════════════════════════════════
