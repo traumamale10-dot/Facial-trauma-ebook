@@ -621,6 +621,19 @@ body.has-member-bar .au-panel { bottom: 78px; }
 .pv-frame iframe, .pv-frame video { position:absolute; inset:0; width:100%; height:100%; border:0; background:#000; object-fit:contain; }
 .pv-frame.portrait { max-height:62vh; max-height:62dvh; margin:0 auto; width:auto; }
 .pv-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:64px; height:64px; border-radius:50%; background:rgba(201,162,39,0.95); color:#1a2744; font-size:26px; display:flex; align-items:center; justify-content:center; padding-left:4px; box-shadow:0 4px 18px rgba(0,0,0,0.5); }
+#pv-overlay { position:fixed; inset:0; z-index:3000; background:#000; display:none; flex-direction:column;
+  height:100vh; height:100dvh; padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+#pv-overlay.show { display:flex; }
+.pvo-bar { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; background:#0c1224; flex-shrink:0; }
+.pvo-title { color:var(--gold-light); font-family:'Sarabun',sans-serif; font-size:16px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pvo-close { flex-shrink:0; padding:9px 16px; border-radius:20px; border:none; background:var(--gold-light); color:#1a2744; font-family:'Sarabun',sans-serif; font-size:16px; font-weight:800; cursor:pointer; }
+.pvo-stage { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; }
+.pvo-frame { position:relative; width:100%; max-height:100%; aspect-ratio:16/9; background:#000; }
+.pvo-frame.portrait { width:auto; height:100%; }
+.pvo-frame iframe, .pvo-frame video { position:absolute; inset:0; width:100%; height:100%; border:0; background:#000; object-fit:contain; }
+.pvo-hint { color:rgba(255,255,255,0.55); font-family:'Sarabun',sans-serif; font-size:13px; text-align:center; padding:8px; flex-shrink:0; }
+@media (orientation: landscape) { .pvo-hint { display:none; } .pvo-bar { padding:6px 12px; } .pvo-frame { height:100%; width:auto; max-width:100%; } }
+body.pv-max-open { overflow:hidden; }
 .pv-note { color:rgba(253,246,227,0.7); font-size:13px; text-align:center; margin-top:6px; font-family:'Sarabun',sans-serif; }
 
 /* ===== SCROLL HINT ===== */
@@ -1352,6 +1365,13 @@ body.has-member-bar .nav-bar   { bottom:16px; }
 
 <!-- ปุ่มเลื่อนลงอ่านต่อ -->
 <button id="scrollHint" onclick="scrollHintClick()" aria-label="เลื่อนลงอ่านต่อ">⌄ เลื่อนลงอ่านต่อ</button>
+
+<!-- วิดีโอเต็มหน้าจอ -->
+<div id="pv-overlay" role="dialog" aria-label="วิดีโอเต็มจอ">
+  <div class="pvo-bar"><span class="pvo-title">🎬 คลิปวิดีโอ</span><button class="pvo-close" onclick="pvCloseMax()">✕ ปิด</button></div>
+  <div class="pvo-stage"><div class="pvo-frame"></div></div>
+  <div class="pvo-hint">💡 หมุนโทรศัพท์เป็นแนวนอน เพื่อดูภาพใหญ่ขึ้น</div>
+</div>
 
 <!-- การฟื้นตัวของฉัน -->
 <div id="rec-modal" class="big-modal">
@@ -2150,7 +2170,7 @@ function _uiBlocked(target) {
   if (!document.body.classList.contains('ebook-ready')) return true;
   var po = document.getElementById('portal-overlay');
   if (po && !po.classList.contains('hidden')) return true;
-  if (document.querySelector('#record-modal.show, #admin-modal.show, #rec-modal.show, #rf-modal.show')) return true;
+  if (document.querySelector('#record-modal.show, #admin-modal.show, #rec-modal.show, #rf-modal.show, #pv-overlay.show')) return true;
   var ids = ['mydata-modal','symptom-modal'];
   for (var i = 0; i < ids.length; i++) {
     var m = document.getElementById(ids[i]);
@@ -2475,42 +2495,77 @@ function _vidBlock(i) {
            '<button class="pv-fs" onclick="pvFull(this)">⛶ ดูแบบเต็มจอ</button>' +
          '</div>';
 }
+function _pvPlayerHTML(info) {
+  if (info.type === 'yt')
+    return '<iframe src="https://www.youtube-nocookie.com/embed/' + info.id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="คลิปวิดีโอ" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+  if (info.type === 'gd')
+    return '<video src="https://drive.google.com/uc?export=download&id=' + info.id + '" controls autoplay playsinline preload="metadata" ' +
+           'onloadedmetadata="pvFit(this)" onerror="pvDriveFallback(this,\'' + info.id + '\')"></video>';
+  return '<video src="' + esc(info.src) + '" controls autoplay playsinline onloadedmetadata="pvFit(this)"></video>';
+}
+// มือถือ / จอเล็ก → เปิดเล่นเต็มหน้าจอเสมอ
+function _pvIsSmall() { return window.matchMedia('(max-width: 760px), (pointer: coarse) and (max-width: 1024px)').matches; }
+
 function pvPlay(el) {
-  var info = _vidInfo(el.getAttribute('data-url'));
+  var url = el.getAttribute('data-url');
+  var info = _vidInfo(url);
   if (!info) return;
   if (typeof AU !== 'undefined' && AU && AU.el) AU.el.pause();
+  if (_pvIsSmall()) { pvOpenMax(url, el.closest('.pv-box')); return; }
   el.onclick = null;
   el.style.backgroundImage = '';
   var box = el.closest('.pv-box'); if (box) box.classList.add('playing');
-  el.innerHTML = info.type === 'yt'
-    ? '<iframe src="https://www.youtube-nocookie.com/embed/' + info.id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="คลิปวิดีโอ" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'
-    : info.type === 'gd'
-    ? '<video src="https://drive.google.com/uc?export=download&id=' + info.id + '" controls autoplay playsinline preload="metadata" ' +
-        'onloadedmetadata="pvFit(this)" onerror="pvDriveFallback(this,\'' + info.id + '\')"></video>'
-    : '<video src="' + esc(info.src) + '" controls autoplay playsinline onloadedmetadata="pvFit(this)"></video>';
+  el.innerHTML = _pvPlayerHTML(info);
+}
+
+// ── โหมดเต็มหน้าจอ (ทำเอง ใช้ได้ทั้ง iPhone และ Android) ──
+function pvOpenMax(url, box) {
+  var info = _vidInfo(url);
+  if (!info) return;
+  var title = '🎬 คลิปวิดีโอ';
+  if (box) {
+    var on = box.querySelector('.pv-tab.on');
+    var head = box.querySelector('.pv-head');
+    title = '🎬 ' + (on ? on.textContent : (head ? head.textContent.replace('🎬', '').trim() : 'คลิปวิดีโอ'));
+  }
+  var ov = document.getElementById('pv-overlay');
+  ov.querySelector('.pvo-title').textContent = title;
+  var f = ov.querySelector('.pvo-frame');
+  f.style.aspectRatio = '';
+  f.classList.remove('portrait');
+  f.innerHTML = _pvPlayerHTML(info);
+  ov.classList.add('show');
+  document.body.classList.add('pv-max-open');
+}
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('pv-max-open')) pvCloseMax(); });
+function pvCloseMax() {
+  var ov = document.getElementById('pv-overlay');
+  ov.classList.remove('show');
+  ov.querySelector('.pvo-frame').innerHTML = '';   // หยุดวิดีโอ
+  document.body.classList.remove('pv-max-open');
 }
 // ปรับกรอบให้ตรงกับสัดส่วนคลิปจริง (คลิปแนวตั้งจะได้ไม่ตัว/ไม่มีขอบดำเยอะ)
 function pvFit(v) {
   if (!v.videoWidth || !v.videoHeight) return;
-  var f = v.closest('.pv-frame');
+  var f = v.closest('.pv-frame, .pvo-frame');
   f.style.aspectRatio = v.videoWidth + ' / ' + v.videoHeight;
   if (v.videoHeight > v.videoWidth) f.classList.add('portrait');
 }
 // ถ้าเล่นไฟล์จาก Drive ตรง ๆ ไม่ได้ (เช่น ไฟล์ใหญ่มาก) → ใช้ตัวเล่นของ Drive แทน
 function pvDriveFallback(v, id) {
-  var f = v.closest('.pv-frame');
+  var f = v.closest('.pv-frame, .pvo-frame');
   if (!f) return;
   f.innerHTML = '<iframe src="https://drive.google.com/file/d/' + id + '/preview" title="คลิปวิดีโอ" allow="autoplay; fullscreen" allowfullscreen></iframe>';
 }
 function pvFull(btn) {
-  var f = btn.closest('.pv-box').querySelector('.pv-frame');
-  var v = f && f.querySelector('video');
-  var t = v || f;
-  try {
-    if (t.requestFullscreen) t.requestFullscreen();
-    else if (t.webkitRequestFullscreen) t.webkitRequestFullscreen();
-    else if (v && v.webkitEnterFullscreen) v.webkitEnterFullscreen();
-  } catch (e) {}
+  var box = btn.closest('.pv-box');
+  var f = box.querySelector('.pv-frame');
+  var url = f.getAttribute('data-url');
+  // หยุดตัวที่เล่นอยู่ในหน้า แล้วเปิดเต็มจอ
+  var on = box.querySelector('.pv-tab.on');
+  box.classList.remove('playing');
+  box.querySelector('.pv-holder').innerHTML = _vidCover(_vidList(+box.dataset.pg)[on ? +on.dataset.n : 0]);
+  pvOpenMax(url, box);
 }
 function pvTab(btn) {
   var box = btn.closest('.pv-box');
@@ -2543,6 +2598,7 @@ function stopHiddenVideos() {
 }
 function vidOnPageChange() {
   stopHiddenVideos();
+  if (document.body.classList.contains('pv-max-open')) pvCloseMax();
   var b = document.getElementById('vidBtn');
   if (b) b.classList.toggle('has-video', _vidList(cur).length > 0);
 }
@@ -2552,6 +2608,7 @@ function openVideo() {
   if (!box) return;
   box.scrollIntoView({ behavior:'smooth', block:'center' });
   var f = box.querySelector('.pv-frame[data-url]');
+  if (_pvIsSmall()) { if (f) pvPlay(f); return; }
   if (f && !f.querySelector('iframe,video')) setTimeout(function () { pvPlay(f); }, 350);
 }
 
