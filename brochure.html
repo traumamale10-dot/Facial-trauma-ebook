@@ -119,6 +119,14 @@ table.t tr:nth-child(even) td { background:#faf6ea; }
   .sheet-wrap:last-child .sheet { page-break-after:auto; break-after:auto; }
 }
 </style>
+<script>
+// รูปภาพ: ลองโฟลเดอร์ images/ ก่อน แล้วค่อยใช้ลิงก์สำรอง
+function imgFallback(el) {
+  var fb = el.getAttribute('data-fb');
+  if (fb) { el.removeAttribute('data-fb'); el.src = fb; return; }
+  el.style.display = 'none';
+}
+</script>
 </head>
 <body>
 
@@ -310,12 +318,6 @@ window.addEventListener('beforeprint', function () {
 });
 window.addEventListener('afterprint', fitSheets);
 fitSheets();
-// รูปภาพ: ลองโฟลเดอร์ images/ ก่อน แล้วค่อยใช้ลิงก์สำรอง
-function imgFallback(el) {
-  var fb = el.getAttribute('data-fb');
-  if (fb) { el.removeAttribute('data-fb'); el.src = fb; return; }
-  el.style.display = 'none';
-}
 </script>
 </body>
 </html>
