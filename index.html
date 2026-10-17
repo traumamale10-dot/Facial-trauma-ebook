@@ -567,56 +567,43 @@ body {
   min-width: 62px; text-align: center; letter-spacing: 0.04em;
 }
 
-/* ===== AUDIO (เสียงบรรยายที่บันทึกเอง) ===== */
-.au-fab {
-  position: fixed; right: 16px; bottom: 84px; z-index: 999;
-  display: none; align-items: center; gap: 8px;
-  padding: 0 18px 0 14px; height: 52px; border-radius: 26px;
-  border: 2px solid var(--gold-light);
-  background: linear-gradient(135deg, #c9a227, #e8c766);
-  color: #1a2744; font-family: 'Sarabun', sans-serif; font-size: 16px; font-weight: 800;
-  box-shadow: 0 6px 22px rgba(0,0,0,0.45); cursor: pointer;
-  animation: auPulse 2.4s ease-in-out infinite;
-}
-.au-fab .au-ic { font-size: 22px; line-height: 1; }
-body.ebook-ready .au-fab.has-audio { display: flex; }
-body.ebook-ready .au-fab.has-audio.playing-ui { display: none; }
-@keyframes auPulse { 0%,100% { box-shadow: 0 6px 22px rgba(0,0,0,0.45), 0 0 0 0 rgba(232,199,102,0.55); }
-                     50%     { box-shadow: 0 6px 22px rgba(0,0,0,0.45), 0 0 0 10px rgba(232,199,102,0); } }
+/* ===== AUDIO (เสียงบรรยายที่บันทึกเอง) — แถบเล็ก ไม่บังเนื้อหา ===== */
+.nav-btn.au-btn { display:none; border-color: var(--gold-light); background: rgba(201,162,39,0.22); font-size: 16px; }
+.nav-btn.au-btn.has-audio { display:flex; animation: auPulse 2.4s ease-in-out infinite; }
+.nav-btn.au-btn.active { animation:none; background: var(--gold-light); color:#1a2744; }
+@keyframes auPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(232,199,102,0.55); } 50% { box-shadow: 0 0 0 7px rgba(232,199,102,0); } }
 
 .au-panel {
-  position: fixed; left: 50%; bottom: 80px; transform: translateX(-50%);
-  width: min(440px, calc(100vw - 24px)); z-index: 999;
-  display: none; flex-direction: column; gap: 8px;
-  background: rgba(12,18,36,0.96); backdrop-filter: blur(14px);
-  border: 1.5px solid var(--gold); border-radius: 18px;
-  padding: 10px 14px 12px; box-shadow: 0 8px 36px rgba(0,0,0,0.55);
+  position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%);
+  width: min(400px, calc(100vw - 20px)); height: 44px; z-index: 999;
+  display: none; align-items: center; gap: 8px;
+  background: rgba(12,18,36,0.95); backdrop-filter: blur(14px);
+  border: 1px solid rgba(201,162,39,0.45); border-radius: 22px;
+  padding: 0 6px 0 5px; box-shadow: 0 6px 24px rgba(0,0,0,0.5);
   font-family: 'Sarabun', sans-serif; color: var(--cream);
 }
 body.ebook-ready .au-panel.show { display: flex; }
-.au-row { display: flex; align-items: center; gap: 10px; }
 .au-play {
-  width: 54px; height: 54px; flex-shrink: 0; border-radius: 50%; border: none;
+  width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; border: none;
   background: linear-gradient(135deg, #c9a227, #e8c766); color: #1a2744;
-  font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
-.au-mid { flex: 1; min-width: 0; }
-.au-title { font-size: 13px; font-weight: 700; color: var(--gold-light); margin-bottom: 6px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.au-seek { width: 100%; height: 28px; accent-color: #e8c766; cursor: pointer; margin: 0; }
-.au-time { font-size: 12px; color: rgba(253,246,227,0.7); display: flex; justify-content: space-between; }
-.au-close { width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; border: 1px solid rgba(201,162,39,0.35);
-            background: transparent; color: var(--cream); font-size: 16px; cursor: pointer; align-self: flex-start; }
-.au-opts { display: flex; gap: 6px; flex-wrap: wrap; }
-.au-opt {
-  flex: 1; min-width: 0; padding: 8px 6px; border-radius: 10px;
-  border: 1px solid rgba(201,162,39,0.35); background: rgba(255,255,255,0.05);
-  color: var(--cream); font-family: 'Sarabun', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;
+.au-seek { flex: 1; min-width: 40px; height: 24px; accent-color: #e8c766; cursor: pointer; margin: 0; }
+.au-time { font-size: 11px; color: rgba(253,246,227,0.75); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.au-sm {
+  height: 28px; min-width: 28px; padding: 0 7px; flex-shrink: 0; border-radius: 14px;
+  border: 1px solid rgba(201,162,39,0.35); background: transparent;
+  color: var(--cream); font-family: 'Sarabun', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
 }
-.au-opt.on { background: rgba(201,162,39,0.25); border-color: var(--gold-light); color: var(--gold-light); }
-.au-msg { font-size: 12px; color: #ffb3a7; display: none; }
-body.has-member-bar .au-fab   { bottom: 78px; }
-body.has-member-bar .au-panel { bottom: 74px; }
+.au-sm.on { background: rgba(201,162,39,0.3); border-color: var(--gold-light); color: var(--gold-light); }
+.au-sm.au-x { border: none; font-size: 14px; padding: 0 4px; }
+.au-msg { position: absolute; left: 12px; right: 12px; bottom: 48px; font-size: 11px; text-align: center;
+          background: rgba(120,20,20,0.92); color: #fff; border-radius: 8px; padding: 4px 8px; display: none; }
+/* เมื่อเปิดแถบเสียง: เพิ่มที่ว่างท้ายหน้า เพื่อให้เลื่อนอ่านเนื้อหาได้ครบ ไม่โดนแถบบัง */
+body.au-open .page-inner { padding-bottom: 124px !important; }
+body.has-member-bar .au-panel { bottom: 78px; }
+@media (max-width: 380px) { .au-time { display: none; } .au-panel { bottom: 76px; } }
 
 /* ===== FONT SIZE (A- / A+) ===== */
 :root { --fz: 1; }
@@ -1228,31 +1215,21 @@ body.has-member-bar .nav-bar   { bottom:16px; }
   <span class="nav-info" id="navInfo">ปก</span>
   <button class="nav-btn" id="btnNext" onclick="nextPage()" title="หน้าถัดไป">&#8594;</button>
   <span class="nav-sep"></span>
+  <button class="nav-btn au-btn" id="auFab" onclick="auFabClick()" title="ฟังเสียงอ่านหน้านี้" aria-label="ฟังเสียงอ่านหน้านี้">🔊</button>
   <button class="nav-btn font-btn" id="btnFontDown" onclick="changeFont(-1)" title="ลดขนาดตัวอักษร" aria-label="ลดขนาดตัวอักษร">A<small>−</small></button>
   <button class="nav-btn font-btn" id="btnFontUp" onclick="changeFont(1)" title="เพิ่มขนาดตัวอักษร" aria-label="เพิ่มขนาดตัวอักษร">A<small>+</small></button>
 </div>
 
 
 <!-- เสียงบรรยาย (บันทึกเสียงเอง) -->
-<button class="au-fab" id="auFab" onclick="auOpen()" aria-label="ฟังเสียงอ่านหน้านี้">
-  <span class="au-ic">🔊</span><span>ฟังเสียง</span>
-</button>
 <div class="au-panel" id="auPanel" role="region" aria-label="เครื่องเล่นเสียง">
-  <div class="au-row">
-    <button class="au-play" id="auPlay" onclick="auToggle()" aria-label="เล่น / หยุด">▶</button>
-    <div class="au-mid">
-      <div class="au-title" id="auTitle">เสียงอ่านหน้านี้</div>
-      <input type="range" class="au-seek" id="auSeek" min="0" max="1000" value="0" aria-label="ตำแหน่งเสียง">
-      <div class="au-time"><span id="auCur">0:00</span><span id="auDur">0:00</span></div>
-    </div>
-    <button class="au-close" onclick="auClose()" aria-label="ปิดเครื่องเล่น">✕</button>
-  </div>
+  <button class="au-play" id="auPlay" onclick="auToggle()" aria-label="เล่น / หยุด">▶</button>
+  <input type="range" class="au-seek" id="auSeek" min="0" max="1000" value="0" aria-label="ตำแหน่งเสียง">
+  <span class="au-time"><span id="auCur">0:00</span>/<span id="auDur">0:00</span></span>
+  <button class="au-sm" id="auRate" onclick="auCycleRate()" title="ความเร็วเสียง">1x</button>
+  <button class="au-sm" id="auAuto" onclick="auToggleAuto()" title="อ่านต่อหน้าถัดไปอัตโนมัติ" aria-label="อ่านต่อหน้าถัดไป">🔁</button>
+  <button class="au-sm au-x" onclick="auClose()" aria-label="ปิดเครื่องเล่น">✕</button>
   <div class="au-msg" id="auMsg"></div>
-  <div class="au-opts">
-    <button class="au-opt" onclick="auSkip(-10)">⏪ ย้อน 10 วิ</button>
-    <button class="au-opt" id="auRate" onclick="auCycleRate()">ความเร็ว ปกติ</button>
-    <button class="au-opt" id="auAuto" onclick="auToggleAuto()">🔁 อ่านต่อ: ปิด</button>
-  </div>
 </div>
 <audio id="auEl" preload="none"></audio>
 
@@ -2103,7 +2080,7 @@ const PAGE_AUDIO = [
 ];
 
 var AU = { el: null, page: -1, missing: {}, ok: {}, auto: false, rateIdx: 1, autoNext: false, seeking: false };
-var AU_RATES = [ { v: 0.8, t: 'ช้า' }, { v: 1, t: 'ปกติ' }, { v: 1.2, t: 'เร็ว' } ];
+var AU_RATES = [ { v: 0.8, t: '0.8x' }, { v: 1, t: '1x' }, { v: 1.2, t: '1.2x' } ];
 try {
   AU.auto = localStorage.getItem('ebookAudioAuto') === '1';
   var _ri = parseInt(localStorage.getItem('ebookAudioRate'), 10);
@@ -2141,9 +2118,10 @@ function _auProbe(i, cb) {
 function _auSetUI() {
   var el = AU.el, playing = el && !el.paused && !el.ended;
   document.getElementById('auPlay').textContent = playing ? '⏸' : '▶';
-  document.getElementById('auRate').textContent = 'ความเร็ว ' + AU_RATES[AU.rateIdx].t;
-  document.getElementById('auAuto').classList.toggle('on', AU.auto);
-  document.getElementById('auAuto').textContent = AU.auto ? '🔁 อ่านต่อ: เปิด' : '🔁 อ่านต่อ: ปิด';
+  document.getElementById('auRate').textContent = AU_RATES[AU.rateIdx].t;
+  var ab = document.getElementById('auAuto');
+  ab.classList.toggle('on', AU.auto);
+  ab.title = AU.auto ? 'อ่านต่อหน้าถัดไป: เปิด' : 'อ่านต่อหน้าถัดไป: ปิด';
 }
 function _auMsg(t) {
   var m = document.getElementById('auMsg');
@@ -2161,8 +2139,9 @@ function auOnPageChange() {
   // เปลี่ยนหน้า → หยุดเสียงของหน้าเดิม
   AU.el.pause();
   AU.page = i;
-  fab.classList.remove('has-audio', 'playing-ui');
+  fab.classList.remove('has-audio', 'active');
   panel.classList.remove('show');
+  document.body.classList.remove('au-open');
   _auMsg('');
 
   _auProbe(i, function (ok) {
@@ -2184,9 +2163,9 @@ function auOpen(play) {
     document.getElementById('auDur').textContent = '0:00';
   }
   el.playbackRate = AU_RATES[AU.rateIdx].v;
-  document.getElementById('auTitle').textContent = '🔊 เสียงอ่าน — ' + _auPageName(cur);
-  document.getElementById('auFab').classList.add('playing-ui');
+  document.getElementById('auFab').classList.add('active');
   document.getElementById('auPanel').classList.add('show');
+  document.body.classList.add('au-open');
   _auMsg('');
   if (play !== false) {
     var p = el.play();
@@ -2197,7 +2176,12 @@ function auOpen(play) {
 function auClose() {
   AU.el.pause();
   document.getElementById('auPanel').classList.remove('show');
-  document.getElementById('auFab').classList.remove('playing-ui');
+  document.getElementById('auFab').classList.remove('active');
+  document.body.classList.remove('au-open');
+}
+function auFabClick() {
+  if (document.getElementById('auPanel').classList.contains('show')) auClose();
+  else auOpen();
 }
 function auToggle() {
   var el = AU.el;
@@ -2247,7 +2231,7 @@ function auToggleAuto() {
     var src = el.getAttribute('src');
     if (!src) return;
     AU.missing[src] = true;
-    _auMsg('ไม่สามารถเล่นเสียงของหน้านี้ได้ กรุณาตรวจสอบอินเทอร์เน็ต');
+    _auMsg('เล่นเสียงไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ต');
     _auSetUI();
   });
   seek.addEventListener('input', function () {
