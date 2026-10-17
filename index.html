@@ -609,14 +609,17 @@ body.has-member-bar .au-panel { bottom: 78px; }
 .nav-btn.vid-btn { display:none; border-color:#7fd1d1; background:rgba(42,127,127,0.28); font-size:15px; }
 .nav-btn.vid-btn.has-video { display:flex; }
 .pv-box { margin:4px 0 16px; background:#0f1730; border-radius:14px; padding:10px; box-shadow:0 4px 16px rgba(0,0,0,0.15); }
-.pv-head { color:var(--gold-light); font-family:'Sarabun',sans-serif; font-weight:700; font-size:14px; margin:0 2px 8px; }
+.pv-head { color:var(--gold-light); font-family:'Sarabun',sans-serif; font-weight:700; font-size:16px; margin:0 2px 8px; }
+.pv-fs { display:none; margin:8px auto 0; padding:8px 16px; border-radius:18px; border:1px solid rgba(201,162,39,0.5); background:rgba(201,162,39,0.15); color:var(--gold-light); font-family:'Sarabun',sans-serif; font-size:14px; font-weight:700; cursor:pointer; }
+.pv-box.playing .pv-fs { display:block; }
+.pv-box.playing .pv-note { display:none; }
 .pv-tabs { display:flex; gap:6px; overflow-x:auto; margin-bottom:8px; scrollbar-width:none; }
 .pv-tab { flex-shrink:0; padding:6px 12px; border-radius:14px; border:1px solid rgba(201,162,39,0.4); background:transparent; color:var(--cream); font-family:'Sarabun',sans-serif; font-size:13px; font-weight:600; cursor:pointer; }
 .pv-tab.on { background:var(--gold-light); color:#1a2744; border-color:var(--gold-light); }
 .pv-frame { position:relative; width:100%; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:#000 center/cover no-repeat; cursor:pointer; }
 .pv-frame iframe, .pv-frame video { position:absolute; inset:0; width:100%; height:100%; border:0; background:#000; }
 .pv-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:64px; height:64px; border-radius:50%; background:rgba(201,162,39,0.95); color:#1a2744; font-size:26px; display:flex; align-items:center; justify-content:center; padding-left:4px; box-shadow:0 4px 18px rgba(0,0,0,0.5); }
-.pv-note { color:rgba(253,246,227,0.6); font-size:11.5px; text-align:center; margin-top:6px; font-family:'Sarabun',sans-serif; }
+.pv-note { color:rgba(253,246,227,0.7); font-size:13px; text-align:center; margin-top:6px; font-family:'Sarabun',sans-serif; }
 
 /* ===== SCROLL HINT ===== */
 #scrollHint { position:fixed; left:50%; bottom:84px; transform:translateX(-50%); z-index:998; display:none;
@@ -723,7 +726,9 @@ body.au-open #scrollHint { bottom:136px; }
 
 /* ===== FONT SIZE (A- / A+) ===== */
 :root { --fz: 1; }
-.page-inner > *:not(.sec-band):not(.page-num) { zoom: var(--fz); }
+.page-inner > *:not(.sec-band):not(.page-num):not(.pv-box) { zoom: var(--fz); }
+/* กล่องวิดีโอห้าม zoom — ทำให้ตัวเล่นของ YouTube/Drive บนมือถือเพี้ยน */
+.pv-box, .pv-box * { zoom: 1 !important; }
 .nav-sep { width:1px; height:22px; background:rgba(201,162,39,0.25); margin:0 2px; }
 .nav-btn.font-btn { font-family:'Sarabun',sans-serif; font-size:14px; font-weight:700; }
 .nav-btn.font-btn small { font-size:10px; margin-left:1px; }
@@ -2414,7 +2419,7 @@ function auToggleAuto() {
 const PAGE_VIDEO = [
   /* 0  ปก        */ '',
   /* 1  สารบัญ    */ '',
-  /* 2  หน้า 1    */ 'https://drive.google.com/file/d/1tU2V3BOUWP_6NBzejasIzC7HL2m2L6kr/view?usp=sharing',
+  /* 2  หน้า 1    */ '',
   /* 3  หน้า 2    */ '',
   /* 4  หน้า 3    */ '',
   /* 5  หน้า 4 — หลังผ่าตัดจมูก  */ '',
@@ -2464,6 +2469,7 @@ function _vidBlock(i) {
            '<div class="pv-head">🎬 ' + (list.length > 1 ? 'คลิปวิดีโอ (' + list.length + ' คลิป)' : esc(list[0].title)) + '</div>' +
            tabs + '<div class="pv-holder">' + _vidCover(list[0]) + '</div>' +
            '<div class="pv-note">แตะเพื่อเล่น · ดูได้ในหน้านี้เลย</div>' +
+           '<button class="pv-fs" onclick="pvFull(this)">⛶ ดูแบบเต็มจอ</button>' +
          '</div>';
 }
 function pvPlay(el) {
@@ -2472,14 +2478,26 @@ function pvPlay(el) {
   if (typeof AU !== 'undefined' && AU && AU.el) AU.el.pause();
   el.onclick = null;
   el.style.backgroundImage = '';
+  var box = el.closest('.pv-box'); if (box) box.classList.add('playing');
   el.innerHTML = info.type === 'yt'
     ? '<iframe src="https://www.youtube-nocookie.com/embed/' + info.id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="คลิปวิดีโอ" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'
     : info.type === 'gd'
     ? '<iframe src="https://drive.google.com/file/d/' + info.id + '/preview" title="คลิปวิดีโอ" allow="autoplay; fullscreen" allowfullscreen></iframe>'
     : '<video src="' + esc(info.src) + '" controls autoplay playsinline></video>';
 }
+function pvFull(btn) {
+  var f = btn.closest('.pv-box').querySelector('.pv-frame');
+  var v = f && f.querySelector('video');
+  var t = v || f;
+  try {
+    if (t.requestFullscreen) t.requestFullscreen();
+    else if (t.webkitRequestFullscreen) t.webkitRequestFullscreen();
+    else if (v && v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+  } catch (e) {}
+}
 function pvTab(btn) {
   var box = btn.closest('.pv-box');
+  box.classList.remove('playing');
   var list = _vidList(+box.dataset.pg);
   box.querySelectorAll('.pv-tab').forEach(function (b) { b.classList.toggle('on', b === btn); });
   box.querySelector('.pv-holder').innerHTML = _vidCover(list[+btn.dataset.n]);
@@ -2501,6 +2519,7 @@ function stopHiddenVideos() {
   document.querySelectorAll('.page:not(.front) .pv-holder').forEach(function (h) {
     if (!h.querySelector('iframe,video')) return;
     var box = h.closest('.pv-box');
+    box.classList.remove('playing');
     var on = box.querySelector('.pv-tab.on');
     h.innerHTML = _vidCover(_vidList(+box.dataset.pg)[on ? +on.dataset.n : 0]);
   });
