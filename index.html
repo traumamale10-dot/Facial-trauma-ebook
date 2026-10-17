@@ -636,6 +636,10 @@ body.has-member-bar .au-panel { bottom: 78px; }
 body.pv-max-open { overflow:hidden; }
 .pv-note { color:rgba(253,246,227,0.7); font-size:13px; text-align:center; margin-top:6px; font-family:'Sarabun',sans-serif; }
 
+.brochure-btn { display:inline-flex; flex-direction:column; align-items:center; gap:2px; margin:4px auto 22px; padding:12px 22px; border-radius:14px;
+  background:linear-gradient(135deg,#c9a227,#e8c766); color:#1a2744; font-family:'Sarabun',sans-serif; font-size:16px; font-weight:800; text-decoration:none;
+  box-shadow:0 6px 20px rgba(0,0,0,0.35); }
+.brochure-btn small { font-size:11.5px; font-weight:600; opacity:0.8; }
 /* ===== SCROLL HINT ===== */
 #scrollHint { position:fixed; left:50%; bottom:84px; transform:translateX(-50%); z-index:998; display:none;
   padding:6px 14px; border-radius:16px; border:1px solid rgba(42,127,127,0.35);
@@ -2058,6 +2062,7 @@ function getPages() {
         <div style="font-size:44px;margin-bottom:16px;">🏥</div>
         <p style="font-family:'Noto Serif Thai',serif;font-size:16px;font-weight:700;color:var(--cream);margin-bottom:8px;">หากมีข้อสงสัย</p>
         <p style="font-size:12px;color:rgba(253,246,227,0.6);line-height:1.85;max-width:240px;margin:0 auto 20px;">กรุณาติดต่อทีมพยาบาลผู้ดูแล<br>หรือโทรศัพท์มายังหน่วยงานที่รับผิดชอบการรักษาของท่าน</p>
+        <a href="brochure.html" target="_blank" rel="noopener" class="brochure-btn">📄 ดาวน์โหลดแผ่นพับ<small>สำหรับพิมพ์แจกผู้ที่ไม่มีโทรศัพท์</small></a>
         <p style="margin-top:8px;font-size:10px;color:rgba(201,162,39,0.55);letter-spacing:0.1em;text-transform:uppercase;">Facial Trauma Nursing Care<br>E-Book for Patients &amp; Families</p>
       </div>
     </div>`,
