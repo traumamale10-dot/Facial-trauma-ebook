@@ -567,6 +567,57 @@ body {
   min-width: 62px; text-align: center; letter-spacing: 0.04em;
 }
 
+/* ===== AUDIO (เสียงบรรยายที่บันทึกเอง) ===== */
+.au-fab {
+  position: fixed; right: 16px; bottom: 84px; z-index: 999;
+  display: none; align-items: center; gap: 8px;
+  padding: 0 18px 0 14px; height: 52px; border-radius: 26px;
+  border: 2px solid var(--gold-light);
+  background: linear-gradient(135deg, #c9a227, #e8c766);
+  color: #1a2744; font-family: 'Sarabun', sans-serif; font-size: 16px; font-weight: 800;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.45); cursor: pointer;
+  animation: auPulse 2.4s ease-in-out infinite;
+}
+.au-fab .au-ic { font-size: 22px; line-height: 1; }
+body.ebook-ready .au-fab.has-audio { display: flex; }
+body.ebook-ready .au-fab.has-audio.playing-ui { display: none; }
+@keyframes auPulse { 0%,100% { box-shadow: 0 6px 22px rgba(0,0,0,0.45), 0 0 0 0 rgba(232,199,102,0.55); }
+                     50%     { box-shadow: 0 6px 22px rgba(0,0,0,0.45), 0 0 0 10px rgba(232,199,102,0); } }
+
+.au-panel {
+  position: fixed; left: 50%; bottom: 80px; transform: translateX(-50%);
+  width: min(440px, calc(100vw - 24px)); z-index: 999;
+  display: none; flex-direction: column; gap: 8px;
+  background: rgba(12,18,36,0.96); backdrop-filter: blur(14px);
+  border: 1.5px solid var(--gold); border-radius: 18px;
+  padding: 10px 14px 12px; box-shadow: 0 8px 36px rgba(0,0,0,0.55);
+  font-family: 'Sarabun', sans-serif; color: var(--cream);
+}
+body.ebook-ready .au-panel.show { display: flex; }
+.au-row { display: flex; align-items: center; gap: 10px; }
+.au-play {
+  width: 54px; height: 54px; flex-shrink: 0; border-radius: 50%; border: none;
+  background: linear-gradient(135deg, #c9a227, #e8c766); color: #1a2744;
+  font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.au-mid { flex: 1; min-width: 0; }
+.au-title { font-size: 13px; font-weight: 700; color: var(--gold-light); margin-bottom: 6px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.au-seek { width: 100%; height: 28px; accent-color: #e8c766; cursor: pointer; margin: 0; }
+.au-time { font-size: 12px; color: rgba(253,246,227,0.7); display: flex; justify-content: space-between; }
+.au-close { width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; border: 1px solid rgba(201,162,39,0.35);
+            background: transparent; color: var(--cream); font-size: 16px; cursor: pointer; align-self: flex-start; }
+.au-opts { display: flex; gap: 6px; flex-wrap: wrap; }
+.au-opt {
+  flex: 1; min-width: 0; padding: 8px 6px; border-radius: 10px;
+  border: 1px solid rgba(201,162,39,0.35); background: rgba(255,255,255,0.05);
+  color: var(--cream); font-family: 'Sarabun', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.au-opt.on { background: rgba(201,162,39,0.25); border-color: var(--gold-light); color: var(--gold-light); }
+.au-msg { font-size: 12px; color: #ffb3a7; display: none; }
+body.has-member-bar .au-fab   { bottom: 78px; }
+body.has-member-bar .au-panel { bottom: 74px; }
+
 /* ===== FONT SIZE (A- / A+) ===== */
 :root { --fz: 1; }
 .page-inner > *:not(.sec-band):not(.page-num) { zoom: var(--fz); }
@@ -1180,6 +1231,30 @@ body.has-member-bar .nav-bar   { bottom:16px; }
   <button class="nav-btn font-btn" id="btnFontDown" onclick="changeFont(-1)" title="ลดขนาดตัวอักษร" aria-label="ลดขนาดตัวอักษร">A<small>−</small></button>
   <button class="nav-btn font-btn" id="btnFontUp" onclick="changeFont(1)" title="เพิ่มขนาดตัวอักษร" aria-label="เพิ่มขนาดตัวอักษร">A<small>+</small></button>
 </div>
+
+
+<!-- เสียงบรรยาย (บันทึกเสียงเอง) -->
+<button class="au-fab" id="auFab" onclick="auOpen()" aria-label="ฟังเสียงอ่านหน้านี้">
+  <span class="au-ic">🔊</span><span>ฟังเสียง</span>
+</button>
+<div class="au-panel" id="auPanel" role="region" aria-label="เครื่องเล่นเสียง">
+  <div class="au-row">
+    <button class="au-play" id="auPlay" onclick="auToggle()" aria-label="เล่น / หยุด">▶</button>
+    <div class="au-mid">
+      <div class="au-title" id="auTitle">เสียงอ่านหน้านี้</div>
+      <input type="range" class="au-seek" id="auSeek" min="0" max="1000" value="0" aria-label="ตำแหน่งเสียง">
+      <div class="au-time"><span id="auCur">0:00</span><span id="auDur">0:00</span></div>
+    </div>
+    <button class="au-close" onclick="auClose()" aria-label="ปิดเครื่องเล่น">✕</button>
+  </div>
+  <div class="au-msg" id="auMsg"></div>
+  <div class="au-opts">
+    <button class="au-opt" onclick="auSkip(-10)">⏪ ย้อน 10 วิ</button>
+    <button class="au-opt" id="auRate" onclick="auCycleRate()">ความเร็ว ปกติ</button>
+    <button class="au-opt" id="auAuto" onclick="auToggleAuto()">🔁 อ่านต่อ: ปิด</button>
+  </div>
+</div>
+<audio id="auEl" preload="none"></audio>
 
 <script>
 // ══════════════════════════════════════════════════════
@@ -1853,6 +1928,7 @@ function updateNav() {
   const lbl = LABELS[cur] !== undefined ? LABELS[cur] : `${cur}`;
   document.getElementById('navInfo').textContent =
     cur === 0 ? 'ปก' : cur === pages.length - 1 ? 'ปิดท้าย' : `หน้า ${lbl}`;
+  if (typeof auOnPageChange === 'function') auOnPageChange();
 }
 
 const A = document.getElementById('pageA');
@@ -2000,6 +2076,190 @@ function changeFont(d) {
   applyFont();
 }
 applyFont();
+
+
+// ══════════════════════════════════════════════════════
+// เสียงบรรยายประจำหน้า (ไฟล์เสียงที่บันทึกเอง — ไม่ใช่เสียง AI)
+// ──────────────────────────────────────────────────────
+// วิธีใส่เสียง: อัดเสียงเป็นไฟล์ .mp3 (หรือ .m4a) แล้วอัปโหลดไว้ในโฟลเดอร์ "audio"
+// ใน GitHub repo เดียวกับไฟล์ HTML นี้ แล้วใส่ชื่อไฟล์ในตารางด้านล่างให้ตรงกับหน้า
+//   • ใส่เป็นชื่อไฟล์ เช่น 'audio/page-03.mp3'  หรือ URL เต็ม https://...
+//   • หน้าไหนไม่มีเสียง ให้ปล่อยเป็น ''  → ปุ่ม "ฟังเสียง" จะไม่แสดงในหน้านั้น
+//   • ถ้าไฟล์หาไม่เจอ ปุ่มจะซ่อนตัวเองอัตโนมัติ
+// ══════════════════════════════════════════════════════
+const PAGE_AUDIO = [
+  /* 0  ปก        */ 'audio/page-00.mp3',
+  /* 1  สารบัญ    */ 'audio/page-01.mp3',
+  /* 2  หน้า 1    */ 'audio/page-02.mp3',
+  /* 3  หน้า 2    */ 'audio/page-03.mp3',
+  /* 4  หน้า 3    */ 'audio/page-04.mp3',
+  /* 5  หน้า 4    */ 'audio/page-05.mp3',
+  /* 6  หน้า 5    */ 'audio/page-06.mp3',
+  /* 7  หน้า 6    */ 'audio/page-07.mp3',
+  /* 8  หน้า 7    */ 'audio/page-08.mp3',
+  /* 9  หน้า 8    */ 'audio/page-09.mp3',
+  /* 10 ★ Interactive */ 'audio/page-10.mp3',
+  /* 11 ปิดท้าย   */ 'audio/page-11.mp3',
+];
+
+var AU = { el: null, page: -1, missing: {}, ok: {}, auto: false, rateIdx: 1, autoNext: false, seeking: false };
+var AU_RATES = [ { v: 0.8, t: 'ช้า' }, { v: 1, t: 'ปกติ' }, { v: 1.2, t: 'เร็ว' } ];
+try {
+  AU.auto = localStorage.getItem('ebookAudioAuto') === '1';
+  var _ri = parseInt(localStorage.getItem('ebookAudioRate'), 10);
+  if (_ri >= 0 && _ri < AU_RATES.length) AU.rateIdx = _ri;
+} catch (e) {}
+
+function _auFmt(t) {
+  if (!isFinite(t) || t < 0) t = 0;
+  var m = Math.floor(t / 60), s = Math.floor(t % 60);
+  return m + ':' + (s < 10 ? '0' : '') + s;
+}
+function _auSrc(i) { return (PAGE_AUDIO[i] || '').trim(); }
+function _auPageName(i) {
+  if (i === 0) return 'ปก';
+  if (pages && i === pages.length - 1) return 'ปิดท้าย';
+  var l = LABELS[i];
+  return l === '★' ? 'หน้ากิจกรรม' : (l === 'สารบัญ' ? 'สารบัญ' : 'หน้า ' + l);
+}
+
+// ตรวจว่าไฟล์เสียงของหน้านั้นมีอยู่จริง (โหลดเฉพาะข้อมูลหัวไฟล์ ไม่โหลดทั้งไฟล์)
+function _auProbe(i, cb) {
+  var src = _auSrc(i);
+  if (!src || AU.missing[src]) return cb(false);
+  if (AU.ok[src]) return cb(true);
+  var a = new Audio();
+  a.preload = 'metadata';
+  var done = false;
+  var fin = function (ok) { if (done) return; done = true; (ok ? AU.ok : AU.missing)[src] = true; a.removeAttribute('src'); cb(ok); };
+  a.addEventListener('loadedmetadata', function () { fin(true); });
+  a.addEventListener('error', function () { fin(false); });
+  setTimeout(function () { fin(true); }, 6000); // เน็ตช้า: แสดงปุ่มไว้ก่อน
+  a.src = src;
+}
+
+function _auSetUI() {
+  var el = AU.el, playing = el && !el.paused && !el.ended;
+  document.getElementById('auPlay').textContent = playing ? '⏸' : '▶';
+  document.getElementById('auRate').textContent = 'ความเร็ว ' + AU_RATES[AU.rateIdx].t;
+  document.getElementById('auAuto').classList.toggle('on', AU.auto);
+  document.getElementById('auAuto').textContent = AU.auto ? '🔁 อ่านต่อ: เปิด' : '🔁 อ่านต่อ: ปิด';
+}
+function _auMsg(t) {
+  var m = document.getElementById('auMsg');
+  m.textContent = t || '';
+  m.style.display = t ? 'block' : 'none';
+}
+
+// เรียกทุกครั้งที่เปลี่ยนหน้า (จาก updateNav)
+function auOnPageChange() {
+  if (!AU || !AU.el) return;
+  var i = cur, fab = document.getElementById('auFab'), panel = document.getElementById('auPanel');
+  var wasOpen = panel.classList.contains('show');
+  var continueAuto = AU.autoNext; AU.autoNext = false;
+
+  // เปลี่ยนหน้า → หยุดเสียงของหน้าเดิม
+  AU.el.pause();
+  AU.page = i;
+  fab.classList.remove('has-audio', 'playing-ui');
+  panel.classList.remove('show');
+  _auMsg('');
+
+  _auProbe(i, function (ok) {
+    if (cur !== i) return;
+    if (!ok) return;
+    fab.classList.add('has-audio');
+    if (continueAuto || (wasOpen && AU.auto)) auOpen(true);
+  });
+}
+
+function auOpen(play) {
+  var src = _auSrc(cur);
+  if (!src) return;
+  var el = AU.el;
+  if (el.getAttribute('src') !== src) {
+    el.src = src;
+    document.getElementById('auSeek').value = 0;
+    document.getElementById('auCur').textContent = '0:00';
+    document.getElementById('auDur').textContent = '0:00';
+  }
+  el.playbackRate = AU_RATES[AU.rateIdx].v;
+  document.getElementById('auTitle').textContent = '🔊 เสียงอ่าน — ' + _auPageName(cur);
+  document.getElementById('auFab').classList.add('playing-ui');
+  document.getElementById('auPanel').classList.add('show');
+  _auMsg('');
+  if (play !== false) {
+    var p = el.play();
+    if (p && p.catch) p.catch(function () { _auSetUI(); }); // เบราว์เซอร์บล็อกเล่นอัตโนมัติ → รอผู้ใช้กด ▶
+  }
+  _auSetUI();
+}
+function auClose() {
+  AU.el.pause();
+  document.getElementById('auPanel').classList.remove('show');
+  document.getElementById('auFab').classList.remove('playing-ui');
+}
+function auToggle() {
+  var el = AU.el;
+  if (el.paused || el.ended) { if (el.ended) el.currentTime = 0; el.play().catch(function(){}); }
+  else el.pause();
+}
+function auSkip(sec) {
+  var el = AU.el;
+  if (!isFinite(el.duration)) return;
+  el.currentTime = Math.max(0, Math.min(el.duration, el.currentTime + sec));
+}
+function auCycleRate() {
+  AU.rateIdx = (AU.rateIdx + 1) % AU_RATES.length;
+  AU.el.playbackRate = AU_RATES[AU.rateIdx].v;
+  try { localStorage.setItem('ebookAudioRate', String(AU.rateIdx)); } catch (e) {}
+  _auSetUI();
+}
+function auToggleAuto() {
+  AU.auto = !AU.auto;
+  try { localStorage.setItem('ebookAudioAuto', AU.auto ? '1' : '0'); } catch (e) {}
+  _auSetUI();
+}
+
+(function auInit() {
+  var el = AU.el = document.getElementById('auEl');
+  el.preservesPitch = true;
+  var seek = document.getElementById('auSeek');
+  el.addEventListener('play', _auSetUI);
+  el.addEventListener('pause', _auSetUI);
+  el.addEventListener('loadedmetadata', function () {
+    document.getElementById('auDur').textContent = _auFmt(el.duration);
+    el.playbackRate = AU_RATES[AU.rateIdx].v;
+  });
+  el.addEventListener('timeupdate', function () {
+    if (AU.seeking || !isFinite(el.duration) || !el.duration) return;
+    seek.value = Math.round(el.currentTime / el.duration * 1000);
+    document.getElementById('auCur').textContent = _auFmt(el.currentTime);
+  });
+  el.addEventListener('ended', function () {
+    _auSetUI();
+    if (AU.auto && pages && cur < pages.length - 1) {
+      AU.autoNext = true;
+      setTimeout(function () { nextPage(); }, 700);
+    }
+  });
+  el.addEventListener('error', function () {
+    var src = el.getAttribute('src');
+    if (!src) return;
+    AU.missing[src] = true;
+    _auMsg('ไม่สามารถเล่นเสียงของหน้านี้ได้ กรุณาตรวจสอบอินเทอร์เน็ต');
+    _auSetUI();
+  });
+  seek.addEventListener('input', function () {
+    AU.seeking = true;
+    if (isFinite(el.duration)) document.getElementById('auCur').textContent = _auFmt(seek.value / 1000 * el.duration);
+  });
+  seek.addEventListener('change', function () {
+    if (isFinite(el.duration)) el.currentTime = seek.value / 1000 * el.duration;
+    AU.seeking = false;
+  });
+  _auSetUI();
+})();
 
 // ══════════════════════════════════════════════════════
 // PORTAL SYSTEM — Login / Register / Member / Admin  (v2 — ใช้ Session Token)
