@@ -2971,6 +2971,30 @@ function renderRecovery() {
   });
 }
 
+
+// ══════════════════════════════════════════════════════
+// อัปเดตอัตโนมัติ — ถ้าไฟล์ใน GitHub ถูกแก้ แต่เครื่องยังจำหน้าเก่าไว้ ให้โหลดหน้าใหม่ให้เอง
+// (ผู้ใช้ไม่ต้องเติม ?v= หรือกดรีเฟรชแรง ๆ)
+// ══════════════════════════════════════════════════════
+(function autoUpdate() {
+  if (!/^https?:/.test(location.protocol) || !window.fetch) return;
+  var url = location.pathname;
+  try {
+    var last = +sessionStorage.getItem('ebookAutoReload') || 0;
+    if (Date.now() - last < 60000) return;          // กันโหลดซ้ำวนไปมา
+  } catch (e) {}
+  Promise.all([
+    fetch(url, { cache: 'force-cache' }).then(function (r) { return r.ok ? r.text() : null; }),
+    fetch(url, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.text() : null; })
+  ]).then(function (t) {
+    if (!t[0] || !t[1] || t[0] === t[1]) return;
+    // ไม่รีโหลดถ้ากำลังใช้งานอยู่ (ล็อกอินแล้ว / กำลังพิมพ์)
+    if (portalUser || (document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName))) return;
+    try { sessionStorage.setItem('ebookAutoReload', String(Date.now())); } catch (e) {}
+    location.reload();
+  }).catch(function () {});
+})();
+
 // ══════════════════════════════════════════════════════
 // PORTAL SYSTEM — Login / Register / Member / Admin  (v2 — ใช้ Session Token)
 // ══════════════════════════════════════════════════════
