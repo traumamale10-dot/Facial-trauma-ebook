@@ -17,7 +17,7 @@
   --gold-light: #e8c44a;
   --text-dark: #1a1a2e;
   --text-mid: #3d4a6b;
-  --text-light: #7a8bb0;
+  --text-light: #56688f;
   --red: #c0392b;
 }
 
@@ -605,6 +605,120 @@ body.au-open .page-inner { padding-bottom: 124px !important; }
 body.has-member-bar .au-panel { bottom: 78px; }
 @media (max-width: 380px) { .au-time { display: none; } .au-panel { bottom: 76px; } }
 
+/* ===== VIDEO ===== */
+.nav-btn.vid-btn { display:none; border-color:#7fd1d1; background:rgba(42,127,127,0.28); font-size:15px; }
+.nav-btn.vid-btn.has-video { display:flex; }
+#vid-modal { position:fixed; inset:0; z-index:1600; background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; padding:14px; }
+#vid-modal.show { display:flex; }
+.vid-box { width:min(720px,100%); background:#0c1224; border:1px solid rgba(201,162,39,0.4); border-radius:14px; overflow:hidden; }
+.vid-head { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; color:var(--gold-light); font-family:'Sarabun',sans-serif; font-weight:700; font-size:15px; }
+.vid-head button { background:rgba(255,255,255,0.1); border:none; color:#fff; width:36px; height:36px; border-radius:50%; font-size:16px; cursor:pointer; }
+#vid-frame { position:relative; width:100%; aspect-ratio:16/9; background:#000; }
+#vid-frame iframe, #vid-frame video { position:absolute; inset:0; width:100%; height:100%; border:0; }
+
+/* ===== SCROLL HINT ===== */
+#scrollHint { position:fixed; left:50%; bottom:84px; transform:translateX(-50%); z-index:998; display:none;
+  padding:6px 14px; border-radius:16px; border:1px solid rgba(42,127,127,0.35);
+  background:rgba(253,246,227,0.96); color:var(--teal); font-family:'Sarabun',sans-serif; font-size:13px; font-weight:700;
+  box-shadow:0 3px 12px rgba(0,0,0,0.18); cursor:pointer; animation:shBob 1.8s ease-in-out infinite; }
+body.ebook-ready #scrollHint.show { display:block; }
+body.au-open #scrollHint { bottom:136px; }
+@keyframes shBob { 0%,100% { transform:translate(-50%,0); } 50% { transform:translate(-50%,4px); } }
+
+/* ===== MODAL BASE (การฟื้นตัว / เช็กอาการ) ===== */
+.big-modal { position:fixed; inset:0; z-index:1500; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+  display:none; align-items:flex-start; justify-content:center; padding:14px; overflow-y:auto; }
+.big-modal.show { display:flex; }
+.bm-box { width:100%; max-width:520px; margin:auto; background:var(--cream); border-radius:18px; overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4); animation:poFadeUp 0.3s ease; font-family:'Sarabun',sans-serif; }
+.bm-head { background:linear-gradient(135deg,var(--navy),var(--navy-light)); padding:14px 18px; display:flex; justify-content:space-between; align-items:center; }
+.bm-head span { font-family:'Noto Serif Thai',serif; font-size:17px; font-weight:700; color:var(--cream); }
+.bm-head button { background:rgba(255,255,255,0.12); border:none; color:var(--cream); width:36px; height:36px; border-radius:50%; font-size:17px; cursor:pointer; }
+.bm-body { padding:16px 18px 22px; }
+
+/* ── Recovery ── */
+.rec-hns { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.rec-hn { padding:6px 12px; border-radius:16px; border:1px solid var(--cream-dark); background:#fff; font-family:inherit; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
+.rec-hn.on { background:var(--navy); color:var(--gold-light); border-color:var(--navy); }
+.rec-hero { text-align:center; background:linear-gradient(135deg,#1a2744,#2a3d66); color:var(--cream); border-radius:16px; padding:16px 14px 14px; margin-bottom:16px; }
+.rec-hero-s { font-size:14px; opacity:0.8; }
+.rec-hero-n { font-family:'Noto Serif Thai',serif; font-size:38px; font-weight:700; color:var(--gold-light); line-height:1.25; }
+.rec-hero-x { font-size:12px; opacity:0.7; margin-top:6px; }
+.rec-addsurg { margin-top:10px; padding:9px 14px; border-radius:10px; border:1.5px dashed var(--gold-light); background:transparent; color:var(--gold-light); font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; }
+.rec-sec { font-family:'Noto Serif Thai',serif; font-size:16px; font-weight:700; color:var(--navy); margin:16px 0 8px; display:flex; align-items:baseline; gap:8px; }
+.rec-sec-s { font-family:'Sarabun',sans-serif; font-size:12px; font-weight:500; color:var(--text-light); }
+.rec-evs { display:flex; flex-direction:column; gap:6px; }
+.rec-ev { display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--cream-dark); border-radius:12px; padding:10px 12px; }
+.rec-ev.soon { border:2px solid var(--red); background:#fff5f3; }
+.rec-ev-ic { font-size:22px; }
+.rec-ev-t { flex:1; font-size:15px; font-weight:700; color:var(--navy); display:flex; flex-direction:column; }
+.rec-ev-t small { font-size:12.5px; font-weight:500; color:var(--text-mid); }
+.rec-ev-n { font-size:14px; font-weight:800; color:var(--teal); white-space:nowrap; }
+.rec-ev.soon .rec-ev-n { color:var(--red); }
+.rec-prog { height:8px; background:var(--cream-dark); border-radius:4px; overflow:hidden; }
+.rec-prog-b { height:100%; width:0; background:linear-gradient(90deg,#27ae60,#6fcf97); transition:width 0.3s; }
+.rec-prog-t { font-size:13px; color:var(--text-mid); margin:4px 0 8px; font-weight:600; }
+.rec-tasks { display:flex; flex-direction:column; gap:6px; }
+.rec-task { display:flex; align-items:stretch; background:#fff; border:1px solid var(--cream-dark); border-radius:12px; overflow:hidden; }
+.rec-chk { flex:1; display:flex; align-items:center; gap:10px; padding:11px 10px; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer; min-height:52px; }
+.rec-box { width:24px; height:24px; flex-shrink:0; border-radius:7px; border:2px solid #9aa6c2; display:flex; align-items:center; justify-content:center; font-size:15px; color:#fff; }
+.rec-ic { font-size:20px; }
+.rec-tx { font-size:15px; color:var(--text-dark, #1a2744); line-height:1.5; }
+.rec-task.done { background:#effaf3; border-color:#a8dcb9; }
+.rec-task.done .rec-box { background:#27ae60; border-color:#27ae60; }
+.rec-task.done .rec-box::after { content:'✓'; }
+.rec-task.done .rec-tx { color:#5b7a66; text-decoration:line-through; }
+.rec-acts { display:flex; border-left:1px solid var(--cream-dark); }
+.rec-act { width:44px; border:none; background:transparent; font-size:18px; cursor:pointer; }
+.rec-act + .rec-act { border-left:1px solid var(--cream-dark); }
+.rec-rules { display:flex; flex-direction:column; gap:6px; }
+.rec-rule { display:flex; gap:10px; align-items:center; background:#fff8ec; border:1px solid #f0dcb4; border-radius:12px; padding:9px 12px; font-size:20px; }
+.rec-rule b { display:block; font-size:14.5px; color:var(--navy); }
+.rec-rule small { display:block; font-size:12.5px; color:var(--text-mid); }
+.rec-rule.past { opacity:0.6; background:#f6f6f6; border-color:#e2e2e2; }
+.rec-rf { width:100%; margin-top:18px; padding:14px; border:none; border-radius:14px; background:linear-gradient(135deg,#c0392b,#e05a48); color:#fff; font-family:inherit; font-size:16px; font-weight:800; cursor:pointer; }
+.rec-note { font-size:12px; color:var(--text-light); text-align:center; margin-top:10px; line-height:1.6; }
+.rec-empty { text-align:center; padding:20px 6px; }
+.rec-empty-t { font-family:'Noto Serif Thai',serif; font-size:18px; font-weight:700; color:var(--navy); margin:6px 0; }
+.rec-empty-d { font-size:14px; color:var(--text-mid); margin-bottom:16px; line-height:1.7; }
+
+/* ── Red flag ── */
+.rf-prog { height:8px; background:var(--cream-dark); border-radius:4px; overflow:hidden; }
+.rf-prog-bar { height:100%; background:var(--navy); transition:width 0.25s; }
+.rf-count { text-align:center; font-size:13px; color:var(--text-mid); margin:6px 0 4px; font-weight:600; }
+.rf-icon { text-align:center; font-size:54px; margin:6px 0; }
+.rf-q { text-align:center; font-family:'Noto Serif Thai',serif; font-size:22px; font-weight:700; color:var(--navy); line-height:1.5; padding:0 4px; }
+.rf-q span { color:var(--red); white-space:nowrap; }
+.rf-hint { text-align:center; font-size:13.5px; color:var(--text-mid); margin-top:6px; }
+.rf-ans { display:flex; gap:12px; margin-top:22px; }
+.rf-ans button { flex:1; height:72px; border:none; border-radius:16px; font-family:'Sarabun',sans-serif; font-size:24px; font-weight:800; cursor:pointer; color:#fff; }
+.rf-yes { background:linear-gradient(135deg,#c0392b,#e05a48); }
+.rf-no  { background:linear-gradient(135deg,#1e8449,#27ae60); }
+.rf-back { display:block; margin:14px auto 0; background:none; border:none; color:var(--text-mid); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; text-decoration:underline; }
+.rf-res { text-align:center; border-radius:16px; padding:18px 14px; margin-bottom:12px; }
+.rf-res-emer { background:#c0392b; color:#fff; }
+.rf-res-urg  { background:#fff3e0; border:2px solid #e67e22; color:#7a3d00; }
+.rf-res-ok   { background:#effaf3; border:2px solid #27ae60; color:#1e5e35; }
+.rf-res-ic { font-size:48px; }
+.rf-res-t { font-family:'Noto Serif Thai',serif; font-size:24px; font-weight:700; margin:4px 0; }
+.rf-res-d { font-size:15px; opacity:0.9; }
+.rf-res-step { font-size:16px; font-weight:700; line-height:1.7; margin-top:8px; }
+.rf-res-small { font-size:13px; margin-top:8px; }
+.rf-list { text-align:left; margin:10px auto 0; padding-left:4px; list-style:none; font-size:15px; line-height:1.8; max-width:360px; }
+.rf-call { display:block; margin:14px auto 0; max-width:300px; padding:16px; border-radius:14px; background:#fff; color:#c0392b; font-size:26px; font-weight:800; text-decoration:none; }
+.rf-btn { display:block; width:100%; margin-top:8px; padding:13px; border-radius:12px; font-family:'Sarabun',sans-serif; font-size:15px; font-weight:700; cursor:pointer; }
+.rf-btn-navy { border:none; background:linear-gradient(135deg,var(--navy),var(--navy-light)); color:var(--gold-light); }
+.rf-btn-ghost { border:1.5px solid var(--cream-dark); background:#fff; color:var(--navy); }
+.page-rf-btn { display:block; width:100%; margin:10px 0 4px; padding:12px; border:none; border-radius:12px; background:linear-gradient(135deg,#c0392b,#e05a48); color:#fff; font-family:'Sarabun',sans-serif; font-size:15px; font-weight:800; cursor:pointer; }
+
+/* แถบสมาชิก: ปุ่มใหญ่ขึ้น เลื่อนแนวนอนได้บนมือถือ */
+.mb-btns { overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.mb-btns::-webkit-scrollbar { display:none; }
+.mb-btn { white-space:nowrap; font-size:12px !important; padding:5px 10px !important; }
+.mb-btn-today { background:linear-gradient(135deg,#c9a227,#e8c766) !important; color:#1a2744 !important; border:none !important; font-weight:800 !important; }
+.mb-btn-rf { background:rgba(192,57,43,0.85) !important; color:#fff !important; border:none !important; font-weight:800 !important; }
+@media (max-width: 560px) { .mb-info .mb-name { display:none; } }
+
 /* ===== FONT SIZE (A- / A+) ===== */
 :root { --fz: 1; }
 .page-inner > *:not(.sec-band):not(.page-num) { zoom: var(--fz); }
@@ -1043,6 +1157,10 @@ body.has-member-bar .nav-bar   { bottom:16px; }
           <label class="rm-check-item"><input type="checkbox" value="ไม่ผ่าตัด (Conservative)"><span>ไม่ผ่าตัด (Conservative)</span></label>
         </div>
       </div>
+      <div class="po-row">
+        <label class="po-label">🏥 วันผ่าตัด <span style="font-weight:400;color:var(--text-light);">(ใช้นับวันพักฟื้นในหน้า "วันนี้")</span></label>
+        <input id="rm-surgdate" class="po-input" type="date">
+      </div>
       <div class="po-grid2">
         <div class="po-row">
           <label class="po-label">📅 วันถอด Nasal Packing</label>
@@ -1215,11 +1333,39 @@ body.has-member-bar .nav-bar   { bottom:16px; }
   <span class="nav-info" id="navInfo">ปก</span>
   <button class="nav-btn" id="btnNext" onclick="nextPage()" title="หน้าถัดไป">&#8594;</button>
   <span class="nav-sep"></span>
+  <button class="nav-btn vid-btn" id="vidBtn" onclick="openVideo()" title="ดูคลิปวิดีโอ" aria-label="ดูคลิปวิดีโอ">🎬</button>
   <button class="nav-btn au-btn" id="auFab" onclick="auFabClick()" title="ฟังเสียงอ่านหน้านี้" aria-label="ฟังเสียงอ่านหน้านี้">🔊</button>
   <button class="nav-btn font-btn" id="btnFontDown" onclick="changeFont(-1)" title="ลดขนาดตัวอักษร" aria-label="ลดขนาดตัวอักษร">A<small>−</small></button>
   <button class="nav-btn font-btn" id="btnFontUp" onclick="changeFont(1)" title="เพิ่มขนาดตัวอักษร" aria-label="เพิ่มขนาดตัวอักษร">A<small>+</small></button>
 </div>
 
+
+<!-- ปุ่มเลื่อนลงอ่านต่อ -->
+<button id="scrollHint" onclick="scrollHintClick()" aria-label="เลื่อนลงอ่านต่อ">⌄ เลื่อนลงอ่านต่อ</button>
+
+<!-- คลิปวิดีโอ -->
+<div id="vid-modal" onclick="if(event.target===this)closeVideo()">
+  <div class="vid-box">
+    <div class="vid-head"><span id="vid-title">🎬 คลิปวิดีโอ</span><button onclick="closeVideo()" aria-label="ปิด">✕</button></div>
+    <div id="vid-frame"></div>
+  </div>
+</div>
+
+<!-- การฟื้นตัวของฉัน -->
+<div id="rec-modal" class="big-modal">
+  <div class="bm-box">
+    <div class="bm-head"><span>🌱 การฟื้นตัวของฉัน</span><button onclick="closeRecovery()" aria-label="ปิด">✕</button></div>
+    <div class="bm-body" id="rec-content"></div>
+  </div>
+</div>
+
+<!-- เช็กอาการอันตราย -->
+<div id="rf-modal" class="big-modal">
+  <div class="bm-box">
+    <div class="bm-head"><span>🚨 เช็กอาการอันตราย</span><button onclick="closeRedFlag()" aria-label="ปิด">✕</button></div>
+    <div class="bm-body" id="rf-body"></div>
+  </div>
+</div>
 
 <!-- เสียงบรรยาย (บันทึกเสียงเอง) -->
 <div class="au-panel" id="auPanel" role="region" aria-label="เครื่องเล่นเสียง">
@@ -1254,15 +1400,26 @@ const IMAGE_URLS = {
 // ─────────────────────────────────────────────
 // IMAGE SLOT — แสดงรูปอย่างเดียว ไม่มีช่องอัปโหลด
 // ─────────────────────────────────────────────
+// ── รูปภาพ: ลองโหลดจากโฟลเดอร์ images/ ใน GitHub ก่อน ถ้าไม่มีจึงใช้ลิงก์ด้านบน ──
+//    ตั้งชื่อไฟล์ตามชื่อช่อง เช่น images/img_anatomy.png, images/cover.png, images/skull.png
+const LOCAL_IMG_DIR = 'images/';
+function imgFallback(el) {
+  var fb = el.getAttribute('data-fb');
+  if (fb) { el.removeAttribute('data-fb'); el.src = fb; return; }
+  var slot = el.closest('.img-slot');
+  if (slot) slot.style.display = 'none'; else el.style.display = 'none';
+}
+function imgSrcAttrs(localName, remote) {
+  return 'src="' + LOCAL_IMG_DIR + localName + '" data-fb="' + (remote || '') + '" onerror="imgFallback(this)"';
+}
 function imgSlot(key, label) {
   const url = IMAGE_URLS[key] || '';
   if (url) {
     // มีรูป → แสดงรูปเลย
     return `
 <div class="img-slot" id="slot-${key}" style="background:transparent;border:none;padding:8px 0;">
-  <img src="${url}" alt="${label}"
-    style="max-width:100%;max-height:220px;border-radius:9px;object-fit:contain;display:block;margin:0 auto;box-shadow:0 4px 16px rgba(0,0,0,0.12);"
-    onerror="this.closest('.img-slot').style.display='none'">
+  <img ${imgSrcAttrs(key + '.png', url)} alt="${label}"
+    style="max-width:100%;max-height:220px;border-radius:9px;object-fit:contain;display:block;margin:0 auto;box-shadow:0 4px 16px rgba(0,0,0,0.12);">
   <div style="text-align:center;font-size:10px;color:var(--text-light);margin-top:5px;">${label}</div>
 </div>`;
   } else {
@@ -1362,7 +1519,7 @@ function getPages() {
     // 0 — Cover
     () => `<div class="cover-bg">
       <div class="cover-emblem" style="width:280px;height:160px;border-radius:16px;background:transparent;border:2px solid rgba(201,162,39,0.4);">
-        <img src="https://i.postimg.cc/zf8q5d44/Gemini-Generated-Image-q9895xq9895xq989.png"
+        <img ${imgSrcAttrs('cover.png','https://i.postimg.cc/zf8q5d44/Gemini-Generated-Image-q9895xq9895xq989.png')}
              style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
       </div>
       <div class="cover-label">E-Book · คู่มือสำหรับผู้ป่วย</div>
@@ -1678,6 +1835,7 @@ function getPages() {
         <li>สบฟันเปลี่ยนไปจากเดิม</li>
         <li>ชาหรืออ่อนแรงใบหน้าเพิ่มขึ้น</li>
       </ul>
+      <button class="page-rf-btn" onclick="openRedFlag()">🚨 ไม่แน่ใจ? กดเช็กอาการทีละข้อ</button>
       <p class="body-text" style="font-weight:600;color:var(--navy);margin-top:10px;">🗓️ การนัดติดตาม</p>
       <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>มาตรงตามนัดทุกครั้ง</strong> ช่วยให้แพทย์ประเมินการสมานกระดูกและปรับแผนการรักษา</div></div>
       <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>แจ้งยาที่รับประทานทุกชนิด</strong> รวมถึงยาสมุนไพร วิตามิน หรืออาหารเสริม</div></div>
@@ -1737,7 +1895,7 @@ function getPages() {
 
       <!-- Skull image + SVG overlay -->
       <div class="bwrap">
-        <img src="https://i.postimg.cc/vTSb7f8f/Gemini-Generated-Image-ngqyrvngqyrvngqy.png" alt="skull">
+        <img ${imgSrcAttrs('skull.png','https://i.postimg.cc/vTSb7f8f/Gemini-Generated-Image-ngqyrvngqyrvngqy.png')} alt="skull">
 
         <!--
           SVG overlay: viewBox matches image aspect ratio (square = 100x100)
@@ -1906,6 +2064,8 @@ function updateNav() {
   document.getElementById('navInfo').textContent =
     cur === 0 ? 'ปก' : cur === pages.length - 1 ? 'ปิดท้าย' : `หน้า ${lbl}`;
   if (typeof auOnPageChange === 'function') auOnPageChange();
+  if (typeof vidOnPageChange === 'function') vidOnPageChange();
+  if (typeof updateScrollHint === 'function') setTimeout(updateScrollHint, 50);
 }
 
 const A = document.getElementById('pageA');
@@ -1987,7 +2147,7 @@ function _uiBlocked(target) {
   if (!document.body.classList.contains('ebook-ready')) return true;
   var po = document.getElementById('portal-overlay');
   if (po && !po.classList.contains('hidden')) return true;
-  if (document.querySelector('#record-modal.show, #admin-modal.show')) return true;
+  if (document.querySelector('#record-modal.show, #admin-modal.show, #rec-modal.show, #rf-modal.show, #vid-modal.show')) return true;
   var ids = ['mydata-modal','symptom-modal'];
   for (var i = 0; i < ids.length; i++) {
     var m = document.getElementById(ids[i]);
@@ -2040,13 +2200,13 @@ document.addEventListener('touchcancel', function() { _sw.ok = false; _sw.multi 
 // ── ปรับขนาดตัวอักษร (A- / A+) — ขยายเฉพาะเนื้อหาในหน้า ไม่ต้องซูมทั้งจอ ──
 var FONT_STEPS = [1, 1.15, 1.3, 1.5];
 var _fontIdx = 0;
-try { _fontIdx = Math.min(FONT_STEPS.length - 1, Math.max(0, parseInt(localStorage.getItem('ebookFont') || '0', 10) || 0)); } catch (e) {}
+try { _fontIdx = Math.min(FONT_STEPS.length - 1, Math.max(0, parseInt(localStorage.getItem('ebookFont2') || '1', 10) || 0)); } catch (e) {}
 function applyFont() {
   document.documentElement.style.setProperty('--fz', FONT_STEPS[_fontIdx]);
   var dn = document.getElementById('btnFontDown'), up = document.getElementById('btnFontUp');
   if (dn) dn.disabled = _fontIdx === 0;
   if (up) up.disabled = _fontIdx === FONT_STEPS.length - 1;
-  try { localStorage.setItem('ebookFont', String(_fontIdx)); } catch (e) {}
+  try { localStorage.setItem('ebookFont2', String(_fontIdx)); } catch (e) {}
 }
 function changeFont(d) {
   _fontIdx = Math.min(FONT_STEPS.length - 1, Math.max(0, _fontIdx + d));
@@ -2244,6 +2404,416 @@ function auToggleAuto() {
   });
   _auSetUI();
 })();
+
+
+// ══════════════════════════════════════════════════════
+// คลิปวิดีโอประจำหน้า
+// ──────────────────────────────────────────────────────
+// ใส่ลิงก์ YouTube (แนะนำให้ตั้งเป็น "ไม่เป็นสาธารณะ / Unlisted") หรือไฟล์ .mp4 ในโฟลเดอร์ videos/
+//   เช่น 'https://youtu.be/AbCdEfGhIjK'  หรือ  'videos/mmf-mouth-care.mp4'
+// หน้าไหนไม่มีคลิป ให้ปล่อยเป็น ''  → ปุ่ม 🎬 จะไม่แสดงในหน้านั้น
+// ══════════════════════════════════════════════════════
+const PAGE_VIDEO = [
+  /* 0  ปก        */ '',
+  /* 1  สารบัญ    */ '',
+  /* 2  หน้า 1    */ '',
+  /* 3  หน้า 2    */ '',
+  /* 4  หน้า 3    */ '',
+  /* 5  หน้า 4 — หลังผ่าตัดจมูก  */ '',
+  /* 6  หน้า 5 — มัดฟัน MMF      */ '',
+  /* 7  หน้า 6 — ORIF            */ '',
+  /* 8  หน้า 7 — ดูแลที่บ้าน (1)  */ '',
+  /* 9  หน้า 8 — ดูแลที่บ้าน (2)  */ '',
+  /* 10 ★ Interactive */ '',
+  /* 11 ปิดท้าย   */ '',
+];
+
+function _vidEmbed(src) {
+  src = String(src || '').trim();
+  if (!src) return '';
+  if (/\.(mp4|webm|m4v)(\?|$)/i.test(src)) {
+    return '<video src="' + esc(src) + '" controls playsinline preload="metadata"></video>';
+  }
+  var m = src.match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/) || src.match(/^([\w-]{11})$/);
+  if (!m) return '';
+  return '<iframe src="https://www.youtube-nocookie.com/embed/' + m[1] + '?rel=0&playsinline=1" title="คลิปวิดีโอ" ' +
+         'allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+}
+function vidOnPageChange() {
+  var b = document.getElementById('vidBtn');
+  if (b) b.classList.toggle('has-video', !!_vidEmbed(PAGE_VIDEO[cur]));
+}
+function openVideo() {
+  var html = _vidEmbed(PAGE_VIDEO[cur]);
+  if (!html) return;
+  if (typeof AU !== 'undefined' && AU && AU.el) AU.el.pause();
+  document.getElementById('vid-frame').innerHTML = html;
+  document.getElementById('vid-title').textContent = '🎬 คลิปวิดีโอ — ' + _auPageName(cur);
+  document.getElementById('vid-modal').classList.add('show');
+}
+function closeVideo() {
+  document.getElementById('vid-modal').classList.remove('show');
+  document.getElementById('vid-frame').innerHTML = '';   // หยุดเล่นวิดีโอ
+}
+
+// ══════════════════════════════════════════════════════
+// ลูกศร "เลื่อนลงอ่านต่อ" — บอกผู้อ่านว่าหน้านี้ยังมีเนื้อหาด้านล่าง
+// ══════════════════════════════════════════════════════
+function _frontInner() { return document.querySelector('.page.front .page-inner'); }
+function updateScrollHint() {
+  var h = document.getElementById('scrollHint');
+  var el = _frontInner();
+  if (!h) return;
+  var more = el && el.scrollTop < 40 && (el.scrollHeight - el.clientHeight - el.scrollTop > 60);
+  h.classList.toggle('show', !!more);
+}
+function scrollHintClick() {
+  var el = _frontInner();
+  if (el) el.scrollBy({ top: el.clientHeight * 0.7, behavior: 'smooth' });
+}
+document.addEventListener('scroll', function (e) {
+  if (e.target && e.target.classList && e.target.classList.contains('page-inner')) updateScrollHint();
+}, true);
+window.addEventListener('resize', updateScrollHint);
+
+// ══════════════════════════════════════════════════════
+// เช็กอาการอันตราย — ตอบ ใช่ / ไม่ใช่ ทีละข้อ
+// (ข้อคำถามอ้างอิงจากหัวข้อ "อาการที่ต้องมาพบแพทย์ทันที" ในคู่มือเล่มนี้)
+// ══════════════════════════════════════════════════════
+var RF_Q = [
+  { id:'breath', lvl:'emer', icon:'😮‍💨', q:'หายใจลำบาก หรือหายใจไม่ออก', sym:'หายใจลำบาก' },
+  { id:'bleed',  lvl:'emer', icon:'🩸', q:'เลือดออกมาก กดห้ามเลือดแล้วไม่หยุด', sym:'เลือดออกมากผิดปกติ' },
+  { id:'mmf',    lvl:'emer', icon:'🦷', q:'กำลังมัดฟันอยู่ และมีอาเจียน หรือสำลัก', hint:'ถ้าไม่ได้มัดฟัน ให้ตอบ "ไม่ใช่"', sym:'คลื่นไส้ อาเจียน' },
+  { id:'fever',  lvl:'urg',  icon:'🌡️', q:'มีไข้สูงกว่า 38°C', sym:'ไข้สูงกว่า 38°C' },
+  { id:'wound',  lvl:'urg',  icon:'🩹', q:'แผลบวมแดง ร้อน หรือมีหนองซึม', sym:'แผลบวมแดง มีหนองซึม' },
+  { id:'vision', lvl:'urg',  icon:'👁️', q:'มองเห็นภาพซ้อน หรือตาปิดไม่สนิท', sym:'มองภาพซ้อน / ตาปิดไม่สนิท' },
+  { id:'bite',   lvl:'urg',  icon:'😬', q:'สบฟันเปลี่ยนไปจากเดิม', sym:'สบฟันเปลี่ยนไป' },
+  { id:'numb',   lvl:'urg',  icon:'😶', q:'ชาหรืออ่อนแรงที่ใบหน้าเพิ่มขึ้น', sym:'ชาหรืออ่อนแรงใบหน้า' },
+  { id:'pain',   lvl:'urg',  icon:'😣', q:'ปวดมากขึ้นเรื่อย ๆ แม้กินยาแก้ปวดแล้ว', sym:'ปวดมากขึ้นผิดปกติ' },
+  { id:'device', lvl:'urg',  icon:'🔧', q:'ลวดมัดฟันหลุด หลวม หรือทิ่มแทง หรือเฝือกจมูกหลุด', hint:'ถ้าไม่มีลวดหรือเฝือก ให้ตอบ "ไม่ใช่"', detail:'ลวดมัดฟันหรือเฝือกจมูกหลุด/หลวม' },
+];
+var RF = { i:0, yes:[] };
+
+function openRedFlag() {
+  RF = { i:0, yes:[] };
+  if (typeof AU !== 'undefined' && AU && AU.el) AU.el.pause();
+  document.getElementById('rf-modal').classList.add('show');
+  _rfRender();
+}
+function closeRedFlag() { document.getElementById('rf-modal').classList.remove('show'); }
+
+function _rfRender() {
+  var box = document.getElementById('rf-body');
+  var q = RF_Q[RF.i];
+  var pct = Math.round(RF.i / RF_Q.length * 100);
+  box.innerHTML =
+    '<div class="rf-prog"><div class="rf-prog-bar" style="width:' + pct + '%"></div></div>' +
+    '<div class="rf-count">ข้อ ' + (RF.i + 1) + ' จาก ' + RF_Q.length + '</div>' +
+    '<div class="rf-icon">' + q.icon + '</div>' +
+    '<div class="rf-q">' + esc(q.q) + ' <span>ใช่ไหม?</span></div>' +
+    (q.hint ? '<div class="rf-hint">' + esc(q.hint) + '</div>' : '') +
+    '<div class="rf-ans">' +
+      '<button class="rf-yes" onclick="rfAnswer(true)">ใช่</button>' +
+      '<button class="rf-no" onclick="rfAnswer(false)">ไม่ใช่</button>' +
+    '</div>' +
+    (RF.i > 0 ? '<button class="rf-back" onclick="rfBack()">← ย้อนกลับข้อก่อนหน้า</button>' : '');
+}
+function rfBack() {
+  if (RF.i === 0) return;
+  RF.i--;
+  var id = RF_Q[RF.i].id;
+  RF.yes = RF.yes.filter(function (x) { return x !== id; });
+  _rfRender();
+}
+function rfAnswer(yes) {
+  var q = RF_Q[RF.i];
+  if (yes) {
+    RF.yes.push(q.id);
+    if (q.lvl === 'emer') return _rfResult('emer', q);
+  }
+  RF.i++;
+  if (RF.i < RF_Q.length) return _rfRender();
+  _rfResult(RF.yes.length ? 'urg' : 'ok');
+}
+function _rfResult(level, q) {
+  var box = document.getElementById('rf-body');
+  var tel = '<a class="rf-call" href="tel:1669">📞 โทร 1669</a>';
+  var list = RF_Q.filter(function (x) { return RF.yes.indexOf(x.id) > -1; })
+                 .map(function (x) { return '<li>' + x.icon + ' ' + esc(x.q) + '</li>'; }).join('');
+  var isMember = portalUser && portalUser.role === 'member';
+  var reportBtn = isMember
+    ? '<button class="rf-btn rf-btn-navy" onclick="rfSendReport()">📤 ส่งรายงานอาการให้ทีมพยาบาล</button>'
+    : '';
+
+  if (level === 'emer') {
+    box.innerHTML =
+      '<div class="rf-res rf-res-emer">' +
+        '<div class="rf-res-ic">🚨</div>' +
+        '<div class="rf-res-t">อาการฉุกเฉิน</div>' +
+        '<div class="rf-res-d">' + esc(q.q) + '</div>' +
+        (q.id === 'mmf'
+          ? '<div class="rf-res-step">✂️ ใช้กรรไกรตัดลวดตัดลวดออกก่อน ตามที่ได้รับการสอน<br>แล้วโทร 1669 ทันที</div>'
+          : '<div class="rf-res-step">โทร 1669 ทันที<br>หรือให้ญาติพาไปห้องฉุกเฉินที่ใกล้ที่สุด</div>') +
+        tel +
+      '</div>' +
+      '<button class="rf-btn rf-btn-ghost" onclick="openRedFlag()">↺ เริ่มตอบใหม่</button>';
+    return;
+  }
+  if (level === 'urg') {
+    box.innerHTML =
+      '<div class="rf-res rf-res-urg">' +
+        '<div class="rf-res-ic">⚠️</div>' +
+        '<div class="rf-res-t">ควรไปพบแพทย์ทันที</div>' +
+        '<div class="rf-res-step">ไม่ต้องรอถึงวันนัด ไปโรงพยาบาลที่รักษาหรือโรงพยาบาลใกล้บ้าน</div>' +
+        '<ul class="rf-list">' + list + '</ul>' +
+        '<div class="rf-res-small">ถ้าอาการแย่ลงหรือหายใจลำบาก ให้โทร 1669</div>' +
+      '</div>' +
+      reportBtn +
+      '<button class="rf-btn rf-btn-ghost" onclick="openRedFlag()">↺ เริ่มตอบใหม่</button>';
+    return;
+  }
+  box.innerHTML =
+    '<div class="rf-res rf-res-ok">' +
+      '<div class="rf-res-ic">✅</div>' +
+      '<div class="rf-res-t">ยังไม่พบอาการอันตราย</div>' +
+      '<div class="rf-res-step">ดูแลตนเองตามคู่มือต่อไป และมาตามนัดทุกครั้ง<br>ถ้ามีอาการเปลี่ยนแปลง กลับมาเช็กใหม่ได้ตลอด</div>' +
+    '</div>' +
+    '<button class="rf-btn rf-btn-navy" onclick="closeRedFlag()">ปิด</button>';
+}
+function rfSendReport() {
+  closeRedFlag();
+  openSymptomModal();
+  var syms = RF_Q.filter(function (x) { return RF.yes.indexOf(x.id) > -1; });
+  document.querySelectorAll('#sym-checklist input').forEach(function (c) {
+    c.checked = syms.some(function (x) { return x.sym === c.value; });
+  });
+  var det = syms.filter(function (x) { return x.detail; }).map(function (x) { return x.detail; });
+  if (det.length) document.getElementById('sym-detail').value = det.join(', ');
+  // ใส่ HN อัตโนมัติจากข้อมูลล่าสุด (ถ้ามี)
+  if (REC.rows && REC.rows.length) document.getElementById('sym-hn').value = REC.rows[REC.sel || 0][2] || '';
+}
+
+// ══════════════════════════════════════════════════════
+// การฟื้นตัวของฉัน — แผนรายวันจากข้อมูลการรักษา
+// (คำแนะนำทุกข้อดึงมาจากเนื้อหาในคู่มือเล่มนี้ — แก้ข้อความได้ใน REC_TASKS)
+// patients: 2=HN 3=บาดเจ็บ 4=ผ่าตัด 5=ถอด Packing 6=ตัดไหม 7=วันนัด 9=วันบันทึก 14=วันผ่าตัด
+// ══════════════════════════════════════════════════════
+var REC = { rows: [], sel: 0 };
+var REC_PG = { nasal:5, mmf:6, orif:7, home1:8, home2:9 };
+
+// when(k, d) → true ถ้าควรแสดงข้อนี้วันนี้  (k = ชนิดการผ่าตัด, d = ข้อมูลวัน)
+var REC_TASKS = [
+  { id:'med',    icon:'💊', t:'กินยาตรงเวลาทุกมื้อ ห้ามหยุดยาเอง', pg:REC_PG.home1, when:function(){ return true; } },
+  { id:'water',  icon:'💧', t:'ดื่มน้ำอย่างน้อย 8 แก้ว', pg:REC_PG.home1, when:function(){ return true; } },
+  { id:'head',   icon:'🛏️', t:'นอนยกศีรษะสูง 30–45 องศา ห้ามนอนคว่ำ', pg:REC_PG.nasal, when:function(k){ return k.nasal || k.orif || k.mmf || k.orbital; } },
+  // จมูก
+  { id:'pack',   icon:'👃', t:'ห้ามดึง Nasal Packing ออกเอง หายใจทางปาก เช็ดริมฝีปากให้ชุ่มชื้น', pg:REC_PG.nasal, when:function(k,d){ return k.nasal && d.packingIn; } },
+  { id:'blow',   icon:'🤧', t:'ห้ามสั่งน้ำมูกหรือเป่าจมูกแรง ๆ', pg:REC_PG.nasal, when:function(k){ return k.nasal; } },
+  { id:'splint', icon:'🛡️', t:'ระวังเฝือกจมูก ห้ามกระแทก เปียกน้ำ หรือขยับเอง', pg:REC_PG.nasal, when:function(k){ return k.nasal; } },
+  { id:'hot',    icon:'🍵', t:'หลีกเลี่ยงอาหารร้อนจัด (48 ชั่วโมงแรก)', pg:REC_PG.nasal, when:function(k,d){ return k.nasal && d.early; } },
+  // มัดฟัน
+  { id:'cutter', icon:'✂️', t:'พกกรรไกรตัดลวดติดตัวตลอดเวลา', pg:REC_PG.mmf, when:function(k){ return k.mmf; } },
+  { id:'rinse2', icon:'🫧', t:'บ้วนปากด้วยน้ำเกลือทุก 2–4 ชั่วโมง', pg:REC_PG.mmf, when:function(k){ return k.mmf; } },
+  { id:'liquid', icon:'🥤', t:'อาหารเหลวเท่านั้น ดื่มผ่านหลอด', pg:REC_PG.mmf, when:function(k){ return k.mmf; } },
+  { id:'wire',   icon:'🔍', t:'ตรวจลวดว่าไม่หลวมหรือแหลมทิ่ม', pg:REC_PG.mmf, when:function(k){ return k.mmf; } },
+  { id:'situp',  icon:'🪑', t:'นั่งหรือยกศีรษะสูงหลังอาหาร 30 นาที', pg:REC_PG.mmf, when:function(k){ return k.mmf; } },
+  // ORIF / แผล
+  { id:'wound',  icon:'🩹', t:'ดูแผล: บวม แดง ร้อน หนอง? ห้ามแกะหรือเกาแผล', pg:REC_PG.orif, when:function(k){ return k.orif || k.soft || k.orbital; } },
+  { id:'cold',   icon:'🧊', t:'ประคบเย็น 20 นาที ทุก 1–2 ชั่วโมง (48 ชั่วโมงแรก)', pg:REC_PG.orif, when:function(k,d){ return k.orif && d.early; } },
+  { id:'rinse',  icon:'🫧', t:'บ้วนปากด้วยน้ำเกลือหลังทุกมื้อ', pg:REC_PG.orif, when:function(k){ return k.orif && !k.mmf; } },
+  { id:'soft',   icon:'🥣', t:'อาหารอ่อน หลีกเลี่ยงของแข็ง กรอบ เหนียว', pg:REC_PG.home1, when:function(k){ return !k.mmf; } },
+  { id:'nopress',icon:'🚫', t:'ห้ามกดหรือนวดบริเวณที่ผ่าตัด', pg:REC_PG.orif, when:function(k){ return k.orif; } },
+  { id:'eye',    icon:'👁️', t:'สังเกตการมองเห็น ถ้าเห็นภาพซ้อนให้รีบแจ้ง', pg:REC_PG.home2, when:function(k){ return k.orbital; } },
+  { id:'sun',    icon:'🧢', t:'อย่าให้แผลโดนแดดโดยตรง ใส่หมวกหรือทากันแดด', pg:REC_PG.home2, when:function(k,d){ return k.soft && !d.early; } },
+];
+
+function _recKinds(s) {
+  s = String(s || '');
+  return {
+    nasal: /Nasal/i.test(s), mmf: /MMF|Maxillomandibular/i.test(s), orif: /ORIF/i.test(s),
+    orbital: /Orbital/i.test(s), soft: /Soft Tissue/i.test(s), cons: /Conservative|ไม่ผ่าตัด/.test(s)
+  };
+}
+function _today() { var n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); }
+function _daysFrom(d) { return Math.round((d - _today()) / 86400000); }
+function _addDays(d, n) { return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+function _fdShort(d) { return d.toLocaleDateString('th-TH', { weekday:'short', day:'numeric', month:'short' }); }
+function _ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function _whenText(n) {
+  if (n === 0) return 'วันนี้';
+  if (n === 1) return 'พรุ่งนี้';
+  if (n === 2) return 'มะรืนนี้';
+  if (n > 0) return 'อีก ' + n + ' วัน';
+  return 'ผ่านมาแล้ว ' + (-n) + ' วัน';
+}
+
+function _recDoneKey() { return 'rec_' + (portalUser && portalUser.id) + '_' + _ymd(_today()); }
+function _recDone() { try { return JSON.parse(localStorage.getItem(_recDoneKey()) || '[]'); } catch (e) { return []; } }
+function recToggle(id, el) {
+  var done = _recDone(), i = done.indexOf(id);
+  if (i > -1) done.splice(i, 1); else done.push(id);
+  try { localStorage.setItem(_recDoneKey(), JSON.stringify(done)); } catch (e) {}
+  el.closest('.rec-task').classList.toggle('done', i === -1);
+  _recProgress();
+}
+function _recProgress() {
+  var all = document.querySelectorAll('#rec-content .rec-task').length;
+  var d = document.querySelectorAll('#rec-content .rec-task.done').length;
+  var t = document.getElementById('rec-prog-t'), b = document.getElementById('rec-prog-b');
+  if (t) t.textContent = d === all && all ? '🎉 ทำครบทุกข้อแล้ว เก่งมาก!' : 'ทำแล้ว ' + d + ' จาก ' + all + ' ข้อ';
+  if (b) b.style.width = (all ? Math.round(d / all * 100) : 0) + '%';
+}
+
+async function openRecovery() {
+  var m = document.getElementById('rec-modal');
+  m.classList.add('show');
+  var el = document.getElementById('rec-content');
+  el.innerHTML = '<div class="po-spinner show"><div class="po-spin"></div>กำลังโหลด...</div>';
+  var r = await apiCall({ action:'getMyData' }, true);
+  if (!portalUser) return;
+  if (r.error) { el.innerHTML = '<div class="po-alert po-alert-err show">' + esc(r.error) + '</div>'; return; }
+  var rows = (r.data || []).slice(1);
+  // เลือกรายการที่มีวันนัดใกล้ที่สุดที่ยังไม่ผ่าน ถ้าไม่มีใช้รายการล่าสุด
+  rows.sort(function (a, b) { return String(b[9] || '').localeCompare(String(a[9] || '')); });
+  REC.rows = rows;
+  REC.sel = 0;
+  var best = -1, bestN = 1e9;
+  rows.forEach(function (row, i) {
+    var d = parseDateVal(row[7]); if (!d) return;
+    var n = _daysFrom(d);
+    if (n >= 0 && n < bestN) { bestN = n; best = i; }
+  });
+  if (best > -1) REC.sel = best;
+  renderRecovery();
+}
+function closeRecovery() { document.getElementById('rec-modal').classList.remove('show'); }
+function recSelect(i) { REC.sel = i; renderRecovery(); }
+function recGo(pg) {
+  closeRecovery();
+  if (cur !== pg) jumpTo(pg);
+}
+function recListen(pg) {
+  recGo(pg);
+  // รอให้เปลี่ยนหน้าและตรวจไฟล์เสียงเสร็จ แล้วค่อยเล่น
+  var tries = 0;
+  var t = setInterval(function () {
+    tries++;
+    var fab = document.getElementById('auFab');
+    if (cur === pg && !busy && fab && fab.classList.contains('has-audio')) { clearInterval(t); auOpen(); }
+    else if (tries > 20) clearInterval(t);
+  }, 150);
+}
+
+function renderRecovery() {
+  var el = document.getElementById('rec-content');
+  if (!REC.rows.length) {
+    el.innerHTML =
+      '<div class="rec-empty">' +
+        '<div style="font-size:42px;">📋</div>' +
+        '<div class="rec-empty-t">ยังไม่มีข้อมูลการรักษา</div>' +
+        '<div class="rec-empty-d">บันทึกข้อมูลการผ่าตัดและวันนัดก่อน<br>ระบบจะจัดแผนการดูแลตนเองรายวันให้</div>' +
+        '<button class="rf-btn rf-btn-navy" onclick="closeRecovery();openNewRecord()">📋 บันทึกข้อมูลการรักษา</button>' +
+      '</div>';
+    return;
+  }
+  var row = REC.rows[REC.sel];
+  var k = _recKinds(row[4]);
+  var surg = parseDateVal(row[14]);
+  var day = surg ? -_daysFrom(surg) : null;          // วันที่เท่าไรหลังผ่าตัด
+  var nasalD = parseDateVal(row[5]), stitchD = parseDateVal(row[6]), apptD = parseDateVal(row[7]);
+  var d = {
+    day: day,
+    early: day !== null ? (day >= 0 && day <= 2) : false,
+    packingIn: nasalD ? _daysFrom(nasalD) >= 0 : (day !== null && day <= 3)
+  };
+
+  var html = '';
+
+  // เลือก HN (ถ้ามีหลายรายการ)
+  if (REC.rows.length > 1) {
+    html += '<div class="rec-hns">' + REC.rows.map(function (r, i) {
+      return '<button class="rec-hn' + (i === REC.sel ? ' on' : '') + '" onclick="recSelect(' + i + ')">HN ' + esc(r[2]) + '</button>';
+    }).join('') + '</div>';
+  }
+
+  // หัวการ์ด: วันที่หลังผ่าตัด
+  html += '<div class="rec-hero">';
+  if (day !== null && day >= 0) {
+    html += '<div class="rec-hero-s">วันนี้เป็น</div><div class="rec-hero-n">วันที่ ' + day + '</div><div class="rec-hero-s">หลังผ่าตัด</div>';
+  } else if (day !== null) {
+    html += '<div class="rec-hero-s">อีก</div><div class="rec-hero-n">' + (-day) + ' วัน</div><div class="rec-hero-s">จะถึงวันผ่าตัด</div>';
+  } else {
+    html += '<div class="rec-hero-n" style="font-size:20px;">📅 ' + esc(_today().toLocaleDateString('th-TH', { weekday:'long', day:'numeric', month:'long' })) + '</div>' +
+            '<button class="rec-addsurg" data-id="' + esc(row[0]) + '" onclick="closeRecovery();openEditRecord(this.dataset.id)">+ ใส่ "วันผ่าตัด" เพื่อให้นับวันหลังผ่าตัด</button>';
+  }
+  html += '<div class="rec-hero-x">' + esc(row[4] || '') + '</div></div>';
+
+  // นัดหมายที่กำลังจะมาถึง
+  var evs = [];
+  if (nasalD) evs.push({ d:nasalD, ic:'👃', t:'ถอด Nasal Packing' });
+  if (stitchD) evs.push({ d:stitchD, ic:'✂️', t:'ตัดไหม' });
+  if (apptD) evs.push({ d:apptD, ic:'🏥', t:'วันนัดตรวจ' });
+  evs.sort(function (a, b) { return a.d - b.d; });
+  var up = evs.filter(function (e) { return _daysFrom(e.d) >= 0; });
+  if (up.length) {
+    html += '<div class="rec-sec">⏰ นัดที่กำลังจะถึง</div><div class="rec-evs">' + up.map(function (e) {
+      var n = _daysFrom(e.d);
+      return '<div class="rec-ev' + (n <= 1 ? ' soon' : '') + '">' +
+        '<span class="rec-ev-ic">' + e.ic + '</span>' +
+        '<span class="rec-ev-t">' + e.t + '<small>' + _fdShort(e.d) + '</small></span>' +
+        '<span class="rec-ev-n">' + _whenText(n) + '</span></div>';
+    }).join('') + '</div>';
+  }
+
+  // สิ่งที่ต้องทำวันนี้
+  var done = _recDone();
+  var tasks = REC_TASKS.filter(function (t) { return !k.cons || ['med','water','soft'].indexOf(t.id) > -1 ? t.when(k, d) : false; });
+  html += '<div class="rec-sec">✅ สิ่งที่ควรทำวันนี้ <span class="rec-sec-s">แตะเพื่อติ๊ก</span></div>' +
+    '<div class="rec-prog"><div class="rec-prog-b" id="rec-prog-b"></div></div><div class="rec-prog-t" id="rec-prog-t"></div>' +
+    '<div class="rec-tasks">' + tasks.map(function (t) {
+      var hasAudio = typeof PAGE_AUDIO !== 'undefined' && (PAGE_AUDIO[t.pg] || '').trim();  // ปุ่มจะแสดงเมื่อพบไฟล์จริง
+      return '<div class="rec-task' + (done.indexOf(t.id) > -1 ? ' done' : '') + '">' +
+        '<button class="rec-chk" onclick="recToggle(\'' + t.id + '\',this)" aria-label="ทำแล้ว">' +
+          '<span class="rec-box"></span><span class="rec-ic">' + t.icon + '</span><span class="rec-tx">' + esc(t.t) + '</span>' +
+        '</button>' +
+        '<div class="rec-acts">' +
+          '<button class="rec-act" onclick="recGo(' + t.pg + ')" title="อ่านในคู่มือ" aria-label="อ่านในคู่มือ">📖</button>' +
+          (hasAudio ? '<button class="rec-act rec-au" data-pg="' + t.pg + '" style="display:none" onclick="recListen(' + t.pg + ')" title="ฟังเสียงอ่าน" aria-label="ฟังเสียงอ่าน">🔊</button>' : '') +
+        '</div></div>';
+    }).join('') + '</div>';
+
+  // ข้อห้ามที่ยังมีผล (คำนวณจากวันผ่าตัด)
+  var rules = [
+    { ic:'🥜', t:'งดอาหารแข็ง กรอบ เหนียว', n:42, txt:'อย่างน้อย 6–8 สัปดาห์', show:!k.cons },
+    { ic:'🏋️', t:'ห้ามยกของหนักหรือออกกำลังกายหนัก', n:42, txt:'อย่างน้อย 4–6 สัปดาห์', show:true },
+    { ic:'⚽', t:'เลี่ยงกีฬาปะทะและการกระแทกใบหน้า', n:90, txt:'อย่างน้อย 3 เดือน', show:true },
+    { ic:'🚭', t:'งดสูบบุหรี่', n:90, txt:'อย่างน้อย 3 เดือน', show:true },
+    { ic:'🍺', t:'งดแอลกอฮอล์', n:null, txt:'ตลอดช่วงการรักษา', show:true },
+  ].filter(function (x) { return x.show; });
+  html += '<div class="rec-sec">🚫 ข้อห้ามช่วงพักฟื้น</div><div class="rec-rules">' + rules.map(function (x) {
+    var until = (surg && x.n) ? _addDays(surg, x.n) : null;
+    var left = until ? _daysFrom(until) : null;
+    var tail = until
+      ? (left > 0 ? 'อย่างน้อยถึง ' + _fdShort(until) + ' (อีก ' + left + ' วัน)' : 'ครบระยะขั้นต่ำแล้ว — ถามแพทย์ก่อนเริ่ม')
+      : x.txt;
+    return '<div class="rec-rule' + (left !== null && left <= 0 ? ' past' : '') + '"><span>' + x.ic + '</span><div><b>' + esc(x.t) + '</b><small>' + esc(tail) + '</small></div></div>';
+  }).join('') + '</div>';
+
+  html +=
+    '<button class="rec-rf" onclick="closeRecovery();openRedFlag()">🚨 มีอาการผิดปกติ? เช็กอาการอันตราย</button>' +
+    '<div class="rec-note">คำแนะนำนี้สรุปจากคู่มือ ใช้ประกอบเท่านั้น ให้ปฏิบัติตามคำสั่งของแพทย์ผู้รักษาเป็นหลัก</div>';
+
+  el.innerHTML = html;
+  _recProgress();
+  // แสดงปุ่ม 🔊 เฉพาะหน้าที่มีไฟล์เสียงอยู่จริง
+  var pgs = {};
+  el.querySelectorAll('.rec-au').forEach(function (b) { pgs[b.dataset.pg] = true; });
+  Object.keys(pgs).forEach(function (pg) {
+    _auProbe(+pg, function (ok) {
+      if (ok) el.querySelectorAll('.rec-au[data-pg="' + pg + '"]').forEach(function (b) { b.style.display = ''; });
+    });
+  });
+}
 
 // ══════════════════════════════════════════════════════
 // PORTAL SYSTEM — Login / Register / Member / Admin  (v2 — ใช้ Session Token)
@@ -2564,7 +3134,7 @@ async function doMemberLogin() {
   portalUser = r;
   hidePortal();
   if (r.role === 'admin') showMemberBar('admin', 'Administrator');
-  else showMemberBar('member', r.name + ' #' + r.id);
+  else { showMemberBar('member', r.name + ' #' + r.id); openRecovery(); }
 }
 
 async function doRegister() {
@@ -2641,6 +3211,8 @@ function showMemberBar(role, name) {
     badge.className = 'mb-badge mb-badge-member';
     badge.textContent = 'สมาชิก';
     btns.innerHTML = `
+      <button class="mb-btn mb-btn-today" onclick="openRecovery()">🌱 วันนี้</button>
+      <button class="mb-btn mb-btn-rf" onclick="openRedFlag()">🚨 เช็กอาการ</button>
       <button class="mb-btn mb-btn-record" onclick="openNewRecord()">📋 บันทึกข้อมูล</button>
       <button class="mb-btn" style="background:rgba(192,57,43,0.22);color:#ffaaaa;border:1px solid rgba(192,57,43,0.4);" onclick="openSymptomModal()">⚠️ รายงานอาการ</button>
       <button class="mb-btn" style="background:rgba(201,162,39,0.18);color:var(--gold-light);border:1px solid rgba(201,162,39,0.3);" onclick="openMyDataModal()">📊 ข้อมูลของฉัน</button>
@@ -2648,7 +3220,8 @@ function showMemberBar(role, name) {
   } else {
     badge.className = 'mb-badge mb-badge-member';
     badge.textContent = 'ทั่วไป';
-    btns.innerHTML = `<button class="mb-btn mb-btn-logout" onclick="doLogout()">เปลี่ยนประเภทผู้ใช้</button>`;
+    btns.innerHTML = `<button class="mb-btn mb-btn-rf" onclick="openRedFlag()">🚨 เช็กอาการ</button>
+      <button class="mb-btn mb-btn-logout" onclick="doLogout()">เปลี่ยนประเภทผู้ใช้</button>`;
   }
   bar.classList.add('show');
   document.body.classList.add('has-member-bar');
@@ -2696,6 +3269,7 @@ async function doLogout() {
   portalUser = null;
   clearCache();
   window._editRowId = null;
+  ['rec-modal','rf-modal'].forEach(function(id){ document.getElementById(id).classList.remove('show'); });
   document.getElementById('member-bar').classList.remove('show');
   document.body.classList.remove('has-member-bar');
   showPortal('landing');
@@ -2718,7 +3292,7 @@ function closeRecordModal() {
   setRecordMode(false);
 }
 function resetRecordForm() {
-  ['rm-hn','rm-nasal','rm-stitch','rm-appoint','rm-note'].forEach(function(id){
+  ['rm-hn','rm-surgdate','rm-nasal','rm-stitch','rm-appoint','rm-note'].forEach(function(id){
     var e = document.getElementById(id); if (e) e.value = '';
   });
   document.querySelectorAll('#record-modal input[type="checkbox"]').forEach(function(c){ c.checked = false; });
@@ -2751,6 +3325,7 @@ async function doSaveRecord() {
     nasalPackDate: document.getElementById('rm-nasal').value,
     stitchDate: document.getElementById('rm-stitch').value,
     appointDate: appoint,
+    surgeryDate: document.getElementById('rm-surgdate').value,
     symptoms: syms,
     note: document.getElementById('rm-note').value
   };
@@ -2918,6 +3493,7 @@ function openEditRecord(rowId) {
   document.getElementById('rm-nasal').value   = toDateInputValue(row[5]);
   document.getElementById('rm-stitch').value  = toDateInputValue(row[6]);
   document.getElementById('rm-appoint').value = toDateInputValue(row[7]);
+  document.getElementById('rm-surgdate').value = toDateInputValue(row[14]);
   document.getElementById('rm-note').value    = row[10] || '';
 
   poAlert('rm-alert', 'กำลังแก้ไขข้อมูล HN: ' + (row[2] || '') + ' — ดึงข้อมูลเดิมมาให้แล้ว แก้เฉพาะส่วนที่ต้องการ', 'info');
@@ -3087,7 +3663,7 @@ async function loadAmPatients() {
   if (!r.data || r.data.length <= 1) { el.innerHTML = '<div class="po-alert po-alert-info show">ยังไม่มีข้อมูลผู้ป่วย</div>'; return; }
   const rows = r.data.slice(1).reverse();
   el.innerHTML = '<div style="overflow-x:auto"><table class="am-table">' +
-    '<thead><tr><th>สมาชิก</th><th>ชื่อ</th><th>HN</th><th>การบาดเจ็บ</th><th>การผ่าตัด</th><th>ถอด Packing</th><th>ตัดไหม</th><th>วันนัด</th><th>อาการ</th><th>สถานะ</th></tr></thead>' +
+    '<thead><tr><th>สมาชิก</th><th>ชื่อ</th><th>HN</th><th>การบาดเจ็บ</th><th>การผ่าตัด</th><th>วันผ่าตัด</th><th>ถอด Packing</th><th>ตัดไหม</th><th>วันนัด</th><th>อาการ</th><th>สถานะ</th></tr></thead>' +
     '<tbody>' + rows.map(function(r) {
       var hasUpdate = r[11] && r[12] !== 'acknowledged';
       return '<tr data-id="' + esc(r[0]) + '" style="' + (hasUpdate ? 'background:rgba(201,162,39,0.06);' : '') + '">' +
@@ -3096,6 +3672,7 @@ async function loadAmPatients() {
         '<td><strong>' + esc(r[2] || '—') + '</strong></td>' +
         '<td>' + esc(r[3] || '—') + '</td>' +
         '<td>' + esc(r[4] || '—') + '</td>' +
+        '<td>' + (r[14] ? fmtD(r[14]) : '—') + '</td>' +
         '<td>' + (r[5] ? cdHTML(r[5]) : '—') + '</td>' +
         '<td>' + (r[6] ? cdHTML(r[6]) : '—') + '</td>' +
         '<td>' + (r[7] ? cdHTML(r[7]) : '—') + '</td>' +
