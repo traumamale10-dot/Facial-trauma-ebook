@@ -2404,7 +2404,8 @@ function auToggleAuto() {
 // ══════════════════════════════════════════════════════
 // คลิปวิดีโอประจำหน้า — เล่นในหน้า E-book เลย ไม่ต้องออกไปเว็บอื่น
 // ──────────────────────────────────────────────────────
-// ใส่ลิงก์ YouTube (แนะนำตั้งเป็น "ไม่เป็นสาธารณะ / Unlisted") หรือไฟล์ .mp4 ในโฟลเดอร์ videos/
+// ใส่ลิงก์ YouTube (แนะนำตั้งเป็น "ไม่เป็นสาธารณะ / Unlisted"), ลิงก์ Google Drive
+// (ต้องแชร์แบบ "ทุกคนที่มีลิงก์") หรือไฟล์ .mp4 ในโฟลเดอร์ videos/
 //   • 1 คลิป :  'https://youtu.be/AbCdEfGhIjK'
 //   • หลายคลิป: [ { title:'การบ้วนปาก', url:'https://youtu.be/AAA...' },
 //               { title:'การตัดลวดฉุกเฉิน', url:'videos/cut-wire.mp4' } ]
@@ -2413,8 +2414,8 @@ function auToggleAuto() {
 const PAGE_VIDEO = [
   /* 0  ปก        */ '',
   /* 1  สารบัญ    */ '',
-  /* 2  หน้า 1    */ 'https://drive.google.com/file/d/1tU2V3BOUWP_6NBzejasIzC7HL2m2L6kr/view?usp=sharing',
-  /* 3  หน้า 2    */ '',
+  /* 2  หน้า 1    */ '',
+  /* 3  หน้า 2    */ 'https://drive.google.com/file/d/1tU2V3BOUWP_6NBzejasIzC7HL2m2L6kr/view?usp=sharing',
   /* 4  หน้า 3    */ '',
   /* 5  หน้า 4 — หลังผ่าตัดจมูก  */ '',
   /* 6  หน้า 5 — มัดฟัน MMF      */ '',
@@ -2437,13 +2438,16 @@ function _vidList(i) {
 function _vidInfo(url) {
   if (!url) return null;
   if (/\.(mp4|webm|m4v)(\?|#|$)/i.test(url)) return { type:'file', src:url };
+  var g = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([\w-]{20,})/);
+  if (g) return { type:'gd', id:g[1] };
   var m = url.match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/|live\/)([\w-]{11})/) || url.match(/^([\w-]{11})$/);
   return m ? { type:'yt', id:m[1] } : null;
 }
 // กล่องวิดีโอ: แสดงภาพตัวอย่างก่อน กดแล้วจึงโหลดวิดีโอ (ประหยัดเน็ต)
 function _vidCover(v) {
   var info = _vidInfo(v.url);
-  var bg = info.type === 'yt' ? 'background-image:url(https://i.ytimg.com/vi/' + info.id + '/hqdefault.jpg);' : '';
+  var bg = info.type === 'yt' ? 'background-image:url(https://i.ytimg.com/vi/' + info.id + '/hqdefault.jpg);'
+         : info.type === 'gd' ? 'background-image:url(https://drive.google.com/thumbnail?id=' + info.id + '&sz=w640);' : '';
   return '<div class="pv-frame" data-url="' + esc(v.url) + '" style="' + bg + '" onclick="pvPlay(this)" role="button" aria-label="เล่นวิดีโอ ' + esc(v.title) + '">' +
            '<span class="pv-play">▶</span>' +
          '</div>';
@@ -2470,6 +2474,8 @@ function pvPlay(el) {
   el.style.backgroundImage = '';
   el.innerHTML = info.type === 'yt'
     ? '<iframe src="https://www.youtube-nocookie.com/embed/' + info.id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="คลิปวิดีโอ" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'
+    : info.type === 'gd'
+    ? '<iframe src="https://drive.google.com/file/d/' + info.id + '/preview" title="คลิปวิดีโอ" allow="autoplay; fullscreen" allowfullscreen></iframe>'
     : '<video src="' + esc(info.src) + '" controls autoplay playsinline></video>';
 }
 function pvTab(btn) {
