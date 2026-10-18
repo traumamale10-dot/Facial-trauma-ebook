@@ -660,6 +660,98 @@ body.au-open #scrollHint { bottom:136px; }
 .bm-head button { background:rgba(255,255,255,0.12); border:none; color:var(--cream); width:36px; height:36px; border-radius:50%; font-size:17px; cursor:pointer; }
 .bm-body { padding:16px 18px 22px; }
 
+
+/* ═══════════════ แบบทดสอบความรู้ ═══════════════ */
+#qzOv { position:fixed; inset:0; z-index:1600; background:linear-gradient(160deg,#fdf6e3 0%,#f6edd3 60%,#efe3c2 100%); overflow-y:auto; -webkit-overflow-scrolling:touch; display:none; padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom)); font-family:'Sarabun',sans-serif; color:var(--text-dark); }
+#qzOv.show { display:block; }
+body.qz-open { overflow:hidden; }
+.qz-top { position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:10px 16px; background:linear-gradient(135deg,var(--navy),var(--navy-light)); color:var(--cream); }
+.qz-top b { font-family:'Noto Serif Thai',serif; font-size:17px; color:var(--gold-light); }
+.qz-top button { background:rgba(255,255,255,0.14); border:none; color:var(--cream); width:40px; height:40px; border-radius:50%; font-size:18px; cursor:pointer; }
+#qzBody { max-width:560px; margin:0 auto; padding:16px; }
+.qz-hero { text-align:center; padding:14px 0 4px; }
+.qz-hero-ic { font-size:56px; line-height:1; filter:drop-shadow(0 6px 14px rgba(201,162,39,0.45)); animation:qzFloat 3s ease-in-out infinite; }
+@keyframes qzFloat { 50% { transform:translateY(-6px); } }
+.qz-hero h2 { font-family:'Noto Serif Thai',serif; color:var(--navy); margin:10px 0 6px; font-size:24px; }
+.qz-hero p { color:var(--text-mid); line-height:1.65; margin:0 0 6px; font-size:16px; }
+.qz-card { background:#fff; border:1px solid var(--cream-dark); border-radius:18px; padding:14px; margin:12px 0; box-shadow:0 6px 18px rgba(26,39,68,0.08); }
+.qz-card h3 { font-family:'Noto Serif Thai',serif; color:var(--navy); margin:0 0 10px; font-size:17px; }
+.qz-card h3 small { font-family:'Sarabun',sans-serif; font-weight:400; color:var(--text-light); font-size:14px; }
+.qz-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.qz-chip { min-height:46px; padding:8px 16px; border-radius:999px; border:1.5px solid var(--cream-dark); background:var(--cream); color:var(--navy); font-family:'Sarabun',sans-serif; font-size:16px; font-weight:700; cursor:pointer; }
+.qz-chip.on { background:var(--navy); color:var(--gold-light); border-color:var(--navy); box-shadow:0 4px 12px rgba(26,39,68,0.3); }
+.qz-lbl { display:block; margin-top:12px; font-weight:700; font-size:15px; color:var(--navy); }
+.qz-lbl small { font-weight:400; color:var(--text-light); }
+.qz-lbl input { display:block; width:100%; margin-top:6px; min-height:48px; padding:0 14px; border-radius:12px; border:1.5px solid var(--cream-dark); background:#fff; font-family:'Sarabun',sans-serif; font-size:17px; }
+.qz-consent { font-size:13.5px; color:var(--text-light); text-align:center; margin:10px 4px; line-height:1.55; }
+.qz-go, .qz-ghost { display:block; width:100%; min-height:56px; margin-top:10px; border-radius:16px; font-family:'Sarabun',sans-serif; font-size:18px; font-weight:800; cursor:pointer; }
+.qz-go { border:none; background:linear-gradient(135deg,var(--teal),var(--teal-light)); color:#fff; box-shadow:0 8px 20px rgba(42,127,127,0.35); }
+.qz-go:disabled { opacity:0.45; box-shadow:none; cursor:not-allowed; }
+.qz-ghost { background:#fff; color:var(--navy); border:1.5px solid var(--cream-dark); }
+.qz-prog { display:flex; align-items:center; gap:10px; margin:4px 0 14px; font-weight:700; font-size:15px; color:var(--text-mid); }
+.qz-prog-bar { flex:1; height:10px; border-radius:6px; background:var(--cream-dark); overflow:hidden; }
+.qz-prog-bar i { display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-light)); border-radius:6px; transition:width .4s; }
+.qz-streak { color:#d35400; }
+.qz-q { text-align:center; margin-bottom:14px; }
+.qz-q-ic { font-size:46px; line-height:1.1; animation:qzPop .4s ease; }
+@keyframes qzPop { from { transform:scale(.4); opacity:0; } }
+.qz-tag { display:inline-block; margin-top:6px; padding:2px 12px; border-radius:999px; background:var(--navy); color:var(--gold-light); font-size:13px; font-weight:700; }
+.qz-q h3 { font-family:'Noto Serif Thai',serif; color:var(--navy); margin:10px 0 0; font-size:20px; line-height:1.6; }
+.qz-opts { display:flex; flex-direction:column; gap:10px; }
+.qz-opt { display:flex; align-items:center; gap:12px; text-align:left; min-height:58px; padding:10px 14px; border-radius:16px; border:1.5px solid var(--cream-dark); background:#fff; color:var(--text-dark); font-family:'Sarabun',sans-serif; font-size:17px; line-height:1.5; cursor:pointer; box-shadow:0 4px 12px rgba(26,39,68,0.06); transition:transform .12s; }
+.qz-opt:active { transform:scale(.98); }
+.qz-opt b { flex-shrink:0; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--cream); color:var(--navy); }
+.qz-opt.right { border-color:#1e8449; background:#e7f6ec; }
+.qz-opt.right b { background:#1e8449; color:#fff; }
+.qz-opt.wrong { border-color:var(--red); background:#fdecea; animation:qzShake .35s; }
+.qz-opt.wrong b { background:var(--red); color:#fff; }
+.qz-opt:disabled { cursor:default; }
+.qz-opt:disabled:not(.right):not(.wrong) { opacity:.55; }
+@keyframes qzShake { 25% { transform:translateX(-6px); } 75% { transform:translateX(6px); } }
+.qz-fb { margin-top:14px; padding:14px; border-radius:16px; animation:qzPop .3s ease; line-height:1.65; font-size:16px; }
+.qz-fb.ok { background:#e7f6ec; border:1px solid #1e8449; }
+.qz-fb.no { background:#fff6dd; border:1px solid var(--gold); }
+.qz-fb p { margin:6px 0 0; }
+.qz-res { text-align:center; padding:6px 0; }
+.qz-ring { position:relative; width:168px; height:168px; margin:6px auto 10px; }
+.qz-ring svg { width:100%; height:100%; transform:rotate(-90deg); }
+.qz-ring circle { fill:none; stroke-width:11; }
+.qz-ring .bg { stroke:var(--cream-dark); }
+.qz-ring .fg { stroke:var(--teal); stroke-linecap:round; transition:stroke-dashoffset 1.3s cubic-bezier(.2,.8,.2,1); }
+.qz-res.mid .qz-ring .fg { stroke:var(--gold); }
+.qz-res.low .qz-ring .fg { stroke:var(--red); }
+.qz-ring > div { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.qz-ring b { font-size:36px; color:var(--navy); font-family:'Noto Serif Thai',serif; }
+.qz-ring span { color:var(--text-light); font-weight:700; }
+.qz-badge { display:inline-block; padding:8px 22px; border-radius:999px; font-size:20px; font-weight:800; background:#e1f2f2; color:var(--teal); }
+.qz-res.mid .qz-badge { background:#fff3cf; color:#9a7400; }
+.qz-res.low .qz-badge { background:#fdecea; color:var(--red); }
+.qz-res p { line-height:1.65; margin:10px 6px 0; font-size:16px; color:var(--text-mid); }
+.qz-cmp { font-size:15px !important; }
+.qz-wrong { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.qz-wrong li { padding:10px 12px; border-radius:12px; background:var(--cream); line-height:1.6; font-size:15.5px; }
+.qz-wrong b, .qz-wrong span, .qz-wrong small { display:block; }
+.qz-wrong span { color:#1e8449; font-weight:800; margin-top:4px; }
+.qz-wrong small { color:var(--text-light); font-size:14px; margin-top:2px; }
+.qz-revs { display:flex; flex-direction:column; gap:8px; }
+.qz-rev { display:flex; justify-content:space-between; align-items:center; gap:8px; min-height:50px; padding:8px 14px; border-radius:12px; border:1.5px solid var(--teal); background:#eef8f8; color:var(--navy); font-family:'Sarabun',sans-serif; font-size:16px; font-weight:700; text-align:left; cursor:pointer; }
+.qz-rev small { color:var(--teal); font-weight:800; white-space:nowrap; }
+.qz-perfect { text-align:center; font-size:18px; font-weight:800; color:var(--navy); }
+.qz-remind { border-color:rgba(192,57,43,0.35); background:#fdf0ee; }
+.qz-remind p { margin:0; line-height:1.65; font-size:15.5px; }
+.qz-remind a { color:var(--red); font-weight:800; }
+.qz-save { text-align:center; font-size:14px; color:var(--text-light); min-height:1.4em; }
+.qz-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+.qz-confetti { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:3; }
+.qz-confetti i { position:absolute; top:-12px; width:9px; height:14px; border-radius:2px; animation:qzFall linear forwards; }
+@keyframes qzFall { to { top:105%; transform:translateX(40px) rotate(720deg); } }
+.quiz-cta { display:flex; align-items:center; gap:12px; width:100%; margin:12px 0 6px; padding:12px 14px; border-radius:14px; border:1.5px solid var(--gold); background:linear-gradient(120deg,#fff8e1,#fdf0c8); color:var(--navy); font-family:'Sarabun',sans-serif; text-align:left; cursor:pointer; box-shadow:0 6px 16px rgba(201,162,39,0.25); }
+.quiz-cta .ic { font-size:30px; }
+.quiz-cta b { display:block; font-size:15px; font-family:'Noto Serif Thai',serif; }
+.quiz-cta small { font-size:12.5px; color:var(--text-mid); }
+.quiz-cta .go { margin-left:auto; font-size:22px; color:var(--gold); }
+.back-bg .quiz-cta { max-width:260px; margin:0 auto 14px; }
+
 /* ── ถามโหมดเสียงอ่าน ── */
 #au-ask { align-items:center; }
 .ask-body { text-align:center; padding:22px 20px 24px; }
@@ -751,6 +843,7 @@ body.au-open #scrollHint { bottom:136px; }
 .mb-btns::-webkit-scrollbar { display:none; }
 .mb-btn { white-space:nowrap; font-size:12px !important; padding:5px 10px !important; }
 .mb-btn-today { background:linear-gradient(135deg,#c9a227,#e8c766) !important; color:#1a2744 !important; border:none !important; font-weight:800 !important; }
+.mb-btn-quiz { background:rgba(58,168,168,0.85) !important; color:#fff !important; border:none !important; font-weight:800 !important; }
 .mb-btn-rf { background:rgba(192,57,43,0.85) !important; color:#fff !important; border:none !important; font-weight:800 !important; }
 @media (max-width: 560px) { .mb-info .mb-name { display:none; } }
 
@@ -1404,6 +1497,12 @@ body.has-member-bar .nav-bar   { bottom:16px; }
   </div>
 </div>
 
+<!-- แบบทดสอบความรู้ -->
+<div id="qzOv" role="dialog" aria-label="แบบทดสอบความรู้">
+  <div class="qz-top"><b>🧠 แบบทดสอบความรู้</b><button onclick="closeQuiz()" aria-label="ปิด">✕</button></div>
+  <div id="qzBody"></div>
+</div>
+
 <!-- ถามโหมดเสียงอ่าน (ครั้งแรก) -->
 <div id="au-ask" class="big-modal" role="dialog" aria-label="ต้องการฟังเสียงอ่านไหม">
   <div class="bm-box"><div class="ask-body">
@@ -1615,6 +1714,7 @@ function getPages() {
           `).join('')}
         </div>
         <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(180,150,80,0.18);text-align:center;">
+          <button class="quiz-cta" onclick="openQuiz()"><span class="ic">🧠</span><span><b>แบบทดสอบความรู้</b><small>อ่านจบแล้ว ลองตอบ 10 ข้อ พร้อมเฉลย</small></span><span class="go">›</span></button>
           <p style="font-size:10px;color:var(--text-light);line-height:1.7;">ข้อมูลในคู่มือนี้ใช้ประกอบคำแนะนำของแพทย์และพยาบาล<br>หากมีข้อสงสัย กรุณาสอบถามทีมผู้ดูแล</p>
         </div>
       </div>
@@ -1888,6 +1988,7 @@ function getPages() {
       <p class="body-text" style="font-weight:600;color:var(--navy);margin-top:10px;">🗓️ การนัดติดตาม</p>
       <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>มาตรงตามนัดทุกครั้ง</strong> ช่วยให้แพทย์ประเมินการสมานกระดูกและปรับแผนการรักษา</div></div>
       <div class="check-row" onclick="this.classList.toggle('done')"><div class="check-box">✓</div><div class="check-label"><strong>แจ้งยาที่รับประทานทุกชนิด</strong> รวมถึงยาสมุนไพร วิตามิน หรืออาหารเสริม</div></div>
+      <button class="quiz-cta" onclick="openQuiz()"><span class="ic">🧠</span><span><b>แบบทดสอบความรู้</b><small>อ่านจบแล้ว ลองตอบ 10 ข้อ พร้อมเฉลย</small></span><span class="go">›</span></button>
       <div class="page-num">8</div>
     </div>`,
 
@@ -2085,6 +2186,7 @@ function getPages() {
         <div style="font-size:44px;margin-bottom:16px;">🏥</div>
         <p style="font-family:'Noto Serif Thai',serif;font-size:16px;font-weight:700;color:var(--cream);margin-bottom:8px;">หากมีข้อสงสัย</p>
         <p style="font-size:12px;color:rgba(253,246,227,0.6);line-height:1.85;max-width:240px;margin:0 auto 20px;">กรุณาติดต่อทีมพยาบาลผู้ดูแล<br>หรือโทรศัพท์มายังหน่วยงานที่รับผิดชอบการรักษาของท่าน</p>
+        <button class="quiz-cta" onclick="openQuiz()"><span class="ic">🧠</span><span><b>แบบทดสอบความรู้</b><small>อ่านจบแล้ว ลองตอบ 10 ข้อ พร้อมเฉลย</small></span><span class="go">›</span></button>
         <a href="brochure.html" target="_blank" rel="noopener" class="brochure-btn">📄 ดาวน์โหลดแผ่นพับ<small>สำหรับพิมพ์แจกผู้ที่ไม่มีโทรศัพท์</small></a>
         <p style="margin-top:8px;font-size:10px;color:rgba(201,162,39,0.55);letter-spacing:0.1em;text-transform:uppercase;">Facial Trauma Nursing Care<br>E-Book for Patients &amp; Families</p>
       </div>
@@ -2198,7 +2300,7 @@ function _uiBlocked(target) {
   if (!document.body.classList.contains('ebook-ready')) return true;
   var po = document.getElementById('portal-overlay');
   if (po && !po.classList.contains('hidden')) return true;
-  if (document.querySelector('#record-modal.show, #admin-modal.show, #rec-modal.show, #rf-modal.show, #pv-overlay.show, #au-ask.show')) return true;
+  if (document.querySelector('#record-modal.show, #admin-modal.show, #rec-modal.show, #rf-modal.show, #pv-overlay.show, #au-ask.show, #qzOv.show')) return true;
   var ids = ['mydata-modal','symptom-modal'];
   for (var i = 0; i < ids.length; i++) {
     var m = document.getElementById(ids[i]);
@@ -3015,6 +3117,348 @@ function renderRecovery() {
 // อัปเดตอัตโนมัติ — ถ้าไฟล์ใน GitHub ถูกแก้ แต่เครื่องยังจำหน้าเก่าไว้ ให้โหลดหน้าใหม่ให้เอง
 // (ผู้ใช้ไม่ต้องเติม ?v= หรือกดรีเฟรชแรง ๆ)
 // ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// แบบทดสอบความรู้หลังอ่าน (แยกตามการรักษาและตำแหน่งที่บาดเจ็บ) + บันทึกลง Google Sheet
+// ──────────────────────────────────────────────────────
+// ผลแบบทดสอบส่งไปที่ API เดียวกับระบบสมาชิก (API_URL) ด้วย action 'quizSave'
+// ถ้าต้องการส่งไป Sheet อื่น ให้ใส่ลิงก์ /exec ที่ QUIZ_API แทน
+// ══════════════════════════════════════════════════════
+const QUIZ_API = '';
+function qzApi() { return QUIZ_API || (typeof API_URL !== 'undefined' ? API_URL : ''); }
+
+// pg = หน้าใน E-book ที่ให้กลับไปอ่านทบทวน
+const QZ_PAGE_NAME = { 2:'การบาดเจ็บใบหน้าคืออะไร', 3:'ตำแหน่งกระดูกที่พบบ่อย', 4:'การผ่าตัดกระดูกใบหน้า', 5:'หลังจัดกระดูกจมูก',
+  6:'หลังมัดฟัน (MMF)', 7:'หลังผ่าตัดใส่เหล็ก (ORIF)', 8:'ดูแลตนเองที่บ้าน (1)', 9:'ดูแลตนเองที่บ้าน (2)' };
+
+const QUIZ_BANK = {
+  general: [
+    { id:'g1', e:'🚨', pg:9, q:'อาการใดต้องมาพบแพทย์ทันที',
+      a:['หายใจลำบาก หรือเลือดออกมากหยุดไม่ได้', 'ใบหน้าบวมเล็กน้อยในวันแรก', 'รู้สึกเบื่ออาหารบ้าง', 'มีเลือดซึมเล็กน้อยที่แผล'],
+      tip:'หายใจลำบากและเลือดออกมากเป็นภาวะฉุกเฉิน ต้องมาโรงพยาบาลทันที หรือโทร 1669' },
+    { id:'g2', e:'💊', pg:8, q:'ยาชนิดใดที่ "ห้าม" กินเองโดยแพทย์ไม่ได้สั่ง',
+      a:['แอสไพริน และยาแก้ปวดกลุ่ม NSAIDs', 'ยาฆ่าเชื้อที่แพทย์สั่ง', 'ยาแก้ปวดที่แพทย์สั่ง', 'ยาลดบวมที่แพทย์สั่ง'],
+      tip:'แอสไพรินและ NSAIDs ทำให้เลือดออกง่ายขึ้น' },
+    { id:'g3', e:'⏰', pg:8, q:'ถ้าลืมกินยา แล้วนึกได้ตอนใกล้เวลามื้อถัดไป ควรทำอย่างไร',
+      a:['ข้ามมื้อที่ลืม แล้วกินมื้อถัดไปตามปกติ', 'กินสองเท่าในมื้อถัดไป', 'หยุดกินยาไปเลย', 'กินมื้อที่ลืมและมื้อถัดไปพร้อมกัน'],
+      tip:'ห้ามกินยาเพิ่มเป็นสองเท่า เพราะอาจได้รับยาเกินขนาด' },
+    { id:'g4', e:'🚭', pg:9, q:'ควรงดสูบบุหรี่นานอย่างน้อยเท่าใด',
+      a:['อย่างน้อย 3 เดือน', '3 วัน', '1 สัปดาห์', 'ไม่ต้องงด'],
+      tip:'นิโคตินลดเลือดที่ไปเลี้ยง ทำให้แผลและกระดูกหายช้า' },
+    { id:'g5', e:'🥜', pg:8, q:'อาหารแข็ง กรอบ หรือเหนียว เช่น ลูกอม ขนมกรอบ ควรงดนานเท่าใด',
+      a:['อย่างน้อย 6–8 สัปดาห์', '1–2 วัน', '1 สัปดาห์', 'กินได้เลยถ้าไม่เจ็บ'],
+      tip:'การเคี้ยวอาหารแข็งเร็วเกินไปอาจทำให้กระดูกที่กำลังติดเคลื่อนได้' },
+    { id:'g6', e:'🍺', pg:8, q:'เครื่องดื่มแอลกอฮอล์ ควรทำอย่างไรช่วงรักษา',
+      a:['งดเด็ดขาดตลอดช่วงการรักษา', 'ดื่มได้วันละแก้ว', 'ดื่มได้หลังกินยา', 'ดื่มได้ถ้าไม่ปวด'],
+      tip:'แอลกอฮอล์รบกวนการออกฤทธิ์ของยา และทำให้กระดูกติดช้า' },
+    { id:'g7', e:'⚽', pg:9, q:'กีฬาที่มีการปะทะ หรือเสี่ยงกระแทกใบหน้า ควรงดนานเท่าใด',
+      a:['อย่างน้อย 3 เดือน', '3 วัน', '2 สัปดาห์', 'ไม่ต้องงด'],
+      tip:'กระดูกใบหน้าต้องใช้เวลาหลายเดือนกว่าจะแข็งแรงเต็มที่' },
+    { id:'g8', e:'☀️', pg:9, q:'ป้องกันแผลเป็นสีดำบนใบหน้าได้อย่างไร',
+      a:['ทาครีมกันแดดหรือสวมหมวก ไม่ให้แผลโดนแดด', 'ตากแดดให้แผลแห้งเร็ว', 'แกะสะเก็ดออกบ่อย ๆ', 'ทาสมุนไพรบนแผล'],
+      tip:'แสงแดดทำให้แผลเป็นมีสีเข้มขึ้น' },
+    { id:'g9', e:'🤕', pg:2, q:'การบาดเจ็บใบหน้ามักเกิดร่วมกับการบาดเจ็บส่วนใด',
+      a:['ศีรษะ คอ หรืออวัยวะอื่น', 'นิ้วเท้า', 'ผิวหนังที่ขา', 'ไม่เกิดร่วมกับอะไรเลย'],
+      tip:'แพทย์จึงต้องตรวจร่างกายทั้งหมดก่อน แล้วจึงวางแผนรักษาใบหน้า' },
+    { id:'g10', e:'🗓️', pg:9, q:'เมื่อมาตามนัด ควรแจ้งแพทย์เรื่องใด',
+      a:['ยาทุกชนิดที่กิน รวมสมุนไพร วิตามิน อาหารเสริม', 'ไม่ต้องแจ้งอะไร', 'แจ้งเฉพาะยาที่หมดแล้ว', 'แจ้งเฉพาะเมื่อแพทย์ถาม'],
+      tip:'ยาสมุนไพรและอาหารเสริมบางชนิดอาจทำให้เลือดออกง่ายหรือมีผลกับยาอื่น' }
+  ],
+  proc: {
+    cr: { name:'จัดกระดูกจมูก', pg:5, q:[
+      { id:'c1', e:'👃', q:'ผ้าก๊อซที่อุดอยู่ในจมูก ควรทำอย่างไร',
+        a:['ห้ามดึงออกเอง แพทย์จะเอาออกให้ใน 1–3 วัน', 'ดึงออกเองได้เมื่ออึดอัด', 'เปลี่ยนเองทุกวัน', 'ดันให้ลึกขึ้นถ้าหลวม'],
+        tip:'ผ้าก๊อซช่วยห้ามเลือดและพยุงกระดูกจมูกไว้' },
+      { id:'c2', e:'🛏️', q:'ท่านอนที่เหมาะสมหลังจัดกระดูกจมูก',
+        a:['นอนหนุนศีรษะสูง ห้ามนอนคว่ำ', 'นอนคว่ำ', 'นอนราบไม่หนุนหมอน', 'นอนท่าไหนก็ได้'],
+        tip:'การยกศีรษะสูงช่วยลดบวม' },
+      { id:'c3', e:'🩸', q:'เลือดออกแบบใดที่ต้องแจ้งพยาบาลทันที',
+        a:['เลือดออกมากจนเปียกหลายชั้น หรือกลืนเลือดลงคอ', 'เลือดซึมเล็กน้อย', 'มีคราบเลือดแห้งที่ผ้าก๊อซ', 'น้ำมูกปนเลือดเล็กน้อย'],
+        tip:'เลือดซึมเล็กน้อยเป็นเรื่องปกติ แต่เลือดออกมากต้องแจ้งทันที' },
+      { id:'c4', e:'🤧', q:'ข้อใดควรหลีกเลี่ยงหลังจัดกระดูกจมูก',
+        a:['สั่งน้ำมูกหรือเป่าจมูกแรง ๆ', 'ดื่มน้ำบ่อย ๆ', 'หายใจทางปาก', 'นอนหนุนศีรษะสูง'],
+        tip:'การเป่าจมูกแรงทำให้เลือดออกและกระดูกเคลื่อนได้' } ] },
+    mmf: { name:'มัดฟัน (MMF)', pg:6, q:[
+      { id:'m1', e:'✂️', q:'ผู้ที่มัดฟัน ต้องมีสิ่งใดติดตัวไว้ตลอดเวลา',
+        a:['กรรไกรตัดลวด', 'ไม้จิ้มฟัน', 'ยาแก้ปวด', 'หลอดดูดน้ำ'],
+        tip:'ใช้ตัดลวดในกรณีฉุกเฉิน เช่น อาเจียน หรือหายใจไม่ออก' },
+      { id:'m2', e:'🆘', q:'ถ้าอาเจียน หรือหายใจไม่ออกขณะมัดฟัน ต้องทำอย่างไรก่อน',
+        a:['ตัดลวดออกก่อน แล้วรีบแจ้งพยาบาลหรือแพทย์', 'รอให้อาเจียนหยุดเอง', 'ดื่มน้ำตามมาก ๆ', 'นอนราบแล้วรอ'],
+        tip:'การตัดลวดช่วยเปิดทางเดินหายใจ ป้องกันการสำลัก' },
+      { id:'m3', e:'🥤', q:'ระหว่างมัดฟัน กินอาหารได้แบบใด',
+        a:['อาหารเหลวเท่านั้น ดูดผ่านหลอด', 'ข้าวสวยและกับข้าวปกติ', 'ขนมกรอบ', 'อาหารแข็งที่เคี้ยวน้อย'],
+        tip:'เช่น นม น้ำผลไม้ เครื่องดื่มโปรตีน หรือซุปที่กรองละเอียด' },
+      { id:'m4', e:'🪥', q:'ควรบ้วนปากด้วยน้ำเกลือบ่อยแค่ไหน',
+        a:['ทุก 2–4 ชั่วโมง', 'วันละครั้ง', 'สัปดาห์ละครั้ง', 'ไม่ต้องบ้วน'],
+        tip:'ช่วยลดเชื้อโรคและกลิ่นปาก ขณะที่แปรงฟันได้ไม่สะดวก' },
+      { id:'m5', e:'🔧', q:'ถ้าลวดมัดฟันหลวม หรือมีปลายแหลมทิ่ม ควรทำอย่างไร',
+        a:['รีบพบแพทย์ ห้ามปรับลวดเอง', 'ใช้คีมดัดเอง', 'ตัดลวดทิ้งเอง', 'ปล่อยไว้จนถึงวันนัด'],
+        tip:'การปรับลวดเองอาจทำให้ฟันหรือกระดูกเคลื่อน' } ] },
+    orif: { name:'ผ่าตัดใส่เหล็ก (ORIF)', pg:7, q:[
+      { id:'o1', e:'🧊', q:'ลดบวมหลังผ่าตัดใส่เหล็กใน 2 วันแรกอย่างไร',
+        a:['ประคบเย็นครั้งละ 20 นาที ทุก 1–2 ชั่วโมง', 'ประคบร้อนตลอดวัน', 'นวดบริเวณที่ผ่าตัด', 'ไม่ต้องทำอะไร'],
+        tip:'ประคบเย็นร่วมกับนอนหนุนศีรษะสูง ช่วยลดบวมและปวด' },
+      { id:'o2', e:'😶', q:'อาการชาบริเวณที่ผ่าตัด ข้อใดถูกต้อง',
+        a:['พบได้ในช่วงแรก ส่วนใหญ่ดีขึ้นใน 3–6 เดือน', 'ชาแปลว่าผ่าตัดไม่สำเร็จ', 'จะชาไปตลอดชีวิตแน่นอน', 'ต้องนวดแรง ๆ ให้หายชา'],
+        tip:'แต่ถ้าชามากขึ้น หรือใบหน้าอ่อนแรง ให้รีบพบแพทย์' },
+      { id:'o3', e:'🔩', q:'แผ่นเหล็กไทเทเนียมที่ใส่ไว้ ข้อใดถูกต้อง',
+        a:['ปลอดภัย ส่วนใหญ่ไม่ต้องเอาออก และตรวจ MRI ได้', 'ต้องผ่าตัดเอาออกทุกราย', 'ห้ามตรวจ MRI ตลอดชีวิต', 'จะเป็นสนิมในร่างกาย'],
+        tip:'ไทเทเนียมไม่ก่อปฏิกิริยากับร่างกาย' },
+      { id:'o4', e:'✋', q:'บริเวณที่ผ่าตัด ห้ามกดหรือนวดนานเท่าใด',
+        a:['6–8 สัปดาห์', '1 วัน', '3 วัน', 'นวดได้ทันที'],
+        tip:'การกดหรือนวดอาจทำให้กระดูกและแผ่นเหล็กเคลื่อน' } ] },
+    nonop: { name:'ไม่ผ่าตัด', pg:9, q:[
+      { id:'n1', e:'🛌', q:'ช่วยลดบวมบนใบหน้าได้อย่างไร',
+        a:['นอนหนุนศีรษะสูง', 'นอนคว่ำ', 'นอนราบไม่หนุนหมอน', 'ประคบร้อนทันที'],
+        tip:'การยกศีรษะสูงช่วยให้น้ำที่คั่งบนใบหน้าลดลง' },
+      { id:'n2', e:'🏋️', q:'ยกของหนักหรือออกกำลังกายหนัก ควรงดนานเท่าใด',
+        a:['อย่างน้อย 4–6 สัปดาห์ หรือจนแพทย์อนุญาต', '1 วัน', 'ไม่ต้องงด', '3 วัน'],
+        tip:'การเบ่งหรือออกแรงมากทำให้ใบหน้าบวมและเลือดออกได้' },
+      { id:'n3', e:'🗓️', q:'ทำไมต้องมาตามนัดทุกครั้ง แม้ไม่ได้ผ่าตัด',
+        a:['เพื่อให้แพทย์ตรวจว่ากระดูกติดดีและไม่เคลื่อน', 'ไม่จำเป็น ถ้าไม่ปวด', 'เพื่อรับยาเท่านั้น', 'เพื่อทำแผลอย่างเดียว'],
+        tip:'บางรายกระดูกอาจเคลื่อนภายหลังและต้องรักษาเพิ่ม' } ] }
+  },
+  bones: {
+    nose: { name:'กระดูกจมูก', q:[
+      { id:'b1', e:'👃', pg:3, q:'ทำไมกระดูกจมูกจึงหักบ่อยที่สุด',
+        a:['เพราะยื่นออกมาด้านหน้า รับแรงกระแทกได้ง่าย', 'เพราะเป็นกระดูกที่ใหญ่ที่สุด', 'เพราะไม่มีเลือดไปเลี้ยง', 'เพราะอยู่ลึกที่สุด'],
+        tip:'อาการที่พบ เช่น จมูกบวม เบี้ยว และเลือดกำเดาไหล' },
+      { id:'b2', e:'📅', pg:4, q:'การจัดกระดูกจมูกควรทำภายในกี่วัน',
+        a:['ภายใน 7–10 วัน ก่อนกระดูกเริ่มติด', 'หลัง 1 เดือน', 'หลัง 6 เดือน', 'เมื่อไรก็ได้'],
+        tip:'ถ้ากระดูกติดแล้ว การจัดกลับเข้าที่จะทำได้ยากขึ้น' } ] },
+    zmc: { name:'โหนกแก้ม / รอบตา', q:[
+      { id:'b3', e:'👁️', pg:9, q:'อาการทางตาแบบใดต้องรีบพบแพทย์',
+        a:['มองเห็นภาพซ้อน หรือหลับตาไม่สนิท', 'น้ำตาไหลเล็กน้อยเมื่อโดนลม', 'ตาบวมเล็กน้อยวันแรก', 'ง่วงนอน'],
+        tip:'อาจเกิดจากกระดูกรอบตาเคลื่อนหรือกดเบียดกล้ามเนื้อตา' },
+      { id:'b4', e:'🙂', pg:3, q:'กระดูกโหนกแก้มหัก มักมีอาการใด',
+        a:['แก้มแบนลง ตาบวม อาจเห็นภาพซ้อน', 'ปวดหลัง', 'นิ้วชา', 'ไอมีเสมหะ'],
+        tip:'ถ้ามีอาการเหล่านี้ต้องได้รับการตรวจจากแพทย์' } ] },
+    maxilla: { name:'ขากรรไกรบน', q:[
+      { id:'b5', e:'🦷', pg:9, q:'ถ้ารู้สึกว่าสบฟันไม่เหมือนเดิม ควรทำอย่างไร',
+        a:['รีบพบแพทย์', 'กัดของแข็งเพื่อจัดฟันให้เข้าที่', 'รอให้หายเอง', 'ใช้มือดันฟันเอง'],
+        tip:'สบฟันเปลี่ยนอาจหมายถึงกระดูกขากรรไกรเคลื่อน' },
+      { id:'b6', e:'😮', pg:3, q:'ขากรรไกรบนหัก มักมีอาการใด',
+        a:['สบฟันผิดปกติ และใบหน้าบวม', 'ผมร่วง', 'ปวดเข่า', 'มือสั่น'],
+        tip:'แพทย์อาจรักษาด้วยการมัดฟันหรือผ่าตัดใส่เหล็กยึด' } ] },
+    mandible: { name:'ขากรรไกรล่าง', q:[
+      { id:'b7', e:'😬', pg:3, q:'ขากรรไกรล่างหัก มักมีอาการใด',
+        a:['ปวด และอ้าปากได้ไม่เต็มที่', 'ตาแดง', 'คัดจมูก', 'ไม่มีอาการ'],
+        tip:'บางรายสบฟันไม่ลงหรือมีชาที่คางและริมฝีปากล่าง' },
+      { id:'b8', e:'🦷', pg:9, q:'หลังรักษาขากรรไกรล่าง อาการใดต้องรีบพบแพทย์',
+        a:['สบฟันเปลี่ยนไป หรือชาและอ่อนแรงมากขึ้น', 'หิวบ่อย', 'ง่วงหลังกินยา', 'บวมลดลงเรื่อย ๆ'],
+        tip:'อาจหมายถึงกระดูกเคลื่อนหรือเส้นประสาทถูกกด' } ] },
+    frontal: { name:'หน้าผาก', q:[
+      { id:'b9', e:'🧠', pg:2, q:'กระดูกหน้าผากหักมักเกิดร่วมกับการบาดเจ็บใด จึงต้องเฝ้าระวัง',
+        a:['การบาดเจ็บที่ศีรษะ', 'ข้อเท้าแพลง', 'ผื่นที่ผิวหนัง', 'ฟันผุ'],
+        tip:'ถ้าปวดศีรษะมากขึ้น ซึม อาเจียน ให้รีบมาโรงพยาบาล' },
+      { id:'b10', e:'🤕', pg:3, q:'อาการใดเข้าได้กับกระดูกหน้าผากหัก',
+        a:['หน้าผากบุ๋ม และปวดศีรษะ', 'นิ้วบวม', 'เจ็บคอ', 'คันตา'],
+        tip:'กระดูกหน้าผากหักพบไม่บ่อย แต่ต้องตรวจละเอียด' } ] },
+    soft: { name:'แผลฉีกขาดที่ใบหน้า', q:[
+      { id:'b11', e:'🩹', pg:7, q:'แผลลักษณะใดแสดงว่าอาจติดเชื้อ',
+        a:['บวม แดง ร้อน มีหนองซึม หรือมีไข้สูงกว่า 38 องศา', 'แผลแห้งดี', 'คันเล็กน้อยเมื่อแผลเริ่มหาย', 'มีรอยแดงบาง ๆ ตามแนวแผล'],
+        tip:'ถ้ามีอาการติดเชื้อ ให้รีบพบแพทย์' },
+      { id:'b12', e:'✋', pg:7, q:'การดูแลสะเก็ดแผลที่ถูกต้อง',
+        a:['ไม่แกะหรือเกาสะเก็ดแผล', 'แกะออกให้เร็วที่สุด', 'ขัดแผลแรง ๆ', 'ทาแป้งบนแผล'],
+        tip:'การแกะสะเก็ดทำให้แผลหายช้าและเป็นแผลเป็นได้' } ] }
+  }
+};
+const QZ_PROC_ORDER = ['cr','mmf','orif','nonop'];
+const QZ_BONE_ORDER = ['nose','zmc','maxilla','mandible','frontal','soft'];
+
+var QZ = null;
+function qzShuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function qzEl() { return document.getElementById('qzBody'); }
+function qzSave(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function qzLoad(k, d) { try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
+function qzEsc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+
+function openQuiz() {
+  if (typeof AU !== 'undefined' && AU && AU.el) AU.el.pause();
+  var prev = qzLoad('fcQuizSetup', {});
+  QZ = { who: prev.who || 'ผู้ป่วย', hn: prev.hn || '', procs: prev.procs || [], bones: prev.bones || [] };
+  document.getElementById('qzOv').classList.add('show');
+  document.body.classList.add('qz-open');
+  qzSetup();
+}
+function closeQuiz() {
+  document.getElementById('qzOv').classList.remove('show');
+  document.body.classList.remove('qz-open');
+  QZ = null;
+}
+
+// ── ขั้นที่ 1: เลือกการรักษาและตำแหน่งที่บาดเจ็บ ──
+function qzSetup() {
+  var chip = function (on, txt, fn) { return '<button class="qz-chip' + (on ? ' on' : '') + '" onclick="' + fn + '">' + txt + '</button>'; };
+  qzEl().innerHTML =
+    '<div class="qz-hero"><div class="qz-hero-ic">🧠</div><h2>แบบทดสอบความรู้</h2>' +
+      '<p>ตอบคำถามสั้น ๆ ประมาณ 10 ข้อ เพื่อดูว่าพร้อมดูแลตัวเองแค่ไหน<br>ตอบผิดไม่เป็นไร มีคำอธิบายให้ทุกข้อ</p></div>' +
+    '<div class="qz-card"><h3>1. ผู้ตอบ</h3><div class="qz-chips">' +
+      ['ผู้ป่วย','ญาติ / ผู้ดูแล'].map(function (w) { return chip(QZ.who === w, w, "qzSet('who','" + w + "')"); }).join('') + '</div>' +
+      '<label class="qz-lbl">HN หรือเลขเตียง <small>(ไม่ต้องใส่ชื่อจริง · ไม่บังคับ)</small>' +
+      '<input id="qzHn" type="text" maxlength="20" autocomplete="off" value="' + qzEsc(QZ.hn) + '" placeholder="เช่น 6712345 หรือ เตียง 8"></label></div>' +
+    '<div class="qz-card"><h3>2. การรักษาที่ได้รับ <small>(เลือกได้หลายข้อ)</small></h3><div class="qz-chips">' +
+      chip(QZ.procs.indexOf('cr') > -1, '👃 จัดกระดูกจมูก', "qzTog('procs','cr')") +
+      chip(QZ.procs.indexOf('mmf') > -1, '🦷 มัดฟัน (MMF)', "qzTog('procs','mmf')") +
+      chip(QZ.procs.indexOf('orif') > -1, '🔩 ผ่าตัดใส่เหล็ก (ORIF)', "qzTog('procs','orif')") +
+      chip(QZ.procs.indexOf('nonop') > -1, '🛏️ ไม่ผ่าตัด', "qzTog('procs','nonop')") +
+      chip(QZ.procs.indexOf('unsure') > -1, '❓ ไม่แน่ใจ', "qzTog('procs','unsure')") + '</div></div>' +
+    '<div class="qz-card"><h3>3. ตำแหน่งที่บาดเจ็บ <small>(เลือกได้หลายข้อ)</small></h3><div class="qz-chips">' +
+      QZ_BONE_ORDER.map(function (k) { return chip(QZ.bones.indexOf(k) > -1, QUIZ_BANK.bones[k].name, "qzTog('bones','" + k + "')"); }).join('') +
+      chip(QZ.bones.indexOf('unsure') > -1, 'ไม่แน่ใจ', "qzTog('bones','unsure')") + '</div></div>' +
+    '<p class="qz-consent">เมื่อกดเริ่ม ผลคะแนนจะถูกบันทึกให้ทีมพยาบาลใช้ติดตามและให้คำแนะนำเพิ่มเติม</p>' +
+    '<button class="qz-go" onclick="qzStart()"' + (QZ.procs.length ? '' : ' disabled') + '>เริ่มทำแบบทดสอบ ›</button>';
+}
+function qzKeepHn() { var i = document.getElementById('qzHn'); if (i) QZ.hn = i.value.trim().slice(0, 20); }
+function qzSet(k, v) { qzKeepHn(); QZ[k] = v; qzSetup(); }
+function qzTog(list, k) {
+  qzKeepHn();
+  var a = QZ[list];
+  if (k === 'unsure') a = a.indexOf('unsure') > -1 ? [] : ['unsure'];
+  else {
+    a = a.filter(function (x) { return x !== 'unsure'; });
+    if (list === 'procs' && k === 'nonop') a = a.indexOf('nonop') > -1 ? [] : ['nonop'];      // ไม่ผ่าตัด เลือกคู่กับผ่าตัดไม่ได้
+    else {
+      if (list === 'procs') a = a.filter(function (x) { return x !== 'nonop'; });
+      var i = a.indexOf(k); if (i > -1) a.splice(i, 1); else a.push(k);
+    }
+  }
+  QZ[list] = a;
+  qzSetup();
+}
+
+// ── ขั้นที่ 2: สร้างชุดคำถาม (ประมาณ 10–12 ข้อ) ──
+function qzStart() {
+  qzKeepHn();
+  if (!QZ.procs.length) return;
+  qzSave('fcQuizSetup', { who:QZ.who, hn:QZ.hn, procs:QZ.procs, bones:QZ.bones });
+  var B = QUIZ_BANK, qs = [];
+  var procs = QZ.procs.filter(function (k) { return B.proc[k]; });
+  var bones = QZ.bones.filter(function (k) { return B.bones[k]; });
+  var perProc = procs.length >= 2 ? 2 : 3, perBone = bones.length >= 3 ? 1 : 2;
+  procs.forEach(function (k) { qzShuffle(B.proc[k].q).slice(0, perProc).forEach(function (q) { qs.push(Object.assign({ grp:B.proc[k].name, pg:B.proc[k].pg }, q)); }); });
+  bones.forEach(function (k) { qzShuffle(B.bones[k].q).slice(0, perBone).forEach(function (q) { qs.push(Object.assign({ grp:B.bones[k].name }, q)); }); });
+  var used = {}; qs.forEach(function (q) { used[q.id] = 1; });
+  var nGen = Math.max(3, Math.min(8, 11 - qs.length));
+  var gen = [B.general[0]].concat(qzShuffle(B.general.slice(1)).slice(0, nGen - 1));
+  qs = gen.concat(qs);
+  QZ.qs = qs.map(function (q) {
+    return Object.assign({}, q, { opts: qzShuffle(q.a.map(function (t, i) { return { t:t, ok:i === 0 }; })) });
+  });
+  QZ.i = 0; QZ.ans = []; QZ.streak = 0; QZ.best = 0; QZ.t0 = Date.now();
+  qzQuestion();
+}
+
+// ── ขั้นที่ 3: ทีละข้อ ──
+function qzQuestion() {
+  var q = QZ.qs[QZ.i], n = QZ.qs.length;
+  qzEl().innerHTML =
+    '<div class="qz-prog"><div class="qz-prog-bar"><i style="width:' + (QZ.i / n * 100) + '%"></i></div>' +
+      '<span>ข้อ ' + (QZ.i + 1) + '/' + n + '</span>' + (QZ.streak >= 2 ? '<span class="qz-streak">🔥 ' + QZ.streak + '</span>' : '') + '</div>' +
+    '<div class="qz-q"><div class="qz-q-ic">' + q.e + '</div>' + (q.grp ? '<span class="qz-tag">' + q.grp + '</span>' : '') + '<h3>' + q.q + '</h3></div>' +
+    '<div class="qz-opts">' + q.opts.map(function (o, j) {
+      return '<button class="qz-opt" onclick="qzPick(' + j + ')"><b>' + 'กขคง'.charAt(j) + '</b><span>' + o.t + '</span></button>';
+    }).join('') + '</div><div id="qzFb"></div>';
+}
+function qzPick(j) {
+  var q = QZ.qs[QZ.i]; if (QZ.ans[QZ.i] != null) return;
+  var ok = q.opts[j].ok;
+  QZ.ans[QZ.i] = { id:q.id, ok:ok };
+  QZ.streak = ok ? QZ.streak + 1 : 0; QZ.best = Math.max(QZ.best, QZ.streak);
+  document.querySelectorAll('.qz-opt').forEach(function (b, k) {
+    b.disabled = true;
+    if (q.opts[k].ok) b.classList.add('right'); else if (k === j) b.classList.add('wrong');
+  });
+  if (navigator.vibrate) try { navigator.vibrate(ok ? 30 : [60, 40, 60]); } catch (e) {}
+  var praise = ['เยี่ยมมาก!', 'ถูกต้อง!', 'เก่งมาก!', 'ใช่เลย!'];
+  document.getElementById('qzFb').innerHTML =
+    '<div class="qz-fb ' + (ok ? 'ok' : 'no') + '"><b>' + (ok ? '✅ ' + praise[QZ.i % praise.length] : '💡 คำตอบที่ถูกคือ “' + q.a[0] + '”') + '</b><p>' + q.tip + '</p></div>' +
+    '<button class="qz-go" onclick="qzNext()">' + (QZ.i + 1 < QZ.qs.length ? 'ข้อถัดไป ›' : 'ดูผลคะแนน 🎉') + '</button>';
+  setTimeout(function () { var f = document.getElementById('qzFb'); if (f) f.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 60);
+}
+function qzNext() {
+  QZ.i++;
+  if (QZ.i < QZ.qs.length) { qzQuestion(); document.getElementById('qzOv').scrollTop = 0; }
+  else qzResult();
+}
+
+// ── ขั้นที่ 4: ผลคะแนน + คำแนะนำ ──
+function qzLevel(p) {
+  if (p >= 80) return { k:'ดีมาก', ic:'🏆', c:'ok', msg:'พร้อมดูแลตัวเองที่บ้าน ทำตามคำแนะนำต่อไป และมาตามนัดทุกครั้ง' };
+  if (p >= 60) return { k:'พอใช้', ic:'👍', c:'mid', msg:'เข้าใจเกือบครบแล้ว ลองทบทวนหัวข้อด้านล่างอีกครั้ง แล้วทำแบบทดสอบใหม่' };
+  return { k:'ควรทบทวน', ic:'📖', c:'low', msg:'ไม่เป็นไร ค่อย ๆ อ่านทบทวนหัวข้อด้านล่าง หรือถามพยาบาลได้เลย แล้วลองทำใหม่อีกครั้ง' };
+}
+function qzResult() {
+  var n = QZ.qs.length, sc = QZ.ans.filter(function (a) { return a.ok; }).length, p = Math.round(sc / n * 100), L = qzLevel(p);
+  var wrong = QZ.qs.filter(function (q, i) { return !QZ.ans[i].ok; });
+  var hist = qzLoad('fcQuizHist', []);
+  var nm = function (list, B) { return list.map(function (k) { return k === 'unsure' ? 'ไม่แน่ใจ' : B[k].name; }).join(', ') || '-'; };
+  var rec = { ts:new Date().toISOString(), who:QZ.who, hn:QZ.hn, treat:nm(QZ.procs, QUIZ_BANK.proc), organs:nm(QZ.bones, QUIZ_BANK.bones),
+    score:sc, total:n, pct:p, level:L.k, wrong:wrong.map(function (q) { return q.id + ' ' + q.q; }).join(' | ') || '-',
+    secs:Math.round((Date.now() - QZ.t0) / 1000), attempt:hist.length + 1, ua:navigator.userAgent.slice(0, 120) };
+  hist.push({ ts:rec.ts, pct:p }); qzSave('fcQuizHist', hist.slice(-20));
+  var prev = hist.length > 1 ? hist[hist.length - 2].pct : null;
+  var tips = [], seen = {};
+  wrong.forEach(function (q) {
+    if (!q.pg || seen[q.pg]) return; seen[q.pg] = 1;
+    tips.push('<button class="qz-rev" onclick="closeQuiz();jumpTo(' + q.pg + ')">📖 ' + (QZ_PAGE_NAME[q.pg] || 'อ่านทบทวน') + ' <small>หน้า ' + LABELS[q.pg] + '</small></button>');
+  });
+  var C = 2 * Math.PI * 52;
+  qzEl().innerHTML =
+    '<div class="qz-res ' + L.c + '">' +
+      '<div class="qz-ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="bg"/><circle cx="60" cy="60" r="52" class="fg" style="stroke-dasharray:' + C + ';stroke-dashoffset:' + C + '" data-to="' + (C * (1 - p / 100)) + '"/></svg>' +
+        '<div><b>' + sc + '/' + n + '</b><span>' + p + '%</span></div></div>' +
+      '<div class="qz-badge">' + L.ic + ' ' + L.k + '</div><p>' + L.msg + '</p>' +
+      (prev != null ? '<p class="qz-cmp">' + (p > prev ? '📈 ดีขึ้นจากครั้งก่อน (' + prev + '%)' : p === prev ? 'เท่ากับครั้งก่อน (' + prev + '%)' : 'ครั้งก่อนได้ ' + prev + '%') + '</p>' : '') +
+      (QZ.best >= 3 ? '<p class="qz-cmp">🔥 ตอบถูกติดกัน ' + QZ.best + ' ข้อ</p>' : '') +
+    '</div>' +
+    (wrong.length ? '<div class="qz-card"><h3>ข้อที่ควรจำ</h3><ul class="qz-wrong">' + wrong.map(function (q) {
+        return '<li><b>' + q.q + '</b><span>✅ ' + q.a[0] + '</span><small>' + q.tip + '</small></li>'; }).join('') + '</ul>' +
+      (tips.length ? '<h3 style="margin-top:14px;">อ่านทบทวน</h3><div class="qz-revs">' + tips.join('') + '</div>' : '') + '</div>'
+      : '<div class="qz-card qz-perfect">🌟 ตอบถูกทุกข้อ ยอดเยี่ยมมาก!</div>') +
+    (QZ.procs.indexOf('mmf') > -1 ? '<div class="qz-card qz-remind"><h3>✂️ ผู้ที่มัดฟัน</h3><p>พกกรรไกรตัดลวดติดตัวเสมอ ถ้าอาเจียนหรือหายใจไม่ออก ให้ตัดลวดก่อน แล้วรีบแจ้งพยาบาล</p></div>' : '') +
+    '<div class="qz-card qz-remind"><h3>🚨 จำไว้เสมอ</h3><p>หายใจลำบาก เลือดออกมากหยุดไม่ได้ ไข้สูงกว่า 38°C มองเห็นภาพซ้อน หรือสบฟันเปลี่ยน ให้มาโรงพยาบาลหรือโทร <a href="tel:1669">1669</a> ทันที</p></div>' +
+    '<div class="qz-save" id="qzSave">' + (qzApi() ? '⏳ กำลังบันทึกผล…' : '') + '</div>' +
+    '<div class="qz-actions"><button class="qz-ghost" onclick="openQuiz()">🔁 ทำใหม่</button><button class="qz-go" onclick="closeQuiz()">กลับไปอ่านคู่มือ</button></div>';
+  document.getElementById('qzOv').scrollTop = 0;
+  setTimeout(function () { var c = document.querySelector('.qz-ring .fg'); if (c) c.style.strokeDashoffset = c.dataset.to; }, 80);
+  if (p >= 80) qzConfetti();
+  qzSend(rec);
+}
+
+// ── ส่งผลไป Google Sheet (มีคิวสำรองถ้าเน็ตหลุด) ──
+function qzPost(rec) {
+  return fetch(qzApi(), { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:JSON.stringify(Object.assign({ action:'quizSave' }, rec)) });
+}
+function qzSend(rec) {
+  if (!qzApi()) return;
+  var box = function (t) { var b = document.getElementById('qzSave'); if (b) b.innerHTML = t; };
+  qzPost(rec).then(function () { box('✅ บันทึกผลเรียบร้อย'); }).catch(function () {
+    var q = qzLoad('fcQuizQueue', []); q.push(rec); qzSave('fcQuizQueue', q.slice(-30));
+    box('📶 ยังส่งผลไม่ได้ จะส่งให้อัตโนมัติเมื่อมีอินเทอร์เน็ต');
+  });
+}
+function qzFlush() {
+  if (!qzApi() || !navigator.onLine) return;
+  var q = qzLoad('fcQuizQueue', []); if (!q.length) return;
+  qzSave('fcQuizQueue', []);
+  q.forEach(function (rec) { qzPost(rec).catch(function () { var r = qzLoad('fcQuizQueue', []); r.push(rec); qzSave('fcQuizQueue', r); }); });
+}
+window.addEventListener('online', qzFlush);
+setTimeout(qzFlush, 3000);
+
+function qzConfetti() {
+  var box = document.createElement('div'); box.className = 'qz-confetti';
+  var cols = ['#e8c44a', '#3aa8a8', '#c0392b', '#fdf6e3', '#7fd1d1'];
+  for (var i = 0; i < 60; i++) {
+    var s = document.createElement('i');
+    s.style.left = Math.random() * 100 + '%'; s.style.background = cols[i % cols.length];
+    s.style.animationDelay = Math.random() * .6 + 's'; s.style.animationDuration = 1.6 + Math.random() * 1.4 + 's';
+    box.appendChild(s);
+  }
+  document.getElementById('qzOv').appendChild(box);
+  setTimeout(function () { box.remove(); }, 3500);
+}
+
 (function autoUpdate() {
   if (!/^https?:/.test(location.protocol) || !window.fetch) return;
   var url = location.pathname;
@@ -3432,6 +3876,7 @@ function showMemberBar(role, name) {
     btns.innerHTML = `
       <button class="mb-btn mb-btn-today" onclick="openRecovery()">🌱 วันนี้</button>
       <button class="mb-btn mb-btn-rf" onclick="openRedFlag()">🚨 เช็กอาการ</button>
+      <button class="mb-btn mb-btn-quiz" onclick="openQuiz()">🧠 แบบทดสอบ</button>
       <button class="mb-btn mb-btn-record" onclick="openNewRecord()">📋 บันทึกข้อมูล</button>
       <button class="mb-btn" style="background:rgba(192,57,43,0.22);color:#ffaaaa;border:1px solid rgba(192,57,43,0.4);" onclick="openSymptomModal()">⚠️ รายงานอาการ</button>
       <button class="mb-btn" style="background:rgba(201,162,39,0.18);color:var(--gold-light);border:1px solid rgba(201,162,39,0.3);" onclick="openMyDataModal()">📊 ข้อมูลของฉัน</button>
@@ -3440,6 +3885,7 @@ function showMemberBar(role, name) {
     badge.className = 'mb-badge mb-badge-member';
     badge.textContent = 'ทั่วไป';
     btns.innerHTML = `<button class="mb-btn mb-btn-rf" onclick="openRedFlag()">🚨 เช็กอาการ</button>
+      <button class="mb-btn mb-btn-quiz" onclick="openQuiz()">🧠 แบบทดสอบ</button>
       <button class="mb-btn mb-btn-logout" onclick="doLogout()">เปลี่ยนประเภทผู้ใช้</button>`;
   }
   bar.classList.add('show');
