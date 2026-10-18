@@ -660,6 +660,17 @@ body.au-open #scrollHint { bottom:136px; }
 .bm-head button { background:rgba(255,255,255,0.12); border:none; color:var(--cream); width:36px; height:36px; border-radius:50%; font-size:17px; cursor:pointer; }
 .bm-body { padding:16px 18px 22px; }
 
+/* ── ถามโหมดเสียงอ่าน ── */
+#au-ask { align-items:center; }
+.ask-body { text-align:center; padding:22px 20px 24px; }
+.ask-ic { font-size:46px; line-height:1; margin-bottom:8px; }
+.ask-body h3 { font-family:'Noto Serif Thai',serif; font-size:21px; color:var(--navy); margin:0 0 8px; }
+.ask-body p { font-size:16px; color:var(--text-mid); line-height:1.65; margin:0 0 16px; }
+.ask-btn { display:block; width:100%; min-height:56px; margin-top:10px; border-radius:16px; font-family:'Sarabun',sans-serif; font-size:18px; font-weight:700; cursor:pointer; }
+.ask-btn.on { background:linear-gradient(135deg,var(--teal),var(--teal-light)); color:#fff; border:none; box-shadow:0 8px 20px rgba(42,127,127,0.35); }
+.ask-btn.off { background:#fff; color:var(--navy); border:1.5px solid var(--cream-dark); }
+.ask-note { font-size:14px !important; color:var(--text-light) !important; margin:14px 0 0 !important; }
+
 /* ── Recovery ── */
 .rec-hns { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
 .rec-hn { padding:6px 12px; border-radius:16px; border:1px solid var(--cream-dark); background:#fff; font-family:inherit; font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; }
@@ -1391,6 +1402,18 @@ body.has-member-bar .nav-bar   { bottom:16px; }
     <div class="bm-head"><span>🚨 เช็กอาการอันตราย</span><button onclick="closeRedFlag()" aria-label="ปิด">✕</button></div>
     <div class="bm-body" id="rf-body"></div>
   </div>
+</div>
+
+<!-- ถามโหมดเสียงอ่าน (ครั้งแรก) -->
+<div id="au-ask" class="big-modal" role="dialog" aria-label="ต้องการฟังเสียงอ่านไหม">
+  <div class="bm-box"><div class="ask-body">
+    <div class="ask-ic">🎧</div>
+    <h3>ต้องการฟังเสียงอ่านไหม?</h3>
+    <p>ถ้าเปิด จะอ่านให้ฟังทุกหน้า<br>และเปิดหน้าถัดไปให้อัตโนมัติ ไม่ต้องกดเอง</p>
+    <button class="ask-btn on" onclick="auSetMode('on', true)">🔊 เปิดเสียงอ่านอัตโนมัติ</button>
+    <button class="ask-btn off" onclick="auSetMode('off', true)">อ่านเอง (กด 🔊 ฟังเฉพาะบางหน้าได้)</button>
+    <p class="ask-note">เปลี่ยนภายหลังได้ที่ปุ่ม 🔊 แล้วกด 🔁 เปิด/ปิดการอ่านอัตโนมัติ</p>
+  </div></div>
 </div>
 
 <!-- เสียงบรรยาย (บันทึกเสียงเอง) -->
@@ -2175,7 +2198,7 @@ function _uiBlocked(target) {
   if (!document.body.classList.contains('ebook-ready')) return true;
   var po = document.getElementById('portal-overlay');
   if (po && !po.classList.contains('hidden')) return true;
-  if (document.querySelector('#record-modal.show, #admin-modal.show, #rec-modal.show, #rf-modal.show, #pv-overlay.show')) return true;
+  if (document.querySelector('#record-modal.show, #admin-modal.show, #rec-modal.show, #rf-modal.show, #pv-overlay.show, #au-ask.show')) return true;
   var ids = ['mydata-modal','symptom-modal'];
   for (var i = 0; i < ids.length; i++) {
     var m = document.getElementById(ids[i]);
@@ -2267,10 +2290,11 @@ const PAGE_AUDIO = [
   /* 11 ปิดท้าย   */ 'audio/page-11.mp3',
 ];
 
-var AU = { el: null, page: -1, missing: {}, ok: {}, auto: false, rateIdx: 1, autoNext: false, seeking: false };
+var AU = { el: null, page: -1, missing: {}, ok: {}, auto: false, rateIdx: 1, autoNext: false, seeking: false, mode: null, asked: false };
 var AU_RATES = [ { v: 0.8, t: '0.8x' }, { v: 1, t: '1x' }, { v: 1.2, t: '1.2x' } ];
 try {
   AU.auto = localStorage.getItem('ebookAudioAuto') === '1';
+  AU.mode = localStorage.getItem('ebookAudioMode');
   var _ri = parseInt(localStorage.getItem('ebookAudioRate'), 10);
   if (_ri >= 0 && _ri < AU_RATES.length) AU.rateIdx = _ri;
 } catch (e) {}
@@ -2336,8 +2360,17 @@ function auOnPageChange() {
     if (cur !== i) return;
     if (!ok) return;
     fab.classList.add('has-audio');
-    if (continueAuto || (wasOpen && AU.auto)) auOpen(true);
+    if (continueAuto || (wasOpen && AU.auto) || AU.mode === 'on') auOpen(true);
+    else if (!AU.mode && !AU.asked && !_uiBlocked(null)) { AU.asked = true; document.getElementById('au-ask').classList.add('show'); }
   });
+}
+// เลือกโหมดเสียง: on = เปิดเสียงเองทุกหน้า + อ่านต่อหน้าถัดไป, off = กดฟังเอง
+function auSetMode(m, fromAsk) {
+  AU.mode = m; AU.auto = m === 'on';
+  try { localStorage.setItem('ebookAudioMode', m); localStorage.setItem('ebookAudioAuto', AU.auto ? '1' : '0'); } catch (e) {}
+  document.getElementById('au-ask').classList.remove('show');
+  if (m === 'on' && _auSrc(cur)) auOpen(true);   // กดปุ่ม = ผู้ใช้อนุญาตให้เล่นเสียงแล้ว
+  _auSetUI();
 }
 
 function auOpen(play) {
@@ -2389,7 +2422,8 @@ function auCycleRate() {
 }
 function auToggleAuto() {
   AU.auto = !AU.auto;
-  try { localStorage.setItem('ebookAudioAuto', AU.auto ? '1' : '0'); } catch (e) {}
+  AU.mode = AU.auto ? 'on' : 'off';   // 🔁 = เปิด/ปิดโหมดอ่านอัตโนมัติ
+  try { localStorage.setItem('ebookAudioAuto', AU.auto ? '1' : '0'); localStorage.setItem('ebookAudioMode', AU.mode); } catch (e) {}
   _auSetUI();
 }
 
