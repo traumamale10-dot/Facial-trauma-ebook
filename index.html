@@ -3123,7 +3123,7 @@ function renderRecovery() {
 // ผลแบบทดสอบส่งไปที่ API เดียวกับระบบสมาชิก (API_URL) ด้วย action 'quizSave'
 // ถ้าต้องการส่งไป Sheet อื่น ให้ใส่ลิงก์ /exec ที่ QUIZ_API แทน
 // ══════════════════════════════════════════════════════
-const QUIZ_API = '';
+const QUIZ_API = 'https://script.google.com/macros/s/AKfycbx_XYekbmKnseZqwzbONQ2kK9T-nlpnMB2eZukAM2g30w3G3VWdHkpuZEGgXEZDj7WhcQ/exec';
 function qzApi() { return QUIZ_API || (typeof API_URL !== 'undefined' ? API_URL : ''); }
 
 // pg = หน้าใน E-book ที่ให้กลับไปอ่านทบทวน
